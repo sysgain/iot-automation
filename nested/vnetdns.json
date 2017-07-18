@@ -15,57 +15,18 @@
       },
       "defaultValue": "10.0.0.0/16"
     },
-       "subnetName1": {
+    "subnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the subnet created in the new VNET"
       }
     },
-    "subnetRange1": {
+    "subnetRange": {
       "type": "string",
       "metadata": {
         "description": "The address range of the subnet created in the new VNET"
       },
       "defaultValue": "10.0.0.0/24"
-    },
-    "subnetName2": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the subnet created in the new VNET"
-      }
-    },
-    "subnetRange2": {
-      "type": "string",
-      "metadata": {
-        "description": "The address range of the subnet created in the new VNET"
-      },
-      "defaultValue": "10.0.1.0/24"
-    },
-    "subnetName3": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the subnet created in the new VNET"
-      }
-    },
-    "subnetRange3": {
-      "type": "string",
-      "metadata": {
-        "description": "The address range of the subnet created in the new VNET"
-      },
-      "defaultValue": "10.0.2.0/24"
-    },
-    "subnetName4": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the subnet created in the new VNET"
-      }
-    },
-    "subnetRange4": {
-      "type": "string",
-      "metadata": {
-        "description": "The address range of the subnet created in the new VNET"
-      },
-      "defaultValue": "10.0.3.0/24"
     },
     "DNSServerAddress": {
       "type": "array",
@@ -91,27 +52,9 @@
         },
         "subnets": [
           {
-            "name": "[parameters('subnetName1')]",
+            "name": "[parameters('subnetName')]",
             "properties": {
-              "addressPrefix": "[parameters('subnetRange1')]"
-            }
-          },
-        {
-            "name": "[parameters('subnetName2')]",
-            "properties": {
-              "addressPrefix": "[parameters('subnetRange2')]"
-            }
-          },
-        {
-            "name": "[parameters('subnetName3')]",
-            "properties": {
-              "addressPrefix": "[parameters('subnetRange3')]"
-            }
-          },
-        {
-            "name": "[parameters('subnetName4')]",
-            "properties": {
-              "addressPrefix": "[parameters('subnetRange4')]"
+              "addressPrefix": "[parameters('subnetRange')]"
             }
           }
         ]
