@@ -124,7 +124,7 @@
             "location": "[parameters('sqlserversettings').location]",
             "apiVersion": "2015-06-15",
             "dependsOn": [
-                "[concat(parameters('sqlserversettings').sqlservername, '/SqlIaasExtension')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername, '/extensions/SqlIaasExtension')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
