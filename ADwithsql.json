@@ -11,7 +11,7 @@
         },
         "Password": {
             "type": "securestring",
-            "defaultValue": "Sysgain@1234",
+            "defaultValue": "Sysgain@123456",
             "metadata": {
                 "description": "The password for the administrator account of the new VM and domain"
             }
@@ -25,7 +25,7 @@
         },
         "winadminPassword": {
             "type": "securestring",
-            "defaultValue": "Sysgain@1234",
+            "defaultValue": "Sysgain@123456",
             "metadata": {
                 "description": "The password for the administrator account of the new win VM and domain"
             }
@@ -104,14 +104,14 @@
         }
     },
     "variables": {
-        "sqlserversettings": {
+         "sqlserversettings": {
             "location": "[resourceGroup().location]",
             "adminUsername": "sqluser",
             "adminPassword": "Sysgain@1234",
             "virtualNetworkName": "[variables('virtualNetworkName')]",
             "networkInterfaceName": "sqlNic",
             "networkSecurityGroupName": "sqlNsg",
-            "subnetName": "[variables('adSubnetName3')]",
+            "subnetName": "[variables('adSubnetName1')]",
             "publicIpAddressName": "sqlpip",
             "sqlAuthenticationLogin": "sqluser",
             "sqlAuthenticationPassword": "Sysgain@1234",
@@ -141,7 +141,7 @@
         "adSubnetAddressPrefix1": "10.0.0.0/24",
         "winSubnetName2": "winSubnet",
         "winSubnetAddressPrefix2": "10.0.1.0/24",
-        "adSubnetName3": "sqlSubnet",
+        "adSubnetName3": "Subnet3",
         "adSubnetAddressPrefix3": "10.0.2.0/24",
         "adSubnetName4": "Subnet4",
         "adSubnetAddressPrefix4": "10.0.3.0/24",
@@ -155,9 +155,8 @@
         "prefix": "[uniqueString(resourceGroup().id)]",
         "dnsPrefix": "[concat('dns',substring(variables('prefix') ,0 ,5))]",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/master",
-        "dscScriptUrl":"https://github.com/sysgain/iot-automation/blob/master",
+        "dscScriptUrl":"https://github.com/sysgain/iot-automation/raw/master",
         "domainName": "iottests.com",
-        "_artifactsLocationSasToken": "",
         "winNsgName": "windows-nsg",
         "vmExtensionName": "extension",
         "managedDiskName": "datadisk",
@@ -167,7 +166,7 @@
         "diskSizeGB": "1023",
         "computeApiVersion": "2016-04-30-preview",
         "networkApiVersion": "2016-03-30",
-        "deploymentApiVersion": "2016-02-01"
+        "deploymentApiVersion":"2016-02-01"
     },
     "resources": [
         {
@@ -198,11 +197,11 @@
         {
             "type": "Microsoft.Resources/deployments",
             "name": "VNet",
-            "apiVersion": "[variables('deploymentApiVersion')]",
+            "apiVersion":"[variables('deploymentApiVersion')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), '/nested/vnet.json?token=AT3pTWxUQOrD7ajUZuoyJMbWnwCplSTLks5Zde-JwA%3D%3D')]",
+                   "uri": "[concat(variables('baseUrl'), '/nested/vnet.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -316,7 +315,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('adVMName')]",
-            "apiVersion": "[variables('computeApiVersion')]",
+            "apiVersion":"[variables('computeApiVersion')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('adNicName'))]",
@@ -373,7 +372,7 @@
                 {
                     "type": "extensions",
                     "name": "CreateADForest",
-                    "apiVersion": "[variables('computeApiVersion')]",
+                    "apiVersion":"[variables('computeApiVersion')]",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Compute/virtualMachines', variables('adVMName'))]"
@@ -384,7 +383,8 @@
                         "typeHandlerVersion": "2.19",
                         "autoUpgradeMinorVersion": true,
                         "settings": {
-                            "ModulesUrl": "[concat(variables('dscScriptUrl'), '/scripts/CreateADPDC.zip?raw=true')]",
+                        
+                           "ModulesUrl": "[concat(variables('dscScriptUrl'), '/DSC/CreateADPDC.zip')]",
                             "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
                             "Properties": {
                                 "DomainName": "[variables('domainName')]",
@@ -406,14 +406,15 @@
         {
             "type": "Microsoft.Resources/deployments",
             "name": "UpdateVNetDNS",
-            "apiVersion": "[variables('deploymentApiVersion')]",
+            "apiVersion":"[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('adVMName'), 'CreateADForest')]"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), '/nested/vnetdns.json?token=AT3pTfA2d-wvUaqVp0DGyQKJTbyI0AQOks5ZdfJGwA%3D%3D')]",
+                   "uri": "[concat(variables('baseUrl'), '/nested/vnetdns.json')]",
+                    
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -447,7 +448,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), '/nested/sqlserver.json?token=AT3nZmpeXj-foMGqC9xa0x4j3RI-5K2oks5ZdzCMwA%3D%3D')]",
+                    "uri": "[concat(variables('baseUrl'), '/nested/sqlserver.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -460,7 +461,7 @@
         {
             "type": "Microsoft.Compute/disks",
             "name": "[concat(variables('managedDiskName'),copyIndex())]",
-            "apiVersion": "[variables('computeApiVersion')]",
+            "apiVersion":"[variables('computeApiVersion')]",
             "location": "[resourceGroup().location]",
             "copy": {
                 "name": "dataDiskCopy",
@@ -477,7 +478,7 @@
         {
             "name": "[variables('virtualMachineName')]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[variables('computeApiVersion')]",
+            "apiVersion":"[variables('computeApiVersion')]",
             "location": "[resourceGroup().location]",
             "scale": null,
             "dependsOn": [
@@ -536,8 +537,9 @@
             "name": "[concat(variables('virtualMachineName'),'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
-            "apiVersion": "[variables('computeApiVersion')]",
+            "apiVersion":"[variables('computeApiVersion')]",
             "dependsOn": [
+                "sqlServerSetup",
                 "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
             ],
             "properties": {
@@ -573,7 +575,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[variables('winsubnetRef')]"
+                                "id": "[variables('adsubnetRef')]"
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIpAddress": {
@@ -590,7 +592,7 @@
         {
             "name": "[variables('winPipName')]",
             "type": "Microsoft.Network/publicIpAddresses",
-            "apiVersion": "[variables('networkApiVersion')]",
+           "apiVersion": "[variables('networkApiVersion')]",
             "location": "[resourceGroup().location]",
             "scale": null,
             "properties": {
