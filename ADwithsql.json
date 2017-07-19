@@ -549,7 +549,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[concat(variables('baseUrl'),'/scripts/psscript.ps1?token=AT3pTRSgLELr_drjvygt9_Fip9MfsSo3ks5ZdaFhwA%3D%3D')]"
+                        "[concat(variables('baseUrl'),'/scripts/psscript.ps1')]"
                     ]
                 },
                 "protectedSettings": {
