@@ -147,10 +147,6 @@
          "adminPassword": {
             "type": "string",
             "value": "[parameters('bastionHostSettings').adminPassword]"
-        },
-         "bastionFQDN": {
-            "type": "string",
-            "value": "[concat(reference(parameters('bastionHostSettings').publicIpAddressName)).dnsSettings.fqdn]"
         }
     }
 }
