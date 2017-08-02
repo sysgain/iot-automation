@@ -1,0 +1,71 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkSettings": {
+            "type": "object"
+        },
+        "DNSServerAddress": {
+            "type": "array",
+            "metadata": {
+                "description": "The DNS address(es) of the DNS Server(s) used by the VNET"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('networkSettings').virtualNetworkName]",
+            "apiVersion": "[parameters('networkSettings').networkApiVersion]",
+            "location": "[parameters('networkSettings').location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('networkSettings').addressPrefix]"
+                    ]
+                },
+                "dhcpOptions": {
+                    "dnsServers": "[parameters('DNSServerAddress')]"
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('networkSettings').subnet1Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet2Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet3Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet3Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet4Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
+                        }
+                    },
+                      {
+                        "name": "[parameters('networkSettings').subnet5Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet5Prefix]"
+                        }
+                    },
+                      {
+                        "name": "[parameters('networkSettings').subnet6Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet6Prefix]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
