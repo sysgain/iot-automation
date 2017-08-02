@@ -109,7 +109,10 @@
             "apiVersion": "[parameters('bastionHostSettings').networkApiVersion]",
             "location": "[parameters('bastionHostSettings').location]",
             "properties": {
-                "publicIpAllocationMethod": "[parameters('bastionHostSettings').publicIpAddressType]"
+                "publicIpAllocationMethod": "[parameters('bastionHostSettings').publicIpAddressType]",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('bastionHostSettings').bastionDnsLabelPrefix]"
+                }
             }
         },
         {
@@ -140,6 +143,14 @@
         "adminUsername": {
             "type": "string",
             "value": "[parameters('bastionHostSettings').adminUsername]"
+        },
+         "adminPassword": {
+            "type": "string",
+            "value": "[parameters('bastionHostSettings').adminPassword]"
+        },
+         "bastionFQDN": {
+            "type": "string",
+            "value": "[concat(reference(parameters('bastionHostSettings').publicIpAddressName)).dnsSettings.fqdn]"
         }
     }
 }
