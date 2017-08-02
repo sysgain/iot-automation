@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkSettings": {
+            "type": "object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('networkSettings').virtualNetworkName]",
+            "apiVersion": "[parameters('networkSettings').networkApiVersion]",
+            "location": "[parameters('networkSettings').location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('networkSettings').addressPrefix]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('networkSettings').subnet1Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet2Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet3Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet3Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet4Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
