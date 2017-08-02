@@ -55,7 +55,6 @@
             "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "dependsOn": [
-                "virtualNetworksResource"
             ],
             "properties": {
                 "ipConfigurations": [
