@@ -1,0 +1,81 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "AzurePaasevi": {
+            "type": "object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2015-05-01-preview",
+            "type": "Microsoft.Sql/servers",
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('AzurePaasevi').serverName]",
+            "properties": {
+                "administratorLogin": "[parameters('AzurePaasevi').AzureSqlLogin]",
+                "administratorLoginPassword": "[parameters('AzurePaasevi').AzureSqlPwd]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2014-04-01-preview",
+                    "type": "databases",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('AzurePaasevi').serverName)]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "[parameters('AzurePaasevi').databaseName]",
+                    "properties": {
+                        "collation": "[parameters('AzurePaasevi').collation]",
+                        "edition": "[parameters('AzurePaasevi').edition]",
+                        "maxSizeBytes": "[parameters('AzurePaasevi').maxSizeBytes]",
+                        "requestedServiceObjectiveName": "[parameters('AzurePaasevi').requestedServiceObjectiveName]"
+                    },
+                    "resources": [
+                        {
+                            "name": "myImport",
+                            "type": "extensions",
+                            "apiVersion": "2014-04-01-preview",
+                            "dependsOn": [
+                                "[concat('Microsoft.Sql/servers/',parameters('AzurePaasevi').serverName, '/databases/', parameters('AzurePaasevi').databaseName)]"
+                            ],
+                            "properties": {
+                                "storageKeyType": "[parameters('AzurePaasevi').storageKeyType]",
+                                "storageKey": "[parameters('AzurePaasevi').storageKey]",
+                                "storageUri": "https://projectiot.blob.core.windows.net/iotp2/EnergyManagement.bacpac",
+                                "administratorLogin": "[parameters('AzurePaasevi').AzureSqlLogin]",
+                                "administratorLoginPassword": "[parameters('AzurePaasevi').AzureSqlPwd]",
+                                "operationMode": "Import"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('AzurePaasevi').serverName)]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    },
+                    "type": "firewallrules"
+                }
+            ]
+        }
+    ],
+    "outputs": {
+        "azureSqlServerName":{
+            "type": "string",
+            "value": "[concat(parameters('AzurePaasevi').serverName,'.database.windows.net')]"
+        },
+        "azureDBName":{
+            "type": "string",
+            "value": "[parameters('AzurePaasevi').databaseName]"
+        }
+    }
+}
