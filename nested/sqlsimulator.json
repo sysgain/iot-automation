@@ -1,0 +1,32 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+         "sqlserversettings": {
+            "type": "object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[concat(parameters('sqlserversettings').sqlservername,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion":"[parameters('sqlserversettings').computeApiVersion]",
+                "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('sqlserversettings').fileUris3]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlserversettings').scriptFileName3,' ',parameters('sqlserversettings').simulatorUrl,' ',parameters('sqlserversettings').sqlservername)]"
+                }
+            }
+        }
+    ]
+}
