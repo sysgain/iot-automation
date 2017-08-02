@@ -26,22 +26,6 @@
             "properties": {}
         },
         {
-            "type": "Microsoft.Compute/images",
-            "apiVersion": "[parameters('sqlserversettings').computeApiVersion]",
-            "name": "[parameters('sqlserversettings').SQLimageName]",
-            "location": "[parameters('sqlserversettings').location]",
-            "properties": {
-                "storageProfile": {
-                    "osDisk": {
-                        "osType": "Windows",
-                        "osState": "Generalized",
-                        "blobUri": "[parameters('sqlserversettings').SQLOsDiskVhdUri]",
-                        "storageAccountType": "Standard_LRS"
-                    }
-                }
-            }
-        },
-        {
             "name": "[parameters('sqlserversettings').networkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('sqlserversettings').networkApiVersion]",
@@ -205,7 +189,10 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "id": "[resourceId('Microsoft.Compute/images', parameters('sqlserversettings').SQLimageName)]"
+                       "publisher": "MicrosoftSQLServer",
+                        "offer": "SQL2016SP1-WS2016",
+                        "sku": "Express",
+                        "version": "latest"
                     },
                     "osDisk": {
                         "createOption": "fromImage",
