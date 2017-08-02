@@ -1,12 +1,15 @@
 param(
 [string] $simulatorUrl = "$1",
-[string] $sqlservername = "$2"
+[string] $dataserviceUrl = "$2"
 )
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
 $client = new-object System.Net.WebClient
 $client.DownloadFile($simulatorUrl,"C:\SimulatorSetup.msi")
-$client.DownloadFile("https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi","C:\DataServiceAppSetup.msi")
 C:\SimulatorSetup.msi /qn
+Start-Sleep -s 12
+$client.DownloadFile($dataserviceUrl,"C:\DataServiceAppSetup.msi")
+C:\DataServiceAppSetup.msi /qn
+Start-Sleep -s 12
 $piserverconfig = "C:\Program Files (x86)\Default Company Name\SimulatorSetup\PiServerSimulator.exe.config"
 $doc = (Get-Content $piserverconfig) -as [Xml]
 $obj = $doc.configuration.appSettings.add | where {$_.Key -eq 'PiConnectionString'}
