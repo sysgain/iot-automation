@@ -25,7 +25,7 @@
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "[parameters('PIAFServerSettings').bastionVMName]",
+                    "computerName": "[parameters('PIAFServerSettings').PIAFVMName]",
                     "adminUsername": "[parameters('PIAFServerSettings').adminUsername]",
                     "adminPassword": "[parameters('PIAFServerSettings').adminPassword]",
                     "windowsConfiguration": {
