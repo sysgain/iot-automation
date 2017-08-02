@@ -1,0 +1,145 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "bastionHostSettings":{
+            "type": "object"
+        },
+        "networkSettings":{
+            "type": "object"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet1Name)]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('bastionHostSettings').bastionVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('bastionHostSettings').computeApiVersion]",
+            "location": "[parameters('bastionHostSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionHostSettings').bastionNic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionHostSettings').bastionDiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('bastionHostSettings').bastionVMName]",
+                    "adminUsername": "[parameters('bastionHostSettings').adminUsername]",
+                    "adminPassword": "[parameters('bastionHostSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('bastionHostSettings').bastionVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('bastionHostSettings').publisher]",
+                        "offer": "[parameters('bastionHostSettings').offer]",
+                        "sku": "[parameters('bastionHostSettings').sku]",
+                        "version": "[parameters('bastionHostSettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType":"[parameters('bastionHostSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('bastionHostSettings').bastionNic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionHostSettings').bastionDiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[parameters('bastionHostSettings').bastionDiagStgAcnt]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[parameters('bastionHostSettings').storageApiVersion]",
+            "location": "[parameters('bastionHostSettings').location]",
+            "properties": {
+                "accountType": "[parameters('bastionHostSettings').diagStorageAccountType]"
+            }
+        },
+        {
+            "name": "[parameters('bastionHostSettings').bastionNic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('bastionHostSettings').networkApiVersion]",
+            "location": "[parameters('bastionHostSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIpAddresses/', parameters('bastionHostSettings').publicIpAddressName)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('bastionHostSettings').networkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('bastionHostSettings').publicIpAddressName)]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionHostSettings').networkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('bastionHostSettings').publicIpAddressName]",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "[parameters('bastionHostSettings').networkApiVersion]",
+            "location": "[parameters('bastionHostSettings').location]",
+            "properties": {
+                "publicIpAllocationMethod": "[parameters('bastionHostSettings').publicIpAddressType]"
+            }
+        },
+        {
+            "name": "[parameters('bastionHostSettings').networkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('bastionHostSettings').networkApiVersion]",
+            "location": "[parameters('bastionHostSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "adminUsername": {
+            "type": "string",
+            "value": "[parameters('bastionHostSettings').adminUsername]"
+        }
+    }
+}
