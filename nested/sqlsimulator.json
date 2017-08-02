@@ -11,7 +11,7 @@
         {
             "name": "[concat(parameters('sqlserversettings').sqlservername,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('sqlserversettings').location]",
             "apiVersion":"[parameters('sqlserversettings').computeApiVersion]",
                 "properties": {
                 "publisher": "Microsoft.Compute",
@@ -24,7 +24,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlserversettings').scriptFileName3,' ',parameters('sqlserversettings').simulatorUrl,' ',parameters('sqlserversettings').sqlservername)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlserversettings').scriptFileName3,' ',parameters('sqlserversettings').simulatorUrl,' ',parameters('sqlserversettings').dataserviceUrl)]"
                 }
             }
         }
