@@ -1,0 +1,129 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "PIAFServerSettings":{
+            "type": "object"
+        },
+        "networkSettings":{
+            "type": "object"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet5Name)]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('PIAFServerSettings').PIAFVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('PIAFServerSettings').computeApiVersion]",
+            "location": "[parameters('PIAFServerSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIAFServerSettings').PIAFNic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIAFServerSettings').PIAFDiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIAFServerSettings').bastionVMName]",
+                    "adminUsername": "[parameters('PIAFServerSettings').adminUsername]",
+                    "adminPassword": "[parameters('PIAFServerSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIAFServerSettings').PIAFVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIAFServerSettings').publisher]",
+                        "offer": "[parameters('PIAFServerSettings').offer]",
+                        "sku": "[parameters('PIAFServerSettings').sku]",
+                        "version": "[parameters('PIAFServerSettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType":"[parameters('PIAFServerSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIAFServerSettings').PIAFNic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIAFServerSettings').PIAFDiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIAFServerSettings').PIAFDiagStgAcnt]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[parameters('PIAFServerSettings').storageApiVersion]",
+            "location": "[parameters('PIAFServerSettings').location]",
+            "properties": {
+                "accountType": "[parameters('PIAFServerSettings').diagStorageAccountType]"
+            }
+        },
+        {
+            "name": "[parameters('PIAFServerSettings').PIAFNic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('PIAFServerSettings').networkApiVersion]",
+            "location": "[parameters('PIAFServerSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIAFServerSettings').PIAFPrivateIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('PIAFServerSettings').networkApiVersion]",
+            "location": "[parameters('PIAFServerSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
