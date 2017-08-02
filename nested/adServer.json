@@ -18,7 +18,7 @@
         {
             "name": "[parameters('adServerSettings').adNetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('adServerSettings').nsgNetworkApiVersion]",
+            "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "properties": {
                 "securityRules": [
@@ -81,7 +81,8 @@
             "apiVersion": "[parameters('adServerSettings').computeApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('adServerSettings').adNicName)]"
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('adServerSettings').adNicName)]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('adServerSettings').adstorageAccountName)]"
             ],
             "properties": {
                 "hardwareProfile": {
