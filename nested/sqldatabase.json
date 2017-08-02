@@ -2,29 +2,50 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-         "sqlserversettings": {
-            "type": "object"
+        "sqlservername": {
+            "type": "string"
+        },
+        "computeApiVersion": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "fileUris2": {
+            "type": "string"
+        },
+        "scriptFileName2": {
+            "type": "string"
+        },
+        "sqlQueryUrl": {
+            "type": "string"
+        },
+        "sqlAuthenticationLogin": {
+            "type": "string"
+        },
+        "sqlAuthenticationPassword": {
+            "type": "string"
         }
     },
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('sqlserversettings').sqlservername,'/CustomScriptExtension')]",
+            "name": "[concat(parameters('sqlservername'),'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
-            "apiVersion":"[parameters('sqlserversettings').computeApiVersion]",
-                "properties": {
+            "location": "[parameters('location')]",
+            "apiVersion": "[parameters('computeApiVersion')]",
+            "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
                 "typeHandlerVersion": "1.8",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('sqlserversettings').fileUris2]"
+                        "[parameters('fileUris2')]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlserversettings').scriptFileName2,' ',parameters('sqlserversettings').sqlQueryUrl,' ',parameters('sqlserversettings').sqlservername,' ',parameters('sqlserversettings').adminUsername,' ',parameters('sqlserversettings').adminPassword)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('scriptFileName2'),' ',parameters('sqlQueryUrl'),' ',parameters('sqlservername'),' ',parameters('sqlAuthenticationLogin'),' ',parameters('sqlAuthenticationPassword'))]"
                 }
             }
         }
