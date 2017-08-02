@@ -1,0 +1,158 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adServerSettings":{
+            "type": "object"
+        },
+          "networkSettings":{
+            "type": "object"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "adSubnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
+
+    },  
+    "resources": [
+        {
+            "name": "[parameters('adServerSettings').adNetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('adServerSettings').nsgNetworkApiVersion]",
+            "location": "[parameters('adServerSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+         {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('adServerSettings').adstorageAccountName]",
+            "apiVersion": "[parameters('adServerSettings').storageApiVersion]",
+            "location": "[parameters('adServerSettings').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('adServerSettings').adNicName]",
+            "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
+            "location": "[parameters('adServerSettings').location]",
+            "dependsOn": [
+                "virtualNetworksResource"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {     
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('adServerSettings').adNicIPAddress]",
+                            "subnet": {
+                                "id": "[variables('adsubnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                 "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('adServerSettings').adNetworkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('adServerSettings').adVMName]",
+            "apiVersion": "[parameters('adServerSettings').computeApiVersion]",
+            "location": "[parameters('adServerSettings').location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('adServerSettings').adNicName)]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('adServerSettings').adVMName]",
+                    "adminUsername": "[parameters('adServerSettings').Username]",
+                    "adminPassword": "[parameters('adServerSettings').Password]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher":  "[parameters('adServerSettings').publisher]",
+                        "offer":  "[parameters('adServerSettings').offer]",
+                        "sku": "[parameters('adServerSettings').sku]",
+                        "version": "[parameters('adServerSettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('adServerSettings').storageAccountType]"
+                        }
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('adServerSettings').adNicName)]"
+                        }
+                    ]
+                },
+                 "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('adServerSettings').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "type": "extensions",
+                    "name": "[parameters('adServerSettings').adExtensionName]",
+                    "apiVersion": "[parameters('adServerSettings').computeApiVersion]",
+                    "location": "[parameters('adServerSettings').location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('adServerSettings').adVMName)]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Powershell",
+                        "type": "DSC",
+                        "typeHandlerVersion": "2.19",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "ModulesUrl": "[concat(parameters('adServerSettings').dscScriptUrl, '/DSC/CreateADPDC.zip')]",
+                            "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
+                            "Properties": {
+                                "DomainName": "[parameters('adServerSettings').domainName]",
+                                "AdminCreds": {
+                                    "UserName": "[parameters('adServerSettings').Username]",
+                                    "Password": "PrivateSettingsRef:AdminPassword"
+                                }
+                            }
+                        },
+                        "protectedSettings": {
+                            "Items": {
+                                "AdminPassword": "[parameters('adServerSettings').Password]"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
