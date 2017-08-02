@@ -43,6 +43,18 @@
                         "properties": {
                             "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
                         }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet5Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet5Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet6Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet6Prefix]"
+                        }
                     }
                 ]
             }
