@@ -2,29 +2,47 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-         "sqlserversettings": {
-            "type": "object"
+        "sqlservername": {
+            "type": "string"
+        },
+        "computeApiVersion": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "fileUris3": {
+            "type": "string"
+        },
+        "scriptFileName3": {
+            "type": "string"
+        },
+        "simulatorUrl": {
+            "type": "string"
+        },
+        "dataserviceUrl": {
+            "type": "string"
         }
     },
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('sqlserversettings').sqlservername,'/CustomScriptExtension')]",
+            "name": "[concat(parameters('sqlservername'),'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('sqlserversettings').location]",
-            "apiVersion":"[parameters('sqlserversettings').computeApiVersion]",
-                "properties": {
+            "location": "[parameters('location')]",
+            "apiVersion": "[parameters('computeApiVersion')]",
+            "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
                 "typeHandlerVersion": "1.8",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('sqlserversettings').fileUris3]"
+                        "[parameters('fileUris3')]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlserversettings').scriptFileName3,' ',parameters('sqlserversettings').simulatorUrl,' ',parameters('sqlserversettings').dataserviceUrl)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('scriptFileName3'),' ',parameters('simulatorUrl'),' ',parameters('dataserviceUrl'))]"
                 }
             }
         }
