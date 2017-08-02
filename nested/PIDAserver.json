@@ -1,0 +1,129 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "PIDAServersettings":{
+            "type": "object"
+        },
+        "networkSettings":{
+            "type": "object"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet6Name)]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('PIDAServersettings').PIDAVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('PIDAServersettings').computeApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIDAServersettings').PIDANic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIDAServersettings').PIDADiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIDAServersettings').PIDAVMName]",
+                    "adminUsername": "[parameters('PIDAServersettings').adminUsername]",
+                    "adminPassword": "[parameters('PIDAServersettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIDAServersettings').PIDAVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIDAServersettings').publisher]",
+                        "offer": "[parameters('PIDAServersettings').offer]",
+                        "sku": "[parameters('PIDAServersettings').sku]",
+                        "version": "[parameters('PIDAServersettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType":"[parameters('PIDAServersettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIDAServersettings').PIDANic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIDAServersettings').PIDADiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDADiagStgAcnt]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[parameters('PIDAServersettings').storageApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "properties": {
+                "accountType": "[parameters('PIDAServersettings').diagStorageAccountType]"
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDANic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('PIDAServersettings').networkApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDANetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('PIDAServersettings').networkApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
