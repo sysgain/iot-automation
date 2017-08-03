@@ -90,7 +90,7 @@
                     "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIDAServersettings').scriptFileName,' ',parameters('PIDAServersettings').domainName,' ',parameters('PIDAServersettings').Username,' ',parameters('PIDAServersettings').Password)]"
                 }
             }
-        }
+        },
         {
             "name": "[parameters('PIDAServersettings').PIDADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
