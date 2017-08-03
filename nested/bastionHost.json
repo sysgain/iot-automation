@@ -18,57 +18,6 @@
     },
     "resources": [
         {
-            "name": "[parameters('bastionHostSettings').bastionVMName]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('bastionHostSettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionHostSettings').bastionNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionHostSettings').bastionDiagStgAcnt)]"
-            ],
-            "properties": {
-                "osProfile": {
-                    "computerName": "[parameters('bastionHostSettings').bastionVMName]",
-                    "adminUsername": "[parameters('bastionHostSettings').adminUsername]",
-                    "adminPassword": "[parameters('bastionHostSettings').adminPassword]",
-                    "windowsConfiguration": {
-                        "provisionVmAgent": "true"
-                    }
-                },
-                "hardwareProfile": {
-                    "vmSize": "[parameters('bastionHostSettings').bastionVMSize]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[parameters('bastionHostSettings').publisher]",
-                        "offer": "[parameters('bastionHostSettings').offer]",
-                        "sku": "[parameters('bastionHostSettings').sku]",
-                        "version": "[parameters('bastionHostSettings').version]"
-                    },
-                    "osDisk": {
-                        "createOption": "fromImage",
-                        "managedDisk": {
-                            "storageAccountType":"[parameters('bastionHostSettings').storageAccountType]"
-                        }
-                    },
-                    "dataDisks": []
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('bastionHostSettings').bastionNic)]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionHostSettings').bastionDiagStgAcnt)).primaryEndpoints['blob']]"
-                    }
-                }
-            }
-        },
-        {
             "name": "[parameters('bastionHostSettings').bastionDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
@@ -141,6 +90,80 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "name": "[parameters('bastionHostSettings').bastionVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('bastionHostSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionHostSettings').bastionNic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionHostSettings').bastionDiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('bastionHostSettings').bastionVMName]",
+                    "adminUsername": "[parameters('bastionHostSettings').adminUsername]",
+                    "adminPassword": "[parameters('bastionHostSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('bastionHostSettings').bastionVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('bastionHostSettings').publisher]",
+                        "offer": "[parameters('bastionHostSettings').offer]",
+                        "sku": "[parameters('bastionHostSettings').sku]",
+                        "version": "[parameters('bastionHostSettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType":"[parameters('bastionHostSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('bastionHostSettings').bastionNic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionHostSettings').bastionDiagStgAcnt)).primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('bastionHostSettings').bastionVMName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionHostSettings').bastionVMName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('bastionHostSettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('bastionHostSettings').scriptFileName,' ',parameters('bastionHostSettings').domainName,' ',parameters('bastionHostSettings').Username,' ',parameters('bastionHostSettings').Password)]"
+                }
             }
         }
     ],
