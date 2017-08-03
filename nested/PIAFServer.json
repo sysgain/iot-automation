@@ -15,57 +15,6 @@
     },
     "resources": [
         {
-            "name": "[parameters('PIAFServerSettings').PIAFVMName]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('PIAFServerSettings').computeApiVersion]",
-            "location": "[parameters('PIAFServerSettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIAFServerSettings').PIAFNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIAFServerSettings').PIAFDiagStgAcnt)]"
-            ],
-            "properties": {
-                "osProfile": {
-                    "computerName": "[parameters('PIAFServerSettings').PIAFVMName]",
-                    "adminUsername": "[parameters('PIAFServerSettings').adminUsername]",
-                    "adminPassword": "[parameters('PIAFServerSettings').adminPassword]",
-                    "windowsConfiguration": {
-                        "provisionVmAgent": "true"
-                    }
-                },
-                "hardwareProfile": {
-                    "vmSize": "[parameters('PIAFServerSettings').PIAFVMSize]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[parameters('PIAFServerSettings').publisher]",
-                        "offer": "[parameters('PIAFServerSettings').offer]",
-                        "sku": "[parameters('PIAFServerSettings').sku]",
-                        "version": "[parameters('PIAFServerSettings').version]"
-                    },
-                    "osDisk": {
-                        "createOption": "fromImage",
-                        "managedDisk": {
-                            "storageAccountType":"[parameters('PIAFServerSettings').storageAccountType]"
-                        }
-                    },
-                    "dataDisks": []
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIAFServerSettings').PIAFNic)]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIAFServerSettings').PIAFDiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
-                    }
-                }
-            }
-        },
-        {
             "name": "[parameters('PIAFServerSettings').PIAFDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('PIAFServerSettings').storageApiVersion]",
@@ -121,6 +70,80 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "name": "[parameters('PIAFServerSettings').PIAFVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('PIAFServerSettings').computeApiVersion]",
+            "location": "[parameters('PIAFServerSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIAFServerSettings').PIAFNic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIAFServerSettings').PIAFDiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIAFServerSettings').bastionVMName]",
+                    "adminUsername": "[parameters('PIAFServerSettings').adminUsername]",
+                    "adminPassword": "[parameters('PIAFServerSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIAFServerSettings').PIAFVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIAFServerSettings').publisher]",
+                        "offer": "[parameters('PIAFServerSettings').offer]",
+                        "sku": "[parameters('PIAFServerSettings').sku]",
+                        "version": "[parameters('PIAFServerSettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType":"[parameters('PIAFServerSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIAFServerSettings').PIAFNic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIAFServerSettings').PIAFDiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('PIAFServerSettings').PIAFVMName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[parameters('PIAFServerSettings').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFServerSettings').PIAFVMName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIAFServerSettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIAFServerSettings').scriptFileName,' ',parameters('PIAFServerSettings').domainName,' ',parameters('PIAFServerSettings').Username,' ',parameters('PIAFServerSettings').Password)]"
+                }
             }
         }
     ],
