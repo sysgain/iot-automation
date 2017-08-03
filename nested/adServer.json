@@ -124,7 +124,7 @@
             "resources": [
                 {
                     "type": "extensions",
-                    "name": "[parameters('adServerSettings').adExtensionName]",
+                    "name": "CreateADForest",
                     "apiVersion": "[parameters('adServerSettings').computeApiVersion]",
                     "location": "[parameters('adServerSettings').location]",
                     "dependsOn": [
