@@ -13,6 +13,6 @@ Start-Sleep -s 12
 $piserverconfig = "C:\Program Files (x86)\Default Company Name\SimulatorSetup\PiServerSimulator.exe.config"
 $doc = (Get-Content $piserverconfig) -as [Xml]
 $obj = $doc.configuration.appSettings.add | where {$_.Key -eq 'PiConnectionString'}
-$obj.value = 'Data Source=sqlvm; Initial Catalog=iottestdb; Persist Security Info=True; User ID=sqluser; Password=Sysgain@1234'
+$obj.value = 'Data Source=sqlvm; Initial Catalog=iottestdb; Persist Security Info=True; User ID=sqluser; Password=Password@1234'
 $doc.Save($piserverconfig)
 Start-Process -FilePath " C:\Program Files (x86)\Default Company Name\SimulatorSetup\PiServerSimulator.exe "
