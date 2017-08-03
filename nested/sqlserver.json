@@ -382,7 +382,7 @@
         }
     ],
     "outputs": {
-        "listKeysOutput": {
+        "storageKey": {
             "type": "string",
             "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('sqlserversettings').sqlStorageAccountName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
         },
