@@ -11,7 +11,7 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "adSubnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]"
+        "adSubnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
 
     },  
     "resources": [
@@ -55,7 +55,7 @@
             "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('adServerSettings').adNetworkSecurityGroupName)]"
+                "virtualNetworksResource"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -136,7 +136,7 @@
                         "typeHandlerVersion": "2.19",
                         "autoUpgradeMinorVersion": true,
                         "settings": {
-                            "ModulesUrl": "[concat(parameters('adServerSettings').dscScriptUrl, '/DSC/CreateADPDC.zip')]",
+                            "ModulesUrl": "https://github.com/sysgain/iot-automation/raw/phase2/DSC/CreateADPDC.zip",
                             "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
                             "Properties": {
                                 "DomainName": "[parameters('adServerSettings').domainName]",
