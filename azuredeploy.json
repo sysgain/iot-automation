@@ -203,13 +203,13 @@
         }
     },
     "variables": {
-        "apiVersions":{
+        "apiVersions": {
             "computeApiVersion": "2016-04-30-preview",
             "networkApiVersion": "2016-09-01",
             "storageApiVersion": "2016-01-01",
             "deploymentApiVersion": "2016-02-01",
-            "sqlServerApiVersion":"2015-05-01-preview",
-            "sqlDBApiVersion":"2014-04-01-preview"
+            "sqlServerApiVersion": "2015-05-01-preview",
+            "sqlDBApiVersion": "2014-04-01-preview"
         },
         "networkSettings": {
             "location": "[resourceGroup().location]",
@@ -246,7 +246,12 @@
             "publicIpAddressName": "bastion-pip",
             "networkSecurityGroupName": "bastion-nsg",
             "publicIpAddressType": "Dynamic",
-            "bastionDnsLabelPrefix": "[concat('bastionserver',variables('suffix'))]"
+            "bastionDnsLabelPrefix": "[concat('bastionserver',variables('suffix'))]",
+            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+            "scriptFileName": "psscript.ps1",
+            "domainName": "[parameters('domainName')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]"
         },
         "adServerSettings": {
             "location": "[resourceGroup().location]",
@@ -264,7 +269,7 @@
             "sku": "2016-Datacenter",
             "version": "latest",
             "storageAccountType": "Premium_LRS",
-            "adNetworkSecurityGroupName":"adnsg",
+            "adNetworkSecurityGroupName": "adnsg",
             "adstorageAccountName": "[concat('adstrg',variables('suffix'))]",
             "diskCreateOption": "empty",
             "diskSizeGB": "1023",
@@ -289,8 +294,6 @@
             "vmSize": "Standard_DS1_v2",
             "sqlConnectivityType": "Private",
             "sqlPrivateIPAddress": "10.0.3.4",
-            "SQLimageName": "mySQLCustomImage",
-            "SQLOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempSQLServerVM.vhd",
             "sqlStorageDisksCount": "1",
             "sqlStorageWorkloadType": "GENERAL",
             "sqlAutopatchingDayOfWeek": "Sunday",
@@ -313,8 +316,8 @@
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi"
         },
-         "AzurePaasevi": {
-             "location": "[resourceGroup().location]",
+        "AzurePaasevi": {
+            "location": "[resourceGroup().location]",
             "AzureSqlLogin": "azurelogin",
             "AzureSqlPwd": "Sysgain@1234",
             "collation": "SQL_Latin1_General_CP1_CI_AS",
@@ -394,8 +397,8 @@
         "networkApiVersion": "2016-03-30",
         "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
-        "PIOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempPICoreVM.vhd",
-        "SQLOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempSQLServerVM.vhd",
+        "PIOsDiskVhdUri": "https://iotstorageaccnt.blob.core.windows.net/iot-vhd/TempPICoreVM.vhd",
+        "SQLOsDiskVhdUri": "https://iotstorageaccnt.blob.core.windows.net/iot-vhd/TempSQLServerVM.vhd",
         "SQLstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlvm')]",
         "PIstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'pivm')]",
         "WINstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'winvm')]",
@@ -528,8 +531,8 @@
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
                     },
-                     "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
@@ -541,7 +544,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses/', variables('SQLpublicIPAddressName'))]",
-               "virtualNetworksResource",
+                "virtualNetworksResource",
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('SQLnetworkSecurityGroupName'))]"
             ],
             "properties": {
@@ -571,7 +574,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses/', variables('PIpublicIPAddressName'))]",
-               "virtualNetworksResource",
+                "virtualNetworksResource",
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('PInetworkSecurityGroupName'))]"
             ],
             "properties": {
@@ -601,7 +604,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses/', variables('WINpublicIPAddressName'))]",
-               "virtualNetworksResource",
+                "virtualNetworksResource",
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('WINnetworkSecurityGroupName'))]"
             ],
             "properties": {
@@ -1403,8 +1406,8 @@
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
                     },
-                    "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
@@ -1429,8 +1432,8 @@
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
                     },
-                    "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
@@ -1457,8 +1460,8 @@
                             "[variables('adNicIPAddress')]"
                         ]
                     },
-                    "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
@@ -1469,6 +1472,7 @@
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "virtualNetworksResource",
+                "UpdateVNetDNS",
                 "adServerSetup"
             ],
             "properties": {
@@ -1484,8 +1488,8 @@
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
                     },
-                    "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
@@ -1507,8 +1511,8 @@
                     "AzurePaasevi": {
                         "value": "[variables('AzurePaasevi')]"
                     },
-                    "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
@@ -1519,6 +1523,7 @@
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "virtualNetworksResource",
+                "UpdateVNetDNS",
                 "adServerSetup"
             ],
             "properties": {
@@ -1534,8 +1539,8 @@
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
                     },
-                    "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
@@ -1546,6 +1551,7 @@
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "virtualNetworksResource",
+                "UpdateVNetDNS",
                 "adServerSetup"
             ],
             "properties": {
@@ -1561,14 +1567,58 @@
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
                     },
-                    "apiVersions":{
-                        "value":"[variables('apiVersions')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
         }
     ],
     "outputs": {
+        "adminUsername": {
+            "type": "string",
+            "value": "[parameters('adminUserName')]"
+        },
+        "adminPassword": {
+            "type": "string",
+            "value": "[parameters('adminPassword')]"
+        },
+        "bastionFQDN": {
+            "type": "string",
+            "value": "[reference('bastionHostSetup').outputs.bastionFQDN.value]"
+        },
+        "adServerIP": {
+            "type": "string",
+            "value": "[variables('adServerSettings').adNicIPAddress]"
+        },
+        "sqlServerIP": {
+            "type": "string",
+            "value": "[variables('sqlserversettings').sqlPrivateIPAddress]"
+        },
+        "PIAFServerIP": {
+            "type": "string",
+            "value": "[variables('PIAFServersettings').PIAFPrivateIPAddress]"
+        },
+        "PIDAServerIP": {
+            "type": "string",
+            "value": "[variables('PIDAServersettings').PIDAPrivateIPAddress]"
+        },
+        "sqlServerStoargeKey": {
+            "type": "string",
+            "value": "[reference('sqlServerSetup').outputs.storageKey.value]"
+        },
+        "sqlServerStoargeAccountName": {
+            "type": "string",
+            "value": "[reference('sqlServerSetup').outputs.storageAccountName.value]"
+        },
+        "azureSqlServerName": {
+            "type": "string",
+            "value": "[reference('AzuresqlServerSetup').outputs.azureSqlServerName.value]"
+        },
+        "azureDBName": {
+            "type": "string",
+            "value": "[reference('AzuresqlServerSetup').outputs.azureDBName.value]"
+        },
         "PIhostname": {
             "type": "string",
             "value": "[reference(variables('PIpublicIPAddressName')).dnsSettings.fqdn]"
