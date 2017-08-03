@@ -15,29 +15,6 @@
 
     },  
     "resources": [
-        {
-            "name": "[parameters('adServerSettings').adNetworkSecurityGroupName]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
-            "location": "[parameters('adServerSettings').location]",
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "default-allow-rdp",
-                        "properties": {
-                            "priority": 1000,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "TCP",
-                            "destinationPortRange": "3389",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    }
-                ]
-            }
-        },
          {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('adServerSettings').adstorageAccountName]",
@@ -55,9 +32,7 @@
             "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "dependsOn": [
-            "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('adServerSettings').adNetworkSecurityGroupName)]"
-
-            ],
+                ],
             "properties": {
                 "ipConfigurations": [
                     {
@@ -70,10 +45,7 @@
                             }
                         }
                     }
-                ],
-                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('adServerSettings').adNetworkSecurityGroupName)]"
-                }
+                ]
             }
         },
         {
@@ -106,7 +78,14 @@
                         "managedDisk": {
                             "storageAccountType": "[parameters('adServerSettings').storageAccountType]"
                         }
-                    }
+                    },
+                     "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
                 },
                 "networkProfile": {
                     "networkInterfaces": [
