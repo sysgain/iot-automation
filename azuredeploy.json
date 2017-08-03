@@ -1611,6 +1611,14 @@
             "type": "string",
             "value": "[reference('sqlServerSetup').outputs.storageAccountName.value]"
         },
+        "sqlAuthenticationLogin": {
+            "type": "string",
+            "value": "[variables('sqlserversettings').sqlAuthenticationLogin]"
+        },
+        "sqlAuthenticationPassword": {
+            "type": "string",
+            "value": "[variables('sqlserversettings').sqlAuthenticationPassword]"
+        },
         "azureSqlServerName": {
             "type": "string",
             "value": "[reference('AzuresqlServerSetup').outputs.azureSqlServerName.value]"
