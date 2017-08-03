@@ -7,6 +7,9 @@
         },
         "networkSettings":{
             "type": "object"
+        },
+         "apiVersions":{
+            "type": "object"
         }
     },
     "variables": {
@@ -17,7 +20,7 @@
         {
             "name": "[parameters('bastionHostSettings').bastionVMName]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('bastionHostSettings').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('bastionHostSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionHostSettings').bastionNic)]",
@@ -60,7 +63,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionHostSettings').bastionDiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionHostSettings').bastionDiagStgAcnt)).primaryEndpoints['blob']]"
                     }
                 }
             }
@@ -68,7 +71,7 @@
         {
             "name": "[parameters('bastionHostSettings').bastionDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "[parameters('bastionHostSettings').storageApiVersion]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('bastionHostSettings').location]",
             "properties": {
                 "accountType": "[parameters('bastionHostSettings').diagStorageAccountType]"
@@ -77,7 +80,7 @@
         {
             "name": "[parameters('bastionHostSettings').bastionNic]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[parameters('bastionHostSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('bastionHostSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIpAddresses/', parameters('bastionHostSettings').publicIpAddressName)]",
@@ -106,7 +109,7 @@
         {
             "name": "[parameters('bastionHostSettings').publicIpAddressName]",
             "type": "Microsoft.Network/publicIpAddresses",
-            "apiVersion": "[parameters('bastionHostSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('bastionHostSettings').location]",
             "properties": {
                 "publicIpAllocationMethod": "[parameters('bastionHostSettings').publicIpAddressType]",
@@ -118,7 +121,7 @@
         {
             "name": "[parameters('bastionHostSettings').networkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('bastionHostSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('bastionHostSettings').location]",
             "properties": {
                 "securityRules": [
@@ -150,7 +153,7 @@
         },
          "bastionFQDN": {
             "type": "string",
-            "value": "[reference(parameters('bastionHostSettings').publicIpAddressName).dnsSettings.fqdn]"
+            "value": "[concat(reference(parameters('bastionHostSettings').publicIpAddressName)).dnsSettings.fqdn]"
         }
     }
 }
