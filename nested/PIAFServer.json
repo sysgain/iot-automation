@@ -22,9 +22,11 @@
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('PIAFServerSettings').location]",
-            "properties": {
-                "accountType": "[parameters('PIAFServerSettings').diagStorageAccountType]"
-            }
+             "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
         },
         {
             "name": "[parameters('PIAFServerSettings').PIAFNic]",
