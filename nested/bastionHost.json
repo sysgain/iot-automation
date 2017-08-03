@@ -155,7 +155,7 @@
         },
          "bastionFQDN": {
             "type": "string",
-            "value": "[concat(reference(parameters('bastionHostSettings').publicIpAddressName)).dnsSettings.fqdn]"
+            "value": "[reference(parameters('bastionHostSettings').publicIpAddressName).dnsSettings.fqdn]"
         }
     }
 }
