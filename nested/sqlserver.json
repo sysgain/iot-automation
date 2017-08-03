@@ -174,7 +174,6 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('sqlserversettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/images/', parameters('sqlserversettings').SQLimageName)]",
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('sqlserversettings').networkInterfaceName)]",
                 "[concat('Microsoft.Storage/storageAccounts/', parameters('sqlserversettings').sqlStorageAccountName)]"
             ],
