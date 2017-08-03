@@ -266,7 +266,7 @@
             "computeApiVersion": "2016-04-30-preview",
             "networkApiVersion": "2016-09-01",
             "storageApiVersion": "2016-01-01",
-            "dscScriptUrl": "[variables('baseUrl')]"
+            "dscScriptUrl": "[variables('dscScriptUrl')]"
         },
         "sqlserversettings": {
             "location": "[resourceGroup().location]",
@@ -307,7 +307,7 @@
             "fileUris3": "[concat(variables('baseUrl'),'scripts/mimulatorsetup.ps1')]",
             "sqlQueryUrl": "[concat(variables('baseUrl'),'scripts/SQLQuery2.sql')]",
             "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
-            "databaseName": "testdb",
+            "databaseName": "iottestdb",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi"
         },
@@ -341,7 +341,12 @@
             "PIAFVMSize": "Standard_DS1_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "PIAFPrivateIPAddress": "10.0.4.4"
+            "PIAFPrivateIPAddress": "10.0.4.4",
+            "scriptFileName": "psscript.ps1",
+            "domainName": "[parameters('domainName')]",
+            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]"
         },
         "PIDAServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
@@ -361,7 +366,12 @@
             "PIDAVMSize": "Standard_DS1_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "PIDAPrivateIPAddress": "10.0.5.4"
+            "PIDAPrivateIPAddress": "10.0.5.4",
+            "scriptFileName": "psscript.ps1",
+            "domainName": "[parameters('domainName')]",
+            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]"
         },
         "storageAccountType": "Premium_LRS",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/phase2/",
