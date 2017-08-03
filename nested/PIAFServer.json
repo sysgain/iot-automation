@@ -7,6 +7,9 @@
         },
         "networkSettings":{
             "type": "object"
+        },
+         "apiVersions":{
+            "type": "object"
         }
     },
     "variables": {
@@ -17,7 +20,7 @@
         {
             "name": "[parameters('PIAFServerSettings').PIAFDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "[parameters('PIAFServerSettings').storageApiVersion]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('PIAFServerSettings').location]",
             "properties": {
                 "accountType": "[parameters('PIAFServerSettings').diagStorageAccountType]"
@@ -26,7 +29,7 @@
         {
             "name": "[parameters('PIAFServerSettings').PIAFNic]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[parameters('PIAFServerSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('PIAFServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName)]"
@@ -52,7 +55,7 @@
         {
             "name": "[parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('PIAFServerSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('PIAFServerSettings').location]",
             "properties": {
                 "securityRules": [
@@ -75,7 +78,7 @@
         {
             "name": "[parameters('PIAFServerSettings').PIAFVMName]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('PIAFServerSettings').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('PIAFServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('PIAFServerSettings').PIAFNic)]",
@@ -118,7 +121,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIAFServerSettings').PIAFDiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIAFServerSettings').PIAFDiagStgAcnt)).primaryEndpoints['blob']]"
                     }
                 }
             }
@@ -127,7 +130,7 @@
             "name": "[concat(parameters('PIAFServerSettings').PIAFVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
-            "apiVersion": "[parameters('PIAFServerSettings').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFServerSettings').PIAFVMName)]"
             ],
