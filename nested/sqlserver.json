@@ -8,13 +8,13 @@
         "networkSettings": {
             "type": "object"
         },
-         "apiVersions":{
+        "apiVersions": {
             "type": "object"
         }
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks',parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/',parameters('networkSettings').subnet3Name)]"
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/',parameters('networkSettings').subnet4Name)]"
     },
     "resources": [
         {
@@ -27,22 +27,6 @@
             },
             "kind": "Storage",
             "properties": {}
-        },
-        {
-            "type": "Microsoft.Compute/images",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "name": "[parameters('sqlserversettings').SQLimageName]",
-            "location": "[parameters('sqlserversettings').location]",
-            "properties": {
-                "storageProfile": {
-                    "osDisk": {
-                        "osType": "Windows",
-                        "osState": "Generalized",
-                        "blobUri": "[parameters('sqlserversettings').SQLOsDiskVhdUri]",
-                        "storageAccountType": "Standard_LRS"
-                    }
-                }
-            }
         },
         {
             "name": "[parameters('sqlserversettings').networkSecurityGroupName]",
@@ -158,7 +142,7 @@
                 ]
             }
         },
-          {
+        {
             "name": "[parameters('sqlserversettings').networkInterfaceName]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -208,7 +192,10 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "id": "[resourceId('Microsoft.Compute/images', parameters('sqlserversettings').SQLimageName)]"
+                        "publisher": "[parameters('sqlserversettings').publisher]",
+                        "offer": "[parameters('sqlserversettings').offer]",
+                        "sku": "[parameters('sqlserversettings').sku]",
+                        "version": "[parameters('sqlserversettings').version]"
                     },
                     "osDisk": {
                         "createOption": "fromImage",
@@ -315,12 +302,12 @@
                 }
             }
         },
-         {
+        {
             "type": "Microsoft.Resources/deployments",
             "name": "sqlDbSetup",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                 "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/CustomScriptExtension')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -332,25 +319,25 @@
                     "sqlservername": {
                         "value": "[parameters('sqlserversettings').sqlservername]"
                     },
-                    "computeApiVersion":{
-                        "value": "[parameters('sqlserversettings').computeApiVersion]"
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
                     },
-                    "location":{
+                    "location": {
                         "value": "[parameters('sqlserversettings').location]"
                     },
-                     "fileUris2":{
+                    "fileUris2": {
                         "value": "[parameters('sqlserversettings').fileUris2]"
                     },
-                    "scriptFileName2":{
+                    "scriptFileName2": {
                         "value": "[parameters('sqlserversettings').scriptFileName2]"
                     },
-                    "sqlQueryUrl":{
+                    "sqlQueryUrl": {
                         "value": "[parameters('sqlserversettings').sqlQueryUrl]"
                     },
-                    "sqlAuthenticationLogin":{
+                    "sqlAuthenticationLogin": {
                         "value": "[parameters('sqlserversettings').sqlAuthenticationLogin]"
                     },
-                    "sqlAuthenticationPassword":{
+                    "sqlAuthenticationPassword": {
                         "value": "[parameters('sqlserversettings').sqlAuthenticationPassword]"
                     }
                 }
@@ -373,22 +360,22 @@
                     "sqlservername": {
                         "value": "[parameters('sqlserversettings').sqlservername]"
                     },
-                    "computeApiVersion":{
-                        "value": "[parameters('sqlserversettings').computeApiVersion]"
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
                     },
-                    "location":{
+                    "location": {
                         "value": "[parameters('sqlserversettings').location]"
                     },
-                     "fileUris3":{
+                    "fileUris3": {
                         "value": "[parameters('sqlserversettings').fileUris3]"
                     },
-                    "scriptFileName3":{
+                    "scriptFileName3": {
                         "value": "[parameters('sqlserversettings').scriptFileName3]"
                     },
-                    "simulatorUrl":{
+                    "simulatorUrl": {
                         "value": "[parameters('sqlserversettings').simulatorUrl]"
                     },
-                    "dataserviceUrl":{
+                    "dataserviceUrl": {
                         "value": "[parameters('sqlserversettings').dataserviceUrl]"
                     }
                 }
