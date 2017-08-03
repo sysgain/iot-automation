@@ -4,6 +4,9 @@
     "parameters": {
         "networkSettings": {
             "type": "object"
+        },
+        "apiVersions": {
+            "type": "object"
         }
     },
     "variables": {},
@@ -11,7 +14,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('networkSettings').virtualNetworkName]",
-            "apiVersion": "[parameters('networkSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('networkSettings').location]",
             "properties": {
                 "addressSpace": {
