@@ -1388,32 +1388,6 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "bastionHostSetup",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [
-                "virtualNetworksResource"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/bastionHost.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "bastionHostSettings": {
-                        "value": "[variables('bastionHostSettings')]"
-                    },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
-                    },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
             "name": "adServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
@@ -1459,6 +1433,34 @@
                         "value": [
                             "[variables('adNicIPAddress')]"
                         ]
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "bastionHostSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource",
+                "UpdateVNetDNS",
+                "adServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/bastionHost.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "bastionHostSettings": {
+                        "value": "[variables('bastionHostSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
