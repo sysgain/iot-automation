@@ -11,7 +11,7 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet1Name)]"
     },
     "resources": [
         {
@@ -147,6 +147,10 @@
          "adminPassword": {
             "type": "string",
             "value": "[parameters('bastionHostSettings').adminPassword]"
+        },
+         "bastionFQDN": {
+            "type": "string",
+            "value": "[reference(parameters('bastionHostSettings').publicIpAddressName).dnsSettings.fqdn]"
         }
     }
 }
