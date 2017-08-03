@@ -73,9 +73,11 @@
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('PIDAServersettings').location]",
-            "properties": {
-                "accountType": "[parameters('PIDAServersettings').diagStorageAccountType]"
-            }
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
         },
         {
             "name": "[parameters('PIDAServersettings').PIDANic]",
