@@ -15,57 +15,6 @@
     },
     "resources": [
         {
-            "name": "[parameters('PIDAServersettings').PIDAVMName]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('PIDAServersettings').computeApiVersion]",
-            "location": "[parameters('PIDAServersettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIDAServersettings').PIDANic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIDAServersettings').PIDADiagStgAcnt)]"
-            ],
-            "properties": {
-                "osProfile": {
-                    "computerName": "[parameters('PIDAServersettings').PIDAVMName]",
-                    "adminUsername": "[parameters('PIDAServersettings').adminUsername]",
-                    "adminPassword": "[parameters('PIDAServersettings').adminPassword]",
-                    "windowsConfiguration": {
-                        "provisionVmAgent": "true"
-                    }
-                },
-                "hardwareProfile": {
-                    "vmSize": "[parameters('PIDAServersettings').PIDAVMSize]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[parameters('PIDAServersettings').publisher]",
-                        "offer": "[parameters('PIDAServersettings').offer]",
-                        "sku": "[parameters('PIDAServersettings').sku]",
-                        "version": "[parameters('PIDAServersettings').version]"
-                    },
-                    "osDisk": {
-                        "createOption": "fromImage",
-                        "managedDisk": {
-                            "storageAccountType":"[parameters('PIDAServersettings').storageAccountType]"
-                        }
-                    },
-                    "dataDisks": []
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIDAServersettings').PIDANic)]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIDAServersettings').PIDADiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
-                    }
-                }
-            }
-        },
-        {
             "name": "[parameters('PIDAServersettings').PIDADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('PIDAServersettings').storageApiVersion]",
@@ -121,6 +70,80 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDAVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('PIDAServersettings').computeApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIDAServersettings').PIDANic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIDAServersettings').PIDADiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIDAServersettings').PIDAVMName]",
+                    "adminUsername": "[parameters('PIDAServersettings').adminUsername]",
+                    "adminPassword": "[parameters('PIDAServersettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIDAServersettings').PIDAVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIDAServersettings').publisher]",
+                        "offer": "[parameters('PIDAServersettings').offer]",
+                        "sku": "[parameters('PIDAServersettings').sku]",
+                        "version": "[parameters('PIDAServersettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType":"[parameters('PIDAServersettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIDAServersettings').PIDANic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIDAServersettings').PIDADiagStgAcnt), '2015-06-15').primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('PIDAServersettings').PIDAVMName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[parameters('PIDAServersettings').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIDAServersettings').PIDAVMName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIDAServersettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIDAServersettings').scriptFileName,' ',parameters('PIDAServersettings').domainName,' ',parameters('PIDAServersettings').Username,' ',parameters('PIDAServersettings').Password)]"
+                }
             }
         }
     ],
