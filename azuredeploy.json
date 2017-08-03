@@ -318,8 +318,8 @@
         },
         "AzurePaasevi": {
             "location": "[resourceGroup().location]",
-            "AzureSqlLogin": "azurelogin",
-            "AzureSqlPwd": "Sysgain@1234",
+            "AzureSqlLogin": "sqluser",
+            "AzureSqlPwd": "Password@1234",
             "collation": "SQL_Latin1_General_CP1_CI_AS",
             "databaseName": "dbtest",
             "edition": "Standard",
