@@ -1,0 +1,1579 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "adminuser",
+            "metadata": {
+                "description": "Username for all the Virtual Machines."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "Password@1234",
+            "metadata": {
+                "description": "Password for all the Virtual Machines."
+            }
+        },
+        "domainName": {
+            "type": "string",
+            "defaultValue": "iotphase2.com",
+            "metadata": {
+                "description": "The FQDN of the Active Directory Domain to be created on VM"
+            }
+        },
+        "sqlAdministratorLogin": {
+            "type": "string",
+            "defaultValue": "sqluser",
+            "metadata": {
+                "description": "The admin user of the Azure SQL Server"
+            }
+        },
+        "sqlAdministratorLoginPassword": {
+            "type": "securestring",
+            "defaultValue": "Password@1234",
+            "metadata": {
+                "description": "The password of the admin user of the Azure SQL Server"
+            }
+        },
+        "sqldatabasename": {
+            "type": "string",
+            "defaultValue": "sqldatabase",
+            "metadata": {
+                "description": "The name of Azure SQL database"
+            }
+        },
+        "skuName": {
+            "type": "string",
+            "defaultValue": "S1",
+            "allowedValues": [
+                "D1",
+                "B1",
+                "B2",
+                "B3",
+                "S1",
+                "S2",
+                "S3",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+            ],
+            "metadata": {
+                "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+            }
+        },
+        "skuCapacity": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "metadata": {
+                "description": "Describes plan's instance count"
+            }
+        },
+        "hostingPlanName": {
+            "type": "string",
+            "defaultValue": "AppServPlan",
+            "metadata": {
+                "description": "Describes Hosting plan's name"
+            }
+        },
+        "webSiteName": {
+            "type": "string",
+            "defaultValue": "phase2iotappsri",
+            "metadata": {
+                "description": "Describes webSite name which should be unique"
+            }
+        },
+        "apiServerName": {
+            "type": "string",
+            "defaultValue": "apiserverapi142",
+            "metadata": {
+                "description": "Describes API Server name which should be unique"
+            }
+        },
+        "emailHost": {
+            "type": "string",
+            "defaultValue": "ermhost",
+            "metadata": {
+                "description": "Describes the host name for sending email notifications"
+            }
+        },
+        "emailHostPort": {
+            "type": "string",
+            "defaultValue": "25",
+            "metadata": {
+                "description": "Describes the port number for email host"
+            }
+        },
+        "senderEmail": {
+            "type": "string",
+            "defaultValue": "ermhost@ermdeploy.com",
+            "metadata": {
+                "description": "Describes the email ID of the sender for email notifications"
+            }
+        },
+        "senderEmailPassword": {
+            "type": "string",
+            "defaultValue": "Password@1234",
+            "metadata": {
+                "descrition": "Describes the password for sender email ID for email notifications"
+            }
+        },
+        "b2cTenant": {
+            "type": "string",
+            "defaultValue": "testiot22.onmicrosoft.com",
+            "metadata": {
+                "description": "Describes B2C Tenant Name Directory"
+            }
+        },
+        "b2cClientId": {
+            "type": "string",
+            "defaultValue": "c24ebcd7-4d44-4540-93c7-e2713701b903",
+            "metadata": {
+                "description": "Describes the client Id of the application registered in B2C Directory"
+            }
+        },
+        "b2cClientSecret": {
+            "type": "string",
+            "defaultValue": "K$=B)o,92AxFOH2]",
+            "metadata": {
+                "description": "Describes the Client secret of the application registered in B2C Directory"
+            }
+        },
+        "b2cSignUpPolicyId": {
+            "type": "string",
+            "defaultValue": "B2C_1_suppolicy2",
+            "metadata": {
+                "description": "Describes the B2C Sign Up policy"
+            }
+        },
+        "b2cSignInPolicyId": {
+            "type": "string",
+            "defaultValue": "B2C_1_sinpolicy2",
+            "metadata": {
+                "description": "Describes the B2C Sign in policy"
+            }
+        },
+        "b2cEditProfilePolicyId": {
+            "type": "string",
+            "defaultValue": "B2C_1_peditpolicy2",
+            "metadata": {
+                "description": "Describes the B2C Profile Editing policy"
+            }
+        },
+        "b2cChangePasswordPolicy": {
+            "type": "string",
+            "defaultValue": "B2C_1_cpasspolicy",
+            "metadata": {
+                "description": "Describes the B2C Change Password policy"
+            }
+        },
+        "webjobStorageType": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_ZRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Premium_LRS"
+            ]
+        },
+        "workspaceName": {
+            "type": "string",
+            "defaultValue": "workspace12",
+            "maxLength": 17,
+            "metadata": {
+                "description": "Name of the Workspace to be created"
+            }
+        },
+        "MLskuName": {
+            "type": "string",
+            "defaultValue": "S1",
+            "allowedValues": [
+                "S1",
+                "S2",
+                "S3"
+            ],
+            "metadata": {
+                "description": "Pricing tier for Workspace"
+            }
+        }
+    },
+    "variables": {
+        "networkSettings": {
+            "location": "[resourceGroup().location]",
+            "networkApiVersion": "2016-03-30",
+            "virtualNetworkName": "MyVNET",
+            "addressPrefix": "10.0.0.0/16",
+            "subnet1Name": "subnet1",
+            "subnet1Prefix": "10.0.0.0/24",
+            "subnet2Name": "subnet2",
+            "subnet2Prefix": "10.0.1.0/24",
+            "subnet3Name": "subnet3",
+            "subnet3Prefix": "10.0.2.0/24",
+            "subnet4Name": "subnet4",
+            "subnet4Prefix": "10.0.3.0/24",
+            "subnet5Name": "subnet5",
+            "subnet5Prefix": "10.0.4.0/24",
+            "subnet6Name": "subnet6",
+            "subnet6Prefix": "10.0.5.0/24"
+        },
+        "bastionHostSettings": {
+            "location": "[resourceGroup().location]",
+            "bastionVMName": "bastionServer",
+            "computeApiVersion": "2016-04-30-preview",
+            "networkApiVersion": "2016-09-01",
+            "storageApiVersion": "2015-06-15",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "bastionNic": "bastion-nic",
+            "bastionDiagStgAcnt": "[concat('bastionstrg',variables('suffix'))]",
+            "bastionVMSize": "Standard_DS1_v2",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest",
+            "storageAccountType": "[variables('storageAccountType')]",
+            "diagStorageAccountType": "Standard_LRS",
+            "publicIpAddressName": "bastion-pip",
+            "networkSecurityGroupName": "bastion-nsg",
+            "publicIpAddressType": "Dynamic",
+            "bastionDnsLabelPrefix": "[concat('bastionserver',variables('suffix'))]"
+        },
+        "adServerSettings": {
+            "location": "[resourceGroup().location]",
+            "adNicName": "adNic",
+            "adNicIPAddress": "10.0.2.4",
+            "adVMName": "adVM",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]",
+            "adExtensionName": "CreateADForest",
+            "scriptFileName": "psscript.ps1",
+            "dnsPrefix": "[concat('adserver',variables('suffix'))]",
+            "domainName": "[parameters('domainName')]",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2016-Datacenter",
+            "version": "latest",
+            "storageAccountType": "Premium_LRS",
+            "adNetworkSecurityGroupName":"adnsg",
+            "adstorageAccountName": "[concat('adstrg',variables('suffix'))]",
+            "diskCreateOption": "empty",
+            "diskSizeGB": "1023",
+            "computeApiVersion": "2016-04-30-preview",
+            "networkApiVersion": "2016-09-01",
+            "storageApiVersion": "2016-01-01",
+            "dscScriptUrl": "[variables('baseUrl')]"
+        },
+        "sqlserversettings": {
+            "location": "[resourceGroup().location]",
+            "storageApiVersion": "2016-01-01",
+            "computeApiVersion": "2016-04-30-preview",
+            "networkApiVersion": "2016-09-01",
+            "deploymentApiVersion": "2016-02-01",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "networkInterfaceName": "sqlNic",
+            "networkSecurityGroupName": "sqlNsg",
+            "publicIpAddressName": "sqlpip",
+            "sqlAuthenticationLogin": "[parameters('sqlAdministratorLogin')]",
+            "sqlAuthenticationPassword": "[parameters('sqlAdministratorLoginPassword')]",
+            "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlvm')]",
+            "sqlservername": "sqlvm",
+            "storageAccountType": "Premium_LRS",
+            "vmSize": "Standard_DS1_v2",
+            "sqlConnectivityType": "Private",
+            "sqlPrivateIPAddress": "10.0.3.4",
+            "SQLimageName": "mySQLCustomImage",
+            "SQLOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempSQLServerVM.vhd",
+            "sqlStorageDisksCount": "1",
+            "sqlStorageWorkloadType": "GENERAL",
+            "sqlAutopatchingDayOfWeek": "Sunday",
+            "sqlAutopatchingStartHour": "2",
+            "sqlAutopatchingWindowDuration": "60",
+            "sqlStorageDeploymentToken": "456",
+            "scriptFileName": "psscript.ps1",
+            "scriptFileName2": "defaultdb.ps1",
+            "scriptFileName3": "simulatorsetup.ps1",
+            "domainName": "[parameters('domainName')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]",
+            "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/phase2/",
+            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+            "fileUris2": "[concat(variables('baseUrl'),'scripts/defaultdb.ps1')]",
+            "fileUris3": "[concat(variables('baseUrl'),'scripts/mimulatorsetup.ps1')]",
+            "sqlQueryUrl": "[concat(variables('baseUrl'),'scripts/SQLQuery2.sql')]",
+            "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
+            "databaseName": "testdb",
+            "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
+            "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi"
+        },
+         "AzurePaasevi": {
+            "AzureSqlLogin": "azurelogin",
+            "AzureSqlPwd": "Sysgain@1234",
+            "collation": "SQL_Latin1_General_CP1_CI_AS",
+            "databaseName": "dbtest",
+            "edition": "Standard",
+            "requestedServiceObjectiveName": "S2",
+            "maxSizeBytes": "268435456000",
+            "serverName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
+            "storageKeyType": "SharedAccessKey",
+            "storageKey": "?"
+        },
+        "PIAFServersettings": {
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "location": "[resourceGroup().location]",
+            "storageApiVersion": "2015-06-15",
+            "computeApiVersion": "2016-04-30-preview",
+            "networkApiVersion": "2016-09-01",
+            "PIAFVMName": "PIAFVMServer",
+            "PIAFNic": "PIAFVMNic",
+            "PIAFNetworkSecurityGroupName": "PIAFNsg",
+            "PIAFDiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'piafvm')]",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest",
+            "PIAFVMSize": "Standard_DS1_v2",
+            "storageAccountType": "[variables('storageAccountType')]",
+            "diagStorageAccountType": "Standard_LRS",
+            "PIAFPrivateIPAddress": "10.0.4.4"
+        },
+        "PIDAServersettings": {
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "location": "[resourceGroup().location]",
+            "storageApiVersion": "2015-06-15",
+            "computeApiVersion": "2016-04-30-preview",
+            "networkApiVersion": "2016-09-01",
+            "PIDAVMName": "PIDAVMServer",
+            "PIDANic": "PIDAVMNic",
+            "PIDANetworkSecurityGroupName": "PIDANsg",
+            "PIDADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest",
+            "PIDAVMSize": "Standard_DS1_v2",
+            "storageAccountType": "[variables('storageAccountType')]",
+            "diagStorageAccountType": "Standard_LRS",
+            "PIDAPrivateIPAddress": "10.0.5.4"
+        },
+        "storageAccountType": "Premium_LRS",
+        "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/phase2/",
+        "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/phase2",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('networkSettings').virtualNetworkName)]",
+        "adsubnetRef": "[concat(variables('vnetID'),'/subnets/',variables('networkSettings').subnet2Name)]",
+        "virtualNetworksResourcesURL": "[concat(variables('baseUrl'),'nested/virtualNetwork.json')]",
+        "adNicName": "adNic",
+        "adNicIPAddress": "10.0.2.4",
+        "adVMName": "adVM",
+        "publicIPAddressName": "adPublicIP",
+        "adAvailabilitySetName": "adAvailabiltySet",
+        "adLBName": "adLoadBalancer",
+        "scriptFileName": "psscript.ps1",
+        "prefix": "[uniqueString(resourceGroup().id)]",
+        "dnsPrefix": "[concat('dns',substring(variables('prefix') ,0 ,5))]",
+        "domainName": "iottests.com",
+        "managedDiskName": "datadisk",
+        "count": 2,
+        "diskCreateOption": "empty",
+        "diskSizeGB": "1023",
+        "computeApiVersion": "2016-04-30-preview",
+        "networkApiVersion": "2016-03-30",
+        "deploymentApiVersion": "2016-02-01",
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
+        "PIOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempPICoreVM.vhd",
+        "SQLOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempSQLServerVM.vhd",
+        "SQLstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlvm')]",
+        "PIstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'pivm')]",
+        "WINstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'winvm')]",
+        "SQLDnsLabelPrefix": "[concat('sqlserver',variables('suffix'))]",
+        "PIDnsLabelPrefix": "[concat('piserver',variables('suffix'))]",
+        "WINDnsLabelPrefix": "[concat('winserver',variables('suffix'))]",
+        "SQLnicName": "SQLVMNic",
+        "PInicName": "PIVMNic",
+        "WINnicName": "WINVMNic",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetName": "Subnet",
+        "subnetPrefix": "10.0.0.0/24",
+        "SQLpublicIPAddressName": "SQLPublicIP",
+        "PIpublicIPAddressName": "PIPublicIP",
+        "WINpublicIPAddressName": "WINPublicIP",
+        "SQLvmName": "TempSQLServerVM",
+        "PIvmName": "TempPICoreVM",
+        "WINvmName": "TempWinServerVM",
+        "virtualNetworkName": "MyVNET",
+        "SQLnetworkSecurityGroupName": "SQLNSG",
+        "PInetworkSecurityGroupName": "PINSG",
+        "WINnetworkSecurityGroupName": "WINNSG",
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('networkSettings').virtualNetworkName, variables('networkSettings').subnet1Name)]",
+        "PIwindowsOSVersion": "2016-Datacenter",
+        "WINwindowsOSVersion": "2016-Datacenter",
+        "PIimageName": "myPICustomImage",
+        "SQLimageName": "mySQLCustomImage",
+        "ADResourcesURL": "https://emdeployment.blob.core.windows.net/releasemtr/CreateADPDC.zip",
+        "rServicesEnabled": "false",
+        "sqlAutopatchingDayOfWeek": "Sunday",
+        "sqlAutopatchingStartHour": "2",
+        "sqlAutopatchingWindowDuration": "60",
+        "sqlConnectivityType": "Public",
+        "sqlPortNumber": "1433",
+        "sqlStorageWorkloadType": "GENERAL",
+        "sqlStorageDisksCount": "1",
+        "sqlStorageStartingDeviceId": "2",
+        "sqlStorageDisksConfigurationType": "NEW",
+        "DeployStorageAccountName": "releasemtr",
+        "DeployStorageAccountKey": "",
+        "WebAppDeployPackageURI": "https://emdeployment.blob.core.windows.net/releasemtr/CSUWebApp.zip",
+        "RestServerDeployPackageURI": "https://emdeployment.blob.core.windows.net/releasemtr/RestService.zip",
+        "SasToken": "?",
+        "jobCollectionName": "[concat('myjob', uniqueString(resourceGroup().id))]",
+        "webjobStorageName": "[concat('webjobstr', uniqueString(resourceGroup().id))]",
+        "MLStorageName": "[concat('mlstr', uniqueString(resourceGroup().id))]",
+        "sqlserverName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
+        "storageKeyType": "SharedAccessKey",
+        "storageKey": "?",
+        "bacpacUri": "https://emdeployment.blob.core.windows.net/releasemtr/EnergyManagement.bacpac",
+        "databaseConnString": "[concat('data source=',variables('sqlserverName'),'.database.windows.net;initial catalog=',parameters('sqldatabasename'),';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'))]",
+        "b2cAadInstance": "https://login.microsoftonline.com/{0}/v2.0/.well-known/openid-configuration?p={1}",
+        "WebAppPackageURI": "[concat(variables('WebAppDeployPackageURI'), variables('SasToken'))]",
+        "RESTServerPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
+        "BlobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('DeployStorageAccountName'),';AccountKey=',variables('DeployStorageAccountKey'))]",
+        "websiteFullAddress": "[concat('https://',parameters('webSiteName'),'.azurewebsites.net/')]",
+        "notificationIcon": "./csu/Assets/logo.png",
+        "anomalyThreshold": "0.6",
+        "meterKWHCost": "0.04",
+        "notificationClickAction": "[variables('websiteFullAddress')]",
+        "PowerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('sqlserverName'),'.database.windows.net;initial catalog=',parameters('sqldatabasename'),';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('SQLstorageAccountName')]",
+            "apiVersion": "2016-01-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('PIstorageAccountName')]",
+            "apiVersion": "2016-01-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('WINstorageAccountName')]",
+            "apiVersion": "2016-01-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('SQLpublicIPAddressName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('SQLDnsLabelPrefix')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('PIpublicIPAddressName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('PIDnsLabelPrefix')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('WINpublicIPAddressName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('WINDnsLabelPrefix')]"
+                }
+            }
+        },
+        {
+            "name": "virtualNetworksResource",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/virtualNetwork.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('SQLnicName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('SQLpublicIPAddressName'))]",
+               "virtualNetworksResource",
+                "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('SQLnetworkSecurityGroupName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('SQLpublicIPAddressName'))]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('SQLnetworkSecurityGroupName'))]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('PInicName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('PIpublicIPAddressName'))]",
+               "virtualNetworksResource",
+                "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('PInetworkSecurityGroupName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('PIpublicIPAddressName'))]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('PInetworkSecurityGroupName'))]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('WINnicName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses/', variables('WINpublicIPAddressName'))]",
+               "virtualNetworksResource",
+                "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('WINnetworkSecurityGroupName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('WINpublicIPAddressName'))]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('WINnetworkSecurityGroupName'))]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "name": "[variables('SQLnetworkSecurityGroupName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "default-allow-sql",
+                        "properties": {
+                            "priority": 1500,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "1433",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIData",
+                        "properties": {
+                            "priority": 1600,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5450",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "SQLAnalysis2383",
+                        "properties": {
+                            "priority": 2000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "2383",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "SQLAnalysis2382",
+                        "properties": {
+                            "priority": 2100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "2382",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "HTTP",
+                        "properties": {
+                            "priority": 100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "80",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "HTTPS",
+                        "properties": {
+                            "priority": 200,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIUFLConnector",
+                        "properties": {
+                            "priority": 2200,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5460",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('PInetworkSecurityGroupName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2016-09-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('WINnetworkSecurityGroupName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2016-09-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Compute/images",
+            "apiVersion": "2016-04-30-preview",
+            "name": "[variables('PIimageName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "storageProfile": {
+                    "osDisk": {
+                        "osType": "Windows",
+                        "osState": "Generalized",
+                        "blobUri": "[variables('PIOsDiskVhdUri')]",
+                        "storageAccountType": "Standard_LRS"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-04-30-preview",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('PIvmName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/', variables('PIstorageAccountName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('PInicName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "osProfile": {
+                    "computerName": "[variables('PIvmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "id": "[resourceId('Microsoft.Compute/images', variables('PIimageName'))]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('PInicName'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('PIstorageAccountName'))).primaryEndpoints.blob]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-04-30-preview",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('WINvmName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/', variables('WINstorageAccountName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('WINnicName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "osProfile": {
+                    "computerName": "[variables('WINvmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "[variables('WINwindowsOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('WINnicName'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('WINstorageAccountName'))).primaryEndpoints.blob]"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "type": "extensions",
+                    "name": "CreateADForest",
+                    "apiVersion": "2015-06-15",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachines', variables('WINvmName'))]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Powershell",
+                        "type": "DSC",
+                        "typeHandlerVersion": "2.19",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "ModulesUrl": "[variables('ADResourcesURL')]",
+                            "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
+                            "Properties": {
+                                "DomainName": "[parameters('domainName')]",
+                                "AdminCreds": {
+                                    "UserName": "[parameters('adminUsername')]",
+                                    "Password": "PrivateSettingsRef:AdminPassword"
+                                }
+                            }
+                        },
+                        "protectedSettings": {
+                            "Items": {
+                                "AdminPassword": "[parameters('adminPassword')]"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/images",
+            "apiVersion": "2016-04-30-preview",
+            "name": "[variables('SQLimageName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "storageProfile": {
+                    "osDisk": {
+                        "osType": "Windows",
+                        "osState": "Generalized",
+                        "blobUri": "[variables('SQLOsDiskVhdUri')]",
+                        "storageAccountType": "Standard_LRS"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[variables('SQLvmName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2016-04-30-preview",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/', variables('SQLstorageAccountName'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('SQLnicName'))]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[variables('SQLvmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "id": "[resourceId('Microsoft.Compute/images', variables('SQLimageName'))]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('SQLnicName'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', variables('SQLstorageAccountName'))).primaryEndpoints.blob]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "name": "[variables('sqlserverName')]",
+            "tags": {
+                "displayName": "SqlServer"
+            },
+            "properties": {
+                "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+                "administratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "name": "[parameters('sqldatabasename')]",
+                    "type": "databases",
+                    "location": "[resourceGroup().location]",
+                    "tags": {
+                        "displayName": "Database"
+                    },
+                    "apiVersion": "2015-01-01",
+                    "dependsOn": [
+                        "[variables('sqlserverName')]"
+                    ],
+                    "properties": {
+                        "edition": "Standard",
+                        "collation": "SQL_Latin1_General_CP1_CI_AS",
+                        "maxSizeBytes": "268435456000",
+                        "requestedServiceObjectiveName": "S2"
+                    },
+                    "resources": [
+                        {
+                            "name": "myImport",
+                            "type": "extensions",
+                            "apiVersion": "2014-04-01-preview",
+                            "dependsOn": [
+                                "[variables('sqlserverName')]",
+                                "[parameters('sqldatabasename')]"
+                            ],
+                            "tags": {
+                                "displayName": "myImport"
+                            },
+                            "properties": {
+                                "storageKeyType": "[variables('storageKeyType')]",
+                                "storageKey": "[variables('storageKey')]",
+                                "storageUri": "[variables('bacpacUri')]",
+                                "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+                                "administratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]",
+                                "operationMode": "Import"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "firewallrules",
+                    "apiVersion": "2014-04-01",
+                    "dependsOn": [
+                        "[variables('sqlserverName')]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2016-03-01",
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "HostingPlan"
+            },
+            "sku": {
+                "name": "[parameters('skuName')]",
+                "capacity": "[parameters('skuCapacity')]"
+            },
+            "properties": {
+                "name": "[parameters('hostingPlanName')]"
+            }
+        },
+        {
+            "apiVersion": "2016-03-01",
+            "name": "[parameters('webSiteName')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[parameters('hostingPlanName')]"
+            ],
+            "tags": {
+                "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName')))]": "empty",
+                "displayName": "Website"
+            },
+            "properties": {
+                "name": "[parameters('webSiteName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "config",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteName'), '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppConfig"
+                    },
+                    "properties": {
+                        "phpVersion": "5.6",
+                        "netFrameworkVersion": "v4.6",
+                        "use32BitWorkerProcess": false,
+                        "webSocketsEnabled": true,
+                        "alwaysOn": true,
+                        "remoteDebuggingEnabled": true,
+                        "remoteDebuggingVersion": "VS2015"
+                    }
+                },
+                {
+                    "name": "MSDeploy",
+                    "type": "extensions",
+                    "location": "[resourceGroup().location]",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]",
+                        "[concat('Microsoft.Storage/storageAccounts/', variables('webjobStorageName'))]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppMSDeploy"
+                    },
+                    "properties": {
+                        "packageUri": "[variables('WebAppPackageURI')]"
+                    }
+                },
+                {
+                    "name": "connectionstrings",
+                    "type": "config",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteName'), '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppConnectionStrings"
+                    },
+                    "properties": {
+                        "BlobConnection": {
+                            "value": "[variables('BlobconnectionString')]",
+                            "type": "Custom"
+                        }
+                    }
+                },
+                {
+                    "name": "appsettings",
+                    "type": "config",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('webSiteName'))]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteName'), '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "websiteAppSettings"
+                    },
+                    "properties": {
+                        "restServer": "[concat('https://', parameters('apiServerName'),'.azurewebsites.net/')]",
+                        "b2cApplicationId": "[parameters('b2cClientId')]",
+                        "signInPolicyName": "[parameters('b2cSignInPolicyId')]",
+                        "signInSignUpPolicyName": "[parameters('b2cSignUpPolicyId')]",
+                        "editProfilePolicyName": "[parameters('b2cEditProfilePolicyId')]",
+                        "tenantName": "[parameters('b2cTenant')]",
+                        "redirect_uri": "[concat(variables('websiteFullAddress'),'#/dashboard')]"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2014-08-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/Sites', parameters('apiServerName'))]"
+            ],
+            "location": "[resourceGroup().location]",
+            "name": "[variables('jobCollectionName')]",
+            "properties": {
+                "sku": {
+                    "name": "Standard"
+                },
+                "quota": {
+                    "maxJobCount": "10",
+                    "maxRecurrence": {
+                        "Frequency": "minute",
+                        "interval": "1"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2014-08-01-preview",
+                    "name": "DataUtilWebJob",
+                    "type": "jobs",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Scheduler/jobCollections', variables('jobCollectionName'))]"
+                    ],
+                    "properties": {
+                        "startTime": "2015-02-10T00:08:00Z",
+                        "action": {
+                            "request": {
+                                "uri": "[concat(list(resourceId('Microsoft.Web/sites/config', parameters('apiServerName'), 'publishingcredentials'), '2014-06-01').properties.scmUri, '')]",
+                                "method": "GET"
+                            },
+                            "type": "HTTP",
+                            "retryPolicy": {
+                                "retryType": "Fixed",
+                                "retryInterval": "PT1M",
+                                "retryCount": 2
+                            }
+                        },
+                        "state": "Enabled"
+                    }
+                }
+            ],
+            "type": "Microsoft.Scheduler/jobCollections"
+        },
+        {
+            "apiVersion": "2016-03-01",
+            "name": "[parameters('apiServerName')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[parameters('hostingPlanName')]"
+            ],
+            "tags": {
+                "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName')))]": "empty",
+                "displayName": "Website"
+            },
+            "properties": {
+                "name": "[parameters('apiServerName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "config",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('apiServerName'))]",
+                        "[concat('Microsoft.Web/sites/', parameters('apiServerName'), '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppConfig"
+                    },
+                    "properties": {
+                        "phpVersion": "5.6",
+                        "netFrameworkVersion": "v4.6",
+                        "use32BitWorkerProcess": false,
+                        "webSocketsEnabled": true,
+                        "alwaysOn": true,
+                        "remoteDebuggingEnabled": true,
+                        "remoteDebuggingVersion": "VS2015",
+                        "cors": {
+                            "allowedOrigins": [
+                                "[concat('https://', parameters('webSiteName'), '.azurewebsites.net')]"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "MSDeploy",
+                    "type": "extensions",
+                    "location": "[resourceGroup().location]",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('apiServerName'))]",
+                        "[concat('Microsoft.Storage/storageAccounts/', variables('webjobStorageName'))]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppMSDeploy"
+                    },
+                    "properties": {
+                        "packageUri": "[variables('RESTServerPackageURI')]"
+                    }
+                },
+                {
+                    "name": "connectionstrings",
+                    "type": "config",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('apiServerName'))]",
+                        "[concat('Microsoft.Web/sites/', parameters('apiServerName'), '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "RESTServerConnectionStrings"
+                    },
+                    "properties": {
+                        "BlobConnection": {
+                            "value": "[variables('BlobconnectionString')]",
+                            "type": "Custom"
+                        },
+                        "PowerGridEntities": {
+                            "value": "[variables('PowerGridEntities')]",
+                            "type": "Custom"
+                        },
+                        "AzureWebJobsDashboard": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('webjobStorageName'),';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('webjobStorageName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                            "type": "Custom"
+                        },
+                        "AzureWebJobsStorage": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('webjobStorageName'),';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('webjobStorageName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                            "type": "Custom"
+                        }
+                    }
+                },
+                {
+                    "name": "appsettings",
+                    "type": "config",
+                    "apiVersion": "2015-08-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('apiServerName'))]",
+                        "[concat('Microsoft.Web/sites/', parameters('apiServerName'), '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "restAppSettings"
+                    },
+                    "properties": {
+                        "AnomalyThreshold": "[variables('anomalyThreshold')]",
+                        "MeterKwhCost": "[variables('meterKWHCost')]",
+                        "DbConnectionString": "[variables('databaseConnString')]",
+                        "NotificationIcon": "[variables('notificationIcon')]",
+                        "NotificationClickAction": "[variables('notificationClickAction')]",
+                        "PowerGridEntities": "[variables('PowerGridEntities')]",
+                        "b2c:AadInstance": "[variables('b2cAadInstance')]",
+                        "b2c:Tenant": "[parameters('b2cTenant')]",
+                        "b2c:ClientId": "[parameters('b2cClientId')]",
+                        "b2c:SignUpPolicyId": "[parameters('b2cSignUpPolicyId')]",
+                        "b2c:SignInPolicyId": "[parameters('b2cSignInPolicyId')]",
+                        "b2c:ClientSecret": "[parameters('b2cClientSecret')]",
+                        "b2c:ChangePasswordPolicy": "[parameters('b2cChangePasswordPolicy')]",
+                        "EmailHost": "[parameters('emailHost')]",
+                        "EmailHostPort": "[parameters('emailHostPort')]",
+                        "EmailSender": "[parameters('senderEmail')]",
+                        "EmailHostPassword": "[parameters('senderEmailPassword')]",
+                        "BlobStorageConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('webjobStorageName'),';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('webjobStorageName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2016-01-01",
+            "dependsOn": [],
+            "kind": "Storage",
+            "location": "[resourceGroup().location]",
+            "name": "[variables('webjobStorageName')]",
+            "sku": {
+                "name": "[parameters('webjobStorageType')]"
+            },
+            "tags": {
+                "displayName": "webjobStorage"
+            },
+            "type": "Microsoft.Storage/storageAccounts"
+        },
+        {
+            "apiVersion": "2016-04-01",
+            "name": "[parameters('workspaceName')]",
+            "location": "[resourceGroup().location]",
+            "type": "Microsoft.MachineLearning/workspaces",
+            "properties": {
+                "userStorageAccountId": "[resourceId('Microsoft.Storage/storageAccounts',toLower(variables('MLStorageName')))]"
+            },
+            "dependsOn": [
+                "[toLower(variables('MLStorageName'))]"
+            ]
+        },
+        {
+            "apiVersion": "2016-01-01",
+            "name": "[toLower(variables('MLStorageName'))]",
+            "location": "[resourceGroup().location]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage"
+        },
+        {
+            "apiVersion": "2016-05-01-preview",
+            "name": "[concat(parameters('workspaceName'),'Plan')]",
+            "type": "Microsoft.MachineLearning/commitmentPlans",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('MLskuName')]",
+                "tier": "Standard",
+                "capacity": "1"
+            },
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "bastionHostSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/bastionHost.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "bastionHostSettings": {
+                        "value": "[variables('bastionHostSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "adServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/adServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "adServerSettings": {
+                        "value": "[variables('adServerSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "UpdateVNetDNS",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "adServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "DNSServerAddress": {
+                        "value": [
+                            "[variables('adNicIPAddress')]"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "sqlServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource",
+                "adServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/sqlserver.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sqlserversettings": {
+                        "value": "[variables('sqlserversettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "AzuresqlServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "sqlServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/azurepaas.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "AzurePaasevi": {
+                        "value": "[variables('AzurePaasevi')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIAFServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/PIAFServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PIAFServersettings": {
+                        "value": "[variables('PIAFServersettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIDAServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/PIDAserver.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PIDAServersettings": {
+                        "value": "[variables('PIDAServersettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "PIhostname": {
+            "type": "string",
+            "value": "[reference(variables('PIpublicIPAddressName')).dnsSettings.fqdn]"
+        },
+        "SQLhostname": {
+            "type": "string",
+            "value": "[reference(variables('SQLpublicIPAddressName')).dnsSettings.fqdn]"
+        },
+        "WINhostname": {
+            "type": "string",
+            "value": "[reference(variables('WINpublicIPAddressName')).dnsSettings.fqdn]"
+        },
+        "sqlSvrFqdn": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName]"
+        },
+        "WebSiteUri": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.Web/sites/', parameters('webSiteName'))).hostnames[0]]"
+        },
+        "RESTSiteUri": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.Web/sites/', parameters('apiServerName'))).hostnames[0]]"
+        }
+    }
+}
