@@ -7,6 +7,9 @@
         },
           "networkSettings":{
             "type": "object"
+        },
+        "apiVersions":{
+            "type": "object"
         }
     },
     "variables": {
@@ -18,7 +21,7 @@
         {
             "name": "[parameters('adServerSettings').adNetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "properties": {
                 "securityRules": [
@@ -41,7 +44,7 @@
          {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('adServerSettings').adstorageAccountName]",
-            "apiVersion": "[parameters('adServerSettings').storageApiVersion]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "sku": {
                 "name": "Standard_LRS"
@@ -52,7 +55,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('adServerSettings').adNicName]",
-            "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "dependsOn": [
             "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('adServerSettings').adNetworkSecurityGroupName)]"
@@ -79,7 +82,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('adServerSettings').adVMName]",
-            "apiVersion": "[parameters('adServerSettings').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', parameters('adServerSettings').adNicName)]",
@@ -133,7 +136,7 @@
                 {
                     "type": "extensions",
                     "name": "CreateADForest",
-                    "apiVersion": "[parameters('adServerSettings').computeApiVersion]",
+                    "apiVersion": "[parameters('apiVersions').computeApiVersion]",
                     "location": "[parameters('adServerSettings').location]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Compute/virtualMachines', parameters('adServerSettings').adVMName)]"
