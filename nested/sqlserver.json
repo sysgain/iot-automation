@@ -7,17 +7,20 @@
         },
         "networkSettings": {
             "type": "object"
+        },
+         "apiVersions":{
+            "type": "object"
         }
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks',parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/',parameters('networkSettings').subnet4Name)]"
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/',parameters('networkSettings').subnet3Name)]"
     },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('sqlserversettings').sqlStorageAccountName]",
-            "apiVersion": "[parameters('sqlserversettings').storageApiVersion]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('sqlserversettings').location]",
             "sku": {
                 "name": "Standard_LRS"
@@ -26,9 +29,25 @@
             "properties": {}
         },
         {
+            "type": "Microsoft.Compute/images",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "name": "[parameters('sqlserversettings').SQLimageName]",
+            "location": "[parameters('sqlserversettings').location]",
+            "properties": {
+                "storageProfile": {
+                    "osDisk": {
+                        "osType": "Windows",
+                        "osState": "Generalized",
+                        "blobUri": "[parameters('sqlserversettings').SQLOsDiskVhdUri]",
+                        "storageAccountType": "Standard_LRS"
+                    }
+                }
+            }
+        },
+        {
             "name": "[parameters('sqlserversettings').networkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('sqlserversettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('sqlserversettings').location]",
             "properties": {
                 "securityRules": [
@@ -142,7 +161,7 @@
           {
             "name": "[parameters('sqlserversettings').networkInterfaceName]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[parameters('sqlserversettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('sqlserversettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkSecurityGroups/', parameters('sqlserversettings').networkSecurityGroupName)]"
@@ -168,9 +187,10 @@
         {
             "name": "[parameters('sqlserversettings').sqlservername]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('sqlserversettings').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('sqlserversettings').location]",
             "dependsOn": [
+                "[concat('Microsoft.Compute/images/', parameters('sqlserversettings').SQLimageName)]",
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('sqlserversettings').networkInterfaceName)]",
                 "[concat('Microsoft.Storage/storageAccounts/', parameters('sqlserversettings').sqlStorageAccountName)]"
             ],
@@ -188,10 +208,7 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                       "publisher": "MicrosoftSQLServer",
-                        "offer": "SQL2016SP1-WS2016",
-                        "sku": "Express",
-                        "version": "latest"
+                        "id": "[resourceId('Microsoft.Compute/images', parameters('sqlserversettings').SQLimageName)]"
                     },
                     "osDisk": {
                         "createOption": "fromImage",
@@ -223,7 +240,7 @@
             }
         },
         {
-            "apiVersion": "[parameters('sqlserversettings').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('sqlserversettings').sqlservername, '/SqlIaasExtension')]",
             "location": "[parameters('sqlserversettings').location]",
@@ -279,7 +296,7 @@
             "name": "[concat(parameters('sqlserversettings').sqlservername,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
-            "apiVersion": "[parameters('sqlserversettings').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/SqlIaasExtension')]"
             ],
@@ -295,6 +312,85 @@
                 },
                 "protectedSettings": {
                     "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlserversettings').scriptFileName,' ',parameters('sqlserversettings').domainName,' ',parameters('sqlserversettings').Username,' ',parameters('sqlserversettings').Password)]"
+                }
+            }
+        },
+         {
+            "type": "Microsoft.Resources/deployments",
+            "name": "sqlDbSetup",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/CustomScriptExtension')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('sqlserversettings').baseUrl, 'nested/sqldatabase.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sqlservername": {
+                        "value": "[parameters('sqlserversettings').sqlservername]"
+                    },
+                    "computeApiVersion":{
+                        "value": "[parameters('sqlserversettings').computeApiVersion]"
+                    },
+                    "location":{
+                        "value": "[parameters('sqlserversettings').location]"
+                    },
+                     "fileUris2":{
+                        "value": "[parameters('sqlserversettings').fileUris2]"
+                    },
+                    "scriptFileName2":{
+                        "value": "[parameters('sqlserversettings').scriptFileName2]"
+                    },
+                    "sqlQueryUrl":{
+                        "value": "[parameters('sqlserversettings').sqlQueryUrl]"
+                    },
+                    "sqlAuthenticationLogin":{
+                        "value": "[parameters('sqlserversettings').sqlAuthenticationLogin]"
+                    },
+                    "sqlAuthenticationPassword":{
+                        "value": "[parameters('sqlserversettings').sqlAuthenticationPassword]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "sqlSimulatorSetup",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                "sqlDbSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('sqlserversettings').baseUrl, 'nested/sqlsimulator.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sqlservername": {
+                        "value": "[parameters('sqlserversettings').sqlservername]"
+                    },
+                    "computeApiVersion":{
+                        "value": "[parameters('sqlserversettings').computeApiVersion]"
+                    },
+                    "location":{
+                        "value": "[parameters('sqlserversettings').location]"
+                    },
+                     "fileUris3":{
+                        "value": "[parameters('sqlserversettings').fileUris3]"
+                    },
+                    "scriptFileName3":{
+                        "value": "[parameters('sqlserversettings').scriptFileName3]"
+                    },
+                    "simulatorUrl":{
+                        "value": "[parameters('sqlserversettings').simulatorUrl]"
+                    },
+                    "dataserviceUrl":{
+                        "value": "[parameters('sqlserversettings').dataserviceUrl]"
+                    }
                 }
             }
         }
