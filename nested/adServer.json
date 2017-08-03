@@ -11,7 +11,7 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "adSubnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
+        "adSubnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]"
 
     },  
     "resources": [
@@ -55,7 +55,8 @@
             "apiVersion": "[parameters('adServerSettings').networkApiVersion]",
             "location": "[parameters('adServerSettings').location]",
             "dependsOn": [
-                "virtualNetworksResource"
+            "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('adServerSettings').adNetworkSecurityGroupName)]"
+
             ],
             "properties": {
                 "ipConfigurations": [
