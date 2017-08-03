@@ -73,9 +73,11 @@
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('bastionHostSettings').location]",
-            "properties": {
-                "accountType": "[parameters('bastionHostSettings').diagStorageAccountType]"
-            }
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
         },
         {
             "name": "[parameters('bastionHostSettings').bastionNic]",
