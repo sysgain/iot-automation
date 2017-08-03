@@ -203,6 +203,14 @@
         }
     },
     "variables": {
+        "apiVersions":{
+            "computeApiVersion": "2016-04-30-preview",
+            "networkApiVersion": "2016-09-01",
+            "storageApiVersion": "2016-01-01",
+            "deploymentApiVersion": "2016-02-01",
+            "sqlServerApiVersion":"2015-05-01-preview",
+            "sqlDBApiVersion":"2014-04-01-preview"
+        },
         "networkSettings": {
             "location": "[resourceGroup().location]",
             "networkApiVersion": "2016-03-30",
@@ -224,9 +232,6 @@
         "bastionHostSettings": {
             "location": "[resourceGroup().location]",
             "bastionVMName": "bastionServer",
-            "computeApiVersion": "2016-04-30-preview",
-            "networkApiVersion": "2016-09-01",
-            "storageApiVersion": "2015-06-15",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "bastionNic": "bastion-nic",
@@ -245,9 +250,6 @@
         },
         "adServerSettings": {
             "location": "[resourceGroup().location]",
-            "computeApiVersion": "2016-04-30-preview",
-            "networkApiVersion": "2016-09-01",
-            "storageApiVersion": "2016-01-01",
             "adNicName": "adNic",
             "adNicIPAddress": "10.0.2.4",
             "adVMName": "adVM",
@@ -270,10 +272,6 @@
         },
         "sqlserversettings": {
             "location": "[resourceGroup().location]",
-            "storageApiVersion": "2016-01-01",
-            "computeApiVersion": "2016-04-30-preview",
-            "networkApiVersion": "2016-09-01",
-            "deploymentApiVersion": "2016-02-01",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "networkInterfaceName": "sqlNic",
@@ -284,6 +282,10 @@
             "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlvm')]",
             "sqlservername": "sqlvm",
             "storageAccountType": "Premium_LRS",
+            "publisher": "MicrosoftSQLServer",
+            "offer": "SQL2016SP1-WS2016",
+            "sku": "Express",
+            "version": "latest",
             "vmSize": "Standard_DS1_v2",
             "sqlConnectivityType": "Private",
             "sqlPrivateIPAddress": "10.0.3.4",
@@ -312,6 +314,7 @@
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi"
         },
          "AzurePaasevi": {
+             "location": "[resourceGroup().location]",
             "AzureSqlLogin": "azurelogin",
             "AzureSqlPwd": "Sysgain@1234",
             "collation": "SQL_Latin1_General_CP1_CI_AS",
@@ -327,9 +330,6 @@
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "location": "[resourceGroup().location]",
-            "storageApiVersion": "2015-06-15",
-            "computeApiVersion": "2016-04-30-preview",
-            "networkApiVersion": "2016-09-01",
             "PIAFVMName": "PIAFVMServer",
             "PIAFNic": "PIAFVMNic",
             "PIAFNetworkSecurityGroupName": "PIAFNsg",
@@ -352,9 +352,6 @@
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "location": "[resourceGroup().location]",
-            "storageApiVersion": "2015-06-15",
-            "computeApiVersion": "2016-04-30-preview",
-            "networkApiVersion": "2016-09-01",
             "PIDAVMName": "PIDAVMServer",
             "PIDANic": "PIDAVMNic",
             "PIDANetworkSecurityGroupName": "PIDANsg",
@@ -408,35 +405,20 @@
         "SQLnicName": "SQLVMNic",
         "PInicName": "PIVMNic",
         "WINnicName": "WINVMNic",
-        "addressPrefix": "10.0.0.0/16",
-        "subnetName": "Subnet",
-        "subnetPrefix": "10.0.0.0/24",
         "SQLpublicIPAddressName": "SQLPublicIP",
         "PIpublicIPAddressName": "PIPublicIP",
         "WINpublicIPAddressName": "WINPublicIP",
         "SQLvmName": "TempSQLServerVM",
         "PIvmName": "TempPICoreVM",
         "WINvmName": "TempWinServerVM",
-        "virtualNetworkName": "MyVNET",
         "SQLnetworkSecurityGroupName": "SQLNSG",
         "PInetworkSecurityGroupName": "PINSG",
         "WINnetworkSecurityGroupName": "WINNSG",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('networkSettings').virtualNetworkName, variables('networkSettings').subnet1Name)]",
-        "PIwindowsOSVersion": "2016-Datacenter",
         "WINwindowsOSVersion": "2016-Datacenter",
         "PIimageName": "myPICustomImage",
         "SQLimageName": "mySQLCustomImage",
         "ADResourcesURL": "https://emdeployment.blob.core.windows.net/releasemtr/CreateADPDC.zip",
-        "rServicesEnabled": "false",
-        "sqlAutopatchingDayOfWeek": "Sunday",
-        "sqlAutopatchingStartHour": "2",
-        "sqlAutopatchingWindowDuration": "60",
-        "sqlConnectivityType": "Public",
-        "sqlPortNumber": "1433",
-        "sqlStorageWorkloadType": "GENERAL",
-        "sqlStorageDisksCount": "1",
-        "sqlStorageStartingDeviceId": "2",
-        "sqlStorageDisksConfigurationType": "NEW",
         "DeployStorageAccountName": "releasemtr",
         "DeployStorageAccountKey": "",
         "WebAppDeployPackageURI": "https://emdeployment.blob.core.windows.net/releasemtr/CSUWebApp.zip",
@@ -545,6 +527,9 @@
                 "parameters": {
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
+                    },
+                     "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
@@ -1417,6 +1402,9 @@
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
@@ -1440,6 +1428,9 @@
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
@@ -1465,6 +1456,9 @@
                         "value": [
                             "[variables('adNicIPAddress')]"
                         ]
+                    },
+                    "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
@@ -1489,6 +1483,9 @@
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
@@ -1509,6 +1506,9 @@
                 "parameters": {
                     "AzurePaasevi": {
                         "value": "[variables('AzurePaasevi')]"
+                    },
+                    "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
@@ -1518,7 +1518,8 @@
             "name": "PIAFServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "virtualNetworksResource"
+                "virtualNetworksResource",
+                "adServerSetup"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1532,6 +1533,9 @@
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
@@ -1541,7 +1545,8 @@
             "name": "PIDAServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "virtualNetworksResource"
+                "virtualNetworksResource",
+                "adServerSetup"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1555,6 +1560,9 @@
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions":{
+                        "value":"[variables('apiVersions')]"
                     }
                 }
             }
