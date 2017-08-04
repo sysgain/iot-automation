@@ -229,7 +229,7 @@
             "subnet6Name": "subnet6",
             "subnet6Prefix": "10.0.5.0/24"
         },
-        "bastionHostSettings": {
+        "bastionServerSettings": {
             "location": "[resourceGroup().location]",
             "bastionVMName": "bastionServer",
             "adminUsername": "[parameters('adminUsername')]",
@@ -1443,7 +1443,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "bastionHostSetup",
+            "name": "bastionServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "virtualNetworksResource",
@@ -1453,12 +1453,12 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/bastionHost.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/bastionServer.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "bastionHostSettings": {
-                        "value": "[variables('bastionHostSettings')]"
+                    "bastionServerSettings": {
+                        "value": "[variables('bastionServerSettings')]"
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
@@ -1588,7 +1588,7 @@
         },
         "bastionFQDN": {
             "type": "string",
-            "value": "[reference('bastionHostSetup').outputs.bastionFQDN.value]"
+            "value": "[reference('bastionServerSetup').outputs.bastionFQDN.value]"
         },
         "adServerIP": {
             "type": "string",
