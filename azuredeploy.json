@@ -1481,7 +1481,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/sqlserver.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/sqlServer.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
