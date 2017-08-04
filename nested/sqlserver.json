@@ -140,7 +140,7 @@
                         }
                     },
                     {
-                        "name": "PIUFLConnector",
+                        "name": "PIServer",
                         "properties": {
                             "priority": 2201,
                             "sourceAddressPrefix": "*",
