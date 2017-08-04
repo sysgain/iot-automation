@@ -330,28 +330,6 @@
             "storageKeyType": "SharedAccessKey",
             "storageKey": "?"
         },
-        "PIAFServersettings": {
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
-            "location": "[resourceGroup().location]",
-            "PIAFVMName": "PIAFVMServer",
-            "PIAFNic": "PIAFVMNic",
-            "PIAFNetworkSecurityGroupName": "PIAFNsg",
-            "PIAFDiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'piafvm')]",
-            "publisher": "MicrosoftWindowsServer",
-            "offer": "WindowsServer",
-            "sku": "2012-R2-Datacenter",
-            "version": "latest",
-            "PIAFVMSize": "Standard_DS1_v2",
-            "storageAccountType": "[variables('storageAccountType')]",
-            "diagStorageAccountType": "Standard_LRS",
-            "PIAFPrivateIPAddress": "10.0.4.4",
-            "scriptFileName": "psscript.ps1",
-            "domainName": "[parameters('domainName')]",
-            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
-            "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]"
-        },
         "PIDAServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
@@ -368,6 +346,28 @@
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
             "PIDAPrivateIPAddress": "10.0.4.4",
+            "scriptFileName": "psscript.ps1",
+            "domainName": "[parameters('domainName')]",
+            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]"
+        },
+        "PIBAServersettings": {
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "location": "[resourceGroup().location]",
+            "PIBAVMName": "PIBAVMServer",
+            "PIBANic": "PIBAVMNic",
+            "PIBANetworkSecurityGroupName": "PIBANsg",
+            "PIBADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pibavm')]",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest",
+            "PIBAVMSize": "Standard_DS1_v2",
+            "storageAccountType": "[variables('storageAccountType')]",
+            "diagStorageAccountType": "Standard_LRS",
+            "PIBAPrivateIPAddress": "10.0.5.4",
             "scriptFileName": "psscript.ps1",
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -1522,7 +1522,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "PIAFServerSetup",
+            "name": "PIBAServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "virtualNetworksResource",
@@ -1532,12 +1532,12 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/PIAFServer.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/PIBAServer.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "PIAFServersettings": {
-                        "value": "[variables('PIAFServersettings')]"
+                    "PIBAServersettings": {
+                        "value": "[variables('PIBAServersettings')]"
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
@@ -1598,9 +1598,9 @@
             "type": "string",
             "value": "[variables('sqlserversettings').sqlPrivateIPAddress]"
         },
-        "PIAFServerIP": {
+        "PIBAServerIP": {
             "type": "string",
-            "value": "[variables('PIAFServersettings').PIAFPrivateIPAddress]"
+            "value": "[variables('PIBAServersettings').PIBAPrivateIPAddress]"
         },
         "PIDAServerIP": {
             "type": "string",
