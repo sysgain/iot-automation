@@ -314,7 +314,8 @@
             "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
             "databaseName": "iottestdb",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
-            "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi"
+            "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
+            "PIWebApiSimulatorUrl":"https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
         },
         "AzurePaasevi": {
             "location": "[resourceGroup().location]",
