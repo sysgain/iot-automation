@@ -2,7 +2,7 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "PIAFServerSettings":{
+        "PIBAServerSettings":{
             "type": "object"
         },
         "networkSettings":{
@@ -14,14 +14,14 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet5Name)]"
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet6Name)]"
     },
     "resources": [
         {
-            "name": "[parameters('PIAFServerSettings').PIAFDiagStgAcnt]",
+            "name": "[parameters('PIBAServerSettings').PIBADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('PIAFServerSettings').location]",
+            "location": "[parameters('PIBAServerSettings').location]",
              "sku": {
                 "name": "Standard_LRS"
             },
@@ -29,12 +29,12 @@
             "properties": {}
         },
         {
-            "name": "[parameters('PIAFServerSettings').PIAFNic]",
+            "name": "[parameters('PIBAServerSettings').PIBANic]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('PIAFServerSettings').location]",
+            "location": "[parameters('PIBAServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIBAServerSettings').PIBANetworkSecurityGroupName)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -45,20 +45,20 @@
                                 "id": "[variables('subnetRef')]"
                             },
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('PIAFServerSettings').PIAFPrivateIPAddress]"
+                            "privateIPAddress": "[parameters('PIBAServerSettings').PIBAPrivateIPAddress]"
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIBAServerSettings').PIBANetworkSecurityGroupName)]"
                 }
             }
         },
         {
-            "name": "[parameters('PIAFServerSettings').PIAFNetworkSecurityGroupName]",
+            "name": "[parameters('PIBAServerSettings').PIBANetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('PIAFServerSettings').location]",
+            "location": "[parameters('PIBAServerSettings').location]",
             "properties": {
                 "securityRules": [
                     {
@@ -78,37 +78,37 @@
             }
         },
         {
-            "name": "[parameters('PIAFServerSettings').PIAFVMName]",
+            "name": "[parameters('PIBAServerSettings').PIBAVMName]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('PIAFServerSettings').location]",
+            "location": "[parameters('PIBAServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIAFServerSettings').PIAFNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIAFServerSettings').PIAFDiagStgAcnt)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIBAServerSettings').PIBANic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIBAServerSettings').PIBADiagStgAcnt)]"
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "[parameters('PIAFServerSettings').PIAFVMName]",
-                    "adminUsername": "[parameters('PIAFServerSettings').adminUsername]",
-                    "adminPassword": "[parameters('PIAFServerSettings').adminPassword]",
+                    "computerName": "[parameters('PIBAServerSettings').PIBAVMName]",
+                    "adminUsername": "[parameters('PIBAServerSettings').adminUsername]",
+                    "adminPassword": "[parameters('PIBAServerSettings').adminPassword]",
                     "windowsConfiguration": {
                         "provisionVmAgent": "true"
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('PIAFServerSettings').PIAFVMSize]"
+                    "vmSize": "[parameters('PIBAServerSettings').PIBAVMSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[parameters('PIAFServerSettings').publisher]",
-                        "offer": "[parameters('PIAFServerSettings').offer]",
-                        "sku": "[parameters('PIAFServerSettings').sku]",
-                        "version": "[parameters('PIAFServerSettings').version]"
+                        "publisher": "[parameters('PIBAServerSettings').publisher]",
+                        "offer": "[parameters('PIBAServerSettings').offer]",
+                        "sku": "[parameters('PIBAServerSettings').sku]",
+                        "version": "[parameters('PIBAServerSettings').version]"
                     },
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType":"[parameters('PIAFServerSettings').storageAccountType]"
+                            "storageAccountType":"[parameters('PIBAServerSettings').storageAccountType]"
                         }
                     },
                     "dataDisks": []
@@ -116,25 +116,25 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIAFServerSettings').PIAFNic)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIBAServerSettings').PIBANic)]"
                         }
                     ]
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIAFServerSettings').PIAFDiagStgAcnt)).primaryEndpoints['blob']]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIBAServerSettings').PIBADiagStgAcnt)).primaryEndpoints['blob']]"
                     }
                 }
             }
         },
         {
-            "name": "[concat(parameters('PIAFServerSettings').PIAFVMName,'/CustomScriptExtension')]",
+            "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFServerSettings').PIAFVMName)]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -143,11 +143,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('PIAFServerSettings').fileUris]"
+                        "[parameters('PIBAServerSettings').fileUris]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIAFServerSettings').scriptFileName,' ',parameters('PIAFServerSettings').domainName,' ',parameters('PIAFServerSettings').Username,' ',parameters('PIAFServerSettings').Password)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIBAServerSettings').scriptFileName,' ',parameters('PIBAServerSettings').domainName,' ',parameters('PIBAServerSettings').Username,' ',parameters('PIBAServerSettings').Password)]"
                 }
             }
         }
