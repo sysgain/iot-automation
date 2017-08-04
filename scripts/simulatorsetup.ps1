@@ -1,6 +1,6 @@
 param(
 [string] $simulatorUrl = "$1",
-[string] $dataserviceUrl = "$2"
+[string] $dataserviceUrl = "$2",
 [string] $PIWebApisimulatorUrl = "$3"
 )
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
