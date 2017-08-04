@@ -2,7 +2,7 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sqlserversettings": {
+        "sqlServerSettings": {
             "type": "object"
         },
         "networkSettings": {
@@ -19,9 +19,9 @@
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('sqlserversettings').sqlStorageAccountName]",
+            "name": "[parameters('sqlServerSettings').sqlStorageAccountName]",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('sqlserversettings').location]",
+            "location": "[parameters('sqlServerSettings').location]",
             "sku": {
                 "name": "Standard_LRS"
             },
@@ -29,10 +29,10 @@
             "properties": {}
         },
         {
-            "name": "[parameters('sqlserversettings').networkSecurityGroupName]",
+            "name": "[parameters('sqlServerSettings').networkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('sqlserversettings').location]",
+            "location": "[parameters('sqlServerSettings').location]",
             "properties": {
                 "securityRules": [
                     {
@@ -156,12 +156,12 @@
             }
         },
         {
-            "name": "[parameters('sqlserversettings').networkInterfaceName]",
+            "name": "[parameters('sqlServerSettings').networkInterfaceName]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('sqlserversettings').location]",
+            "location": "[parameters('sqlServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('sqlserversettings').networkSecurityGroupName)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('sqlServerSettings').networkSecurityGroupName)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -172,47 +172,47 @@
                                 "id": "[variables('subnetRef')]"
                             },
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('sqlserversettings').sqlPrivateIPAddress]"
+                            "privateIPAddress": "[parameters('sqlServerSettings').sqlPrivateIPAddress]"
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('sqlserversettings').networkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('sqlServerSettings').networkSecurityGroupName)]"
                 }
             }
         },
         {
-            "name": "[parameters('sqlserversettings').sqlservername]",
+            "name": "[parameters('sqlServerSettings').sqlservername]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('sqlserversettings').location]",
+            "location": "[parameters('sqlServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('sqlserversettings').networkInterfaceName)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('sqlserversettings').sqlStorageAccountName)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('sqlServerSettings').networkInterfaceName)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('sqlServerSettings').sqlStorageAccountName)]"
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "[parameters('sqlserversettings').sqlservername]",
-                    "adminUsername": "[parameters('sqlserversettings').adminUsername]",
-                    "adminPassword": "[parameters('sqlserversettings').adminPassword]",
+                    "computerName": "[parameters('sqlServerSettings').sqlservername]",
+                    "adminUsername": "[parameters('sqlServerSettings').adminUsername]",
+                    "adminPassword": "[parameters('sqlServerSettings').adminPassword]",
                     "windowsConfiguration": {
                         "provisionVmAgent": "true"
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('sqlserversettings').vmSize]"
+                    "vmSize": "[parameters('sqlServerSettings').vmSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[parameters('sqlserversettings').publisher]",
-                        "offer": "[parameters('sqlserversettings').offer]",
-                        "sku": "[parameters('sqlserversettings').sku]",
-                        "version": "[parameters('sqlserversettings').version]"
+                        "publisher": "[parameters('sqlServerSettings').publisher]",
+                        "offer": "[parameters('sqlServerSettings').offer]",
+                        "sku": "[parameters('sqlServerSettings').sku]",
+                        "version": "[parameters('sqlServerSettings').version]"
                     },
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('sqlserversettings').storageAccountType]"
+                            "storageAccountType": "[parameters('sqlServerSettings').storageAccountType]"
                         }
                     },
                     "dataDisks": [
@@ -226,14 +226,14 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('sqlserversettings').networkInterfaceName)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('sqlServerSettings').networkInterfaceName)]"
                         }
                     ]
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('sqlserversettings').sqlStorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('sqlServerSettings').sqlStorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             }
@@ -241,10 +241,10 @@
         {
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('sqlserversettings').sqlservername, '/SqlIaasExtension')]",
-            "location": "[parameters('sqlserversettings').location]",
+            "name": "[concat(parameters('sqlServerSettings').sqlservername, '/SqlIaasExtension')]",
+            "location": "[parameters('sqlServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('sqlserversettings').sqlservername)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('sqlServerSettings').sqlservername)]"
             ],
             "properties": {
                 "type": "SqlIaaSAgent",
@@ -253,14 +253,14 @@
                 "autoUpgradeMinorVersion": "true",
                 "settings": {
                     "AutoTelemetrySettings": {
-                        "Region": "[parameters('sqlserversettings').location]"
+                        "Region": "[parameters('sqlServerSettings').location]"
                     },
                     "AutoPatchingSettings": {
                         "PatchCategory": "WindowsMandatoryUpdates",
                         "Enable": true,
-                        "DayOfWeek": "[parameters('sqlserversettings').sqlAutopatchingDayOfWeek]",
-                        "MaintenanceWindowStartingHour": "[parameters('sqlserversettings').sqlAutopatchingStartHour]",
-                        "MaintenanceWindowDuration": "[parameters('sqlserversettings').sqlAutopatchingWindowDuration]"
+                        "DayOfWeek": "[parameters('sqlServerSettings').sqlAutopatchingDayOfWeek]",
+                        "MaintenanceWindowStartingHour": "[parameters('sqlServerSettings').sqlAutopatchingStartHour]",
+                        "MaintenanceWindowDuration": "[parameters('sqlServerSettings').sqlAutopatchingWindowDuration]"
                     },
                     "KeyVaultCredentialSettings": {
                         "Enable": false,
@@ -268,15 +268,15 @@
                     },
                     "ServerConfigurationsManagementSettings": {
                         "SQLConnectivityUpdateSettings": {
-                            "ConnectivityType": "[parameters('sqlserversettings').sqlConnectivityType]",
+                            "ConnectivityType": "[parameters('sqlServerSettings').sqlConnectivityType]",
                             "Port": "1433"
                         },
                         "SQLWorkloadTypeUpdateSettings": {
-                            "SQLWorkloadType": "[parameters('sqlserversettings').sqlStorageWorkloadType]"
+                            "SQLWorkloadType": "[parameters('sqlServerSettings').sqlStorageWorkloadType]"
                         },
                         "SQLStorageUpdateSettings": {
-                            "DiskCount": "[parameters('sqlserversettings').sqlStorageDisksCount]",
-                            "NumberOfColumns": "[parameters('sqlserversettings').sqlStorageDisksCount]",
+                            "DiskCount": "[parameters('sqlServerSettings').sqlStorageDisksCount]",
+                            "NumberOfColumns": "[parameters('sqlServerSettings').sqlStorageDisksCount]",
                             "StartingDeviceID": "2",
                             "DiskConfigurationType": "New"
                         },
@@ -286,18 +286,18 @@
                     }
                 },
                 "protectedSettings": {
-                    "SQLAuthUpdateUserName": "[parameters('sqlserversettings').sqlAuthenticationLogin]",
-                    "SQLAuthUpdatePassword": "[parameters('sqlserversettings').sqlAuthenticationPassword]"
+                    "SQLAuthUpdateUserName": "[parameters('sqlServerSettings').sqlAuthenticationLogin]",
+                    "SQLAuthUpdatePassword": "[parameters('sqlServerSettings').sqlAuthenticationPassword]"
                 }
             }
         },
         {
-            "name": "[concat(parameters('sqlserversettings').sqlservername,'/CustomScriptExtension')]",
+            "name": "[concat(parameters('sqlServerSettings').sqlservername,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/SqlIaasExtension')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlServerSettings').sqlservername,'/extensions/SqlIaasExtension')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -306,11 +306,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('sqlserversettings').fileUris]"
+                        "[parameters('sqlServerSettings').fileUris]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlserversettings').scriptFileName,' ',parameters('sqlserversettings').domainName,' ',parameters('sqlserversettings').Username,' ',parameters('sqlserversettings').Password)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlServerSettings').scriptFileName,' ',parameters('sqlServerSettings').domainName,' ',parameters('sqlServerSettings').Username,' ',parameters('sqlServerSettings').Password)]"
                 }
             }
         },
@@ -319,38 +319,38 @@
             "name": "sqlSimulatorSetup",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                 "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/CustomScriptExtension')]"
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlServerSettings').sqlservername,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('sqlserversettings').baseUrl, 'nested/sqlsimulator.json')]",
+                    "uri": "[concat(parameters('sqlServerSettings').baseUrl, 'nested/sqlsimulator.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "sqlservername": {
-                        "value": "[parameters('sqlserversettings').sqlservername]"
+                        "value": "[parameters('sqlServerSettings').sqlservername]"
                     },
                     "computeApiVersion": {
                         "value": "[parameters('apiVersions').computeApiVersion]"
                     },
                     "location": {
-                        "value": "[parameters('sqlserversettings').location]"
+                        "value": "[parameters('sqlServerSettings').location]"
                     },
                     "fileUris3": {
-                        "value": "[parameters('sqlserversettings').fileUris3]"
+                        "value": "[parameters('sqlServerSettings').fileUris3]"
                     },
                     "scriptFileName3": {
-                        "value": "[parameters('sqlserversettings').scriptFileName3]"
+                        "value": "[parameters('sqlServerSettings').scriptFileName3]"
                     },
                     "simulatorUrl": {
-                        "value": "[parameters('sqlserversettings').simulatorUrl]"
+                        "value": "[parameters('sqlServerSettings').simulatorUrl]"
                     },
                     "dataserviceUrl": {
-                        "value": "[parameters('sqlserversettings').dataserviceUrl]"
+                        "value": "[parameters('sqlServerSettings').dataserviceUrl]"
                     },
                     "PIWebApiSimulatorUrl": {
-                        "value": "[parameters('sqlserversettings').PIWebApiSimulatorUrl]"
+                        "value": "[parameters('sqlServerSettings').PIWebApiSimulatorUrl]"
                     }
                 }
             }
@@ -359,11 +359,11 @@
     "outputs": {
         "storageKey": {
             "type": "string",
-            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('sqlserversettings').sqlStorageAccountName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('sqlServerSettings').sqlStorageAccountName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
         },
         "storageAccountName": {
             "type": "string",
-            "value": "[parameters('sqlserversettings').sqlStorageAccountName]"
+            "value": "[parameters('sqlServerSettings').sqlStorageAccountName]"
         }
     }
 }
