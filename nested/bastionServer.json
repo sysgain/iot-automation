@@ -2,7 +2,7 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "bastionHostSettings":{
+        "bastionServerSettings":{
             "type": "object"
         },
         "networkSettings":{
@@ -18,10 +18,10 @@
     },
     "resources": [
         {
-            "name": "[parameters('bastionHostSettings').bastionDiagStgAcnt]",
+            "name": "[parameters('bastionServerSettings').bastionDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('bastionHostSettings').location]",
+            "location": "[parameters('bastionServerSettings').location]",
             "sku": {
                 "name": "Standard_LRS"
             },
@@ -29,13 +29,13 @@
             "properties": {}
         },
         {
-            "name": "[parameters('bastionHostSettings').bastionNic]",
+            "name": "[parameters('bastionServerSettings').bastionNic]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('bastionHostSettings').location]",
+            "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('bastionHostSettings').publicIpAddressName)]",
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('bastionHostSettings').networkSecurityGroupName)]"
+                "[concat('Microsoft.Network/publicIpAddresses/', parameters('bastionServerSettings').publicIpAddressName)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('bastionServerSettings').networkSecurityGroupName)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -47,33 +47,33 @@
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIpAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('bastionHostSettings').publicIpAddressName)]"
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('bastionServerSettings').publicIpAddressName)]"
                             }
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionHostSettings').networkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionServerSettings').networkSecurityGroupName)]"
                 }
             }
         },
         {
-            "name": "[parameters('bastionHostSettings').publicIpAddressName]",
+            "name": "[parameters('bastionServerSettings').publicIpAddressName]",
             "type": "Microsoft.Network/publicIpAddresses",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('bastionHostSettings').location]",
+            "location": "[parameters('bastionServerSettings').location]",
             "properties": {
-                "publicIpAllocationMethod": "[parameters('bastionHostSettings').publicIpAddressType]",
+                "publicIpAllocationMethod": "[parameters('bastionServerSettings').publicIpAddressType]",
                 "dnsSettings": {
-                    "domainNameLabel": "[parameters('bastionHostSettings').bastionDnsLabelPrefix]"
+                    "domainNameLabel": "[parameters('bastionServerSettings').bastionDnsLabelPrefix]"
                 }
             }
         },
         {
-            "name": "[parameters('bastionHostSettings').networkSecurityGroupName]",
+            "name": "[parameters('bastionServerSettings').networkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('bastionHostSettings').location]",
+            "location": "[parameters('bastionServerSettings').location]",
             "properties": {
                 "securityRules": [
                     {
@@ -93,37 +93,37 @@
             }
         },
         {
-            "name": "[parameters('bastionHostSettings').bastionVMName]",
+            "name": "[parameters('bastionServerSettings').bastionVMName]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('bastionHostSettings').location]",
+            "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionHostSettings').bastionNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionHostSettings').bastionDiagStgAcnt)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionServerSettings').bastionNic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').bastionDiagStgAcnt)]"
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "[parameters('bastionHostSettings').bastionVMName]",
-                    "adminUsername": "[parameters('bastionHostSettings').adminUsername]",
-                    "adminPassword": "[parameters('bastionHostSettings').adminPassword]",
+                    "computerName": "[parameters('bastionServerSettings').bastionVMName]",
+                    "adminUsername": "[parameters('bastionServerSettings').adminUsername]",
+                    "adminPassword": "[parameters('bastionServerSettings').adminPassword]",
                     "windowsConfiguration": {
                         "provisionVmAgent": "true"
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('bastionHostSettings').bastionVMSize]"
+                    "vmSize": "[parameters('bastionServerSettings').bastionVMSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[parameters('bastionHostSettings').publisher]",
-                        "offer": "[parameters('bastionHostSettings').offer]",
-                        "sku": "[parameters('bastionHostSettings').sku]",
-                        "version": "[parameters('bastionHostSettings').version]"
+                        "publisher": "[parameters('bastionServerSettings').publisher]",
+                        "offer": "[parameters('bastionServerSettings').offer]",
+                        "sku": "[parameters('bastionServerSettings').sku]",
+                        "version": "[parameters('bastionServerSettings').version]"
                     },
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType":"[parameters('bastionHostSettings').storageAccountType]"
+                            "storageAccountType":"[parameters('bastionServerSettings').storageAccountType]"
                         }
                     },
                     "dataDisks": []
@@ -131,25 +131,25 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('bastionHostSettings').bastionNic)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('bastionServerSettings').bastionNic)]"
                         }
                     ]
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionHostSettings').bastionDiagStgAcnt)).primaryEndpoints['blob']]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionServerSettings').bastionDiagStgAcnt)).primaryEndpoints['blob']]"
                     }
                 }
             }
         },
         {
-            "name": "[concat(parameters('bastionHostSettings').bastionVMName,'/CustomScriptExtension')]",
+            "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionHostSettings').bastionVMName)]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionServerSettings').bastionVMName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -158,11 +158,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('bastionHostSettings').fileUris]"
+                        "[parameters('bastionServerSettings').fileUris]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('bastionHostSettings').scriptFileName,' ',parameters('bastionHostSettings').domainName,' ',parameters('bastionHostSettings').Username,' ',parameters('bastionHostSettings').Password)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('bastionServerSettings').scriptFileName,' ',parameters('bastionServerSettings').domainName,' ',parameters('bastionServerSettings').Username,' ',parameters('bastionServerSettings').Password)]"
                 }
             }
         }
@@ -170,15 +170,15 @@
     "outputs": {
         "adminUsername": {
             "type": "string",
-            "value": "[parameters('bastionHostSettings').adminUsername]"
+            "value": "[parameters('bastionServerSettings').adminUsername]"
         },
          "adminPassword": {
             "type": "string",
-            "value": "[parameters('bastionHostSettings').adminPassword]"
+            "value": "[parameters('bastionServerSettings').adminPassword]"
         },
          "bastionFQDN": {
             "type": "string",
-            "value": "[reference(parameters('bastionHostSettings').publicIpAddressName).dnsSettings.fqdn]"
+            "value": "[reference(parameters('bastionServerSettings').publicIpAddressName).dnsSettings.fqdn]"
         }
     }
 }
