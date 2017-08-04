@@ -257,7 +257,7 @@
             "location": "[resourceGroup().location]",
             "adNicName": "adNic",
             "adNicIPAddress": "10.0.2.4",
-            "adVMName": "adVM",
+            "adVMName": "adServer",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
             "domainName": "[parameters('domainName')]",
