@@ -389,6 +389,9 @@
                     },
                     "dataserviceUrl": {
                         "value": "[parameters('sqlserversettings').dataserviceUrl]"
+                    },
+                    "PIWebApiSimulatorUrl": {
+                        "value": "[parameters('sqlserversettings').PIWebApiSimulatorUrl]"
                     }
                 }
             }
