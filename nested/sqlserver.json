@@ -316,51 +316,10 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "sqlDbSetup",
-            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/CustomScriptExtension')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(parameters('sqlserversettings').baseUrl, 'nested/sqldatabase.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "sqlservername": {
-                        "value": "[parameters('sqlserversettings').sqlservername]"
-                    },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
-                    },
-                    "location": {
-                        "value": "[parameters('sqlserversettings').location]"
-                    },
-                    "fileUris2": {
-                        "value": "[parameters('sqlserversettings').fileUris2]"
-                    },
-                    "scriptFileName2": {
-                        "value": "[parameters('sqlserversettings').scriptFileName2]"
-                    },
-                    "sqlQueryUrl": {
-                        "value": "[parameters('sqlserversettings').sqlQueryUrl]"
-                    },
-                    "sqlAuthenticationLogin": {
-                        "value": "[parameters('sqlserversettings').sqlAuthenticationLogin]"
-                    },
-                    "sqlAuthenticationPassword": {
-                        "value": "[parameters('sqlserversettings').sqlAuthenticationPassword]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
             "name": "sqlSimulatorSetup",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "sqlDbSetup"
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlserversettings').sqlservername,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "Incremental",
