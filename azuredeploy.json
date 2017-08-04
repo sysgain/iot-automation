@@ -81,14 +81,14 @@
         },
         "webSiteName": {
             "type": "string",
-            "defaultValue": "phase2iotappsri",
+            "defaultValue": "phase21iotappsri",
             "metadata": {
                 "description": "Describes webSite name which should be unique"
             }
         },
         "apiServerName": {
             "type": "string",
-            "defaultValue": "apiserverapi142",
+            "defaultValue": "apiserverapi322",
             "metadata": {
                 "description": "Describes API Server name which should be unique"
             }
