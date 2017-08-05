@@ -559,7 +559,7 @@
                                 "id": "[variables('subnetRef')]"
                             },
                             "privateIPAllocationMethod": "Static",
-                           "privateIPAddress": "[parameters('MCSModules').wsIPAddress]"
+                           "privateIPAddress": "[parameters('MCSModules').chefAutomateIPAddress]"
                         }
                     }
                 ],
@@ -598,7 +598,7 @@
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS",
+                            "storageAccountType": "Standard_LRS"
                         }
                     },
                     "dataDisks": []
@@ -613,9 +613,9 @@
             }
         },
         {
-            "name": "[concat(parameters('MCSModules').wsVmName,'/workstation-setup')]",
+            "name": "[concat(parameters('MCSModules').wsVmName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[variables('computeSettings').location]",
+            "location": "[parameters('MCSModules').location]",
             "apiVersion": "2016-04-30-preview",
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -624,55 +624,55 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/sudheermareddy/test/master/workstaionsetup1.ps1"
+                         "[parameters('MCSModules').workstationSetup]"
                     ],
                     "commandToExecute": "[concat('powershell.exe -File workstaionsetup1.ps1')]"
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('computeSettings').wsVmName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]"
             ]
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('computeSettings').chefAutoVmName]",
-            "apiVersion": "[variables('computeSettings').computeApiVersion]",
-            "location": "[variables('computeSettings').location]",
+            "name": "[parameters('MCSModules').chefAutoVmName]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('MCSModules').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', variables('networkSettings').chefAutoNic)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').chefAutoNic)]"
             ],
             "plan": {
-                "name": "[variables('computeSettings').imageSKU]",
-                "product": "[variables('computeSettings').imageOffer]",
-                "publisher": "[variables('computeSettings').imagePublisher]"
+                "name": "parameters('MCSModules').chefImageSKU]",
+                "product": "[parameters('MCSModules').chefImageOffer]",
+                "publisher": "[parameters('MCSModules').chefImagePublisher]"
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[variables('computeSettings').virtualMachineSize]"
+                    "vmSize": "[parameters('MCSModules').virtualMachineSize]"
                 },
                 "osProfile": {
-                    "computerName": "[variables('computeSettings').chefAutoVmName]",
-                    "adminUsername": "[variables('computeSettings').adminUsername]",
-                    "adminPassword": "[variables('computeSettings').adminPassword]"
+                    "computerName": "[parameters('MCSModules').chefAutoVmName]",
+                    "adminUsername": "[parameters('MCSModules').adminUsername]",
+                    "adminPassword": "[parameters('MCSModules').adminPassword]"
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[variables('computeSettings').imagePublisher]",
-                        "offer": "[variables('computeSettings').imageOffer]",
-                        "sku": "[variables('computeSettings').imageSKU]",
-                        "version": "[variables('computeSettings').imageVersion]"
+                        "publisher": "[parameters('MCSModules').chefImagePublisher]",
+                        "offer": "[parameters('MCSModules').chefImageOffer]",
+                        "sku": "parameters('MCSModules').chefImageSKU]",
+                        "version": "[parameters('MCSModules').chefImageVersion]"
                     },
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "[variables('computeSettings').storageAccountType]"
+                            "storageAccountType": "Standard_LRS"
                         }
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('computeSettings').chefAutoNic)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').chefAutoNic)]"
                         }
                     ]
                 }
@@ -680,9 +680,9 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('computeSettings').chefAutoVmName,'/automate_setup')]",
-            "apiVersion": "[variables('computeSettings').computeApiVersion]",
-            "location": "[variables('computeSettings').location]",
+            "name": "[concat(parameters('MCSModules').chefAutoVmName,'/automate_setup')]",
+            "apiVersion":"[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('MCSModules').location]",
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
                 "type": "CustomScript",
@@ -690,37 +690,49 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[variables('computeSettings').chefAutoScriptUrl1]"
+                        "[parameters('MCSModules').chefAutoScriptUrl1]"
                     ],
-                    "commandToExecute": "[concat(variables('computeSettings').rubyPath, ' ./automate_setup.rb --fqdn \"', variables('chefAutomatefqdn'), '\" --license \"', variables('computeSettings').automateLicenseUri, '\"',' --adminUsername \"',variables('computeSettings').adminUsername,'\"',' --firstname ','\"',variables('computeSettings').firstname,'\"',' --lastname ','\"',variables('computeSettings').lastname,'\"',' --mailid ','\"',variables('computeSettings').mailid,'\"',' --adminpassword ','\"',variables('computeSettings').adminPassword,'\"',' --orguser ','\"',variables('computeSettings').orguser,'\"')]"
+                    "commandToExecute": "[concat(parameters('MCSModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('MCSModules').chefAutomateIPAddress, '\" --license \"',parameters('MCSModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('MCSModules').adminUsername,'\"',' --firstname ','\"',parameters('MCSModules').firstname,'\"',' --lastname ','\"',parameters('MCSModules').orguser,'\"')]"
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('computeSettings').chefAutoVmName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName)]"
             ]
         },
         {
             "type": "Microsoft.Resources/deployments",
             "name": "workstation-extension",
-            "apiVersion": "[variables('deploymentApiVersion')]",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('computeSettings').chefAutoVmName,'/extensions/automate_setup')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName,'/extensions/automate_setup')]"
             ],
             "properties": {
                 "mode": "incremental",
                 "templateLink": {
-                    "uri": "[variables('workstationextensionurl')]",
+                    "uri": "[parameters('MCSModules').workstationextensionurl]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "computeSettings": {
-                        "value": "[variables('computeSettings')]"
+                    "wsVmName": {
+                        "value": "[parameters('MCSModules').wsVmName]"
+                    },
+                     "location": {
+                        "value": "[parameters('MCSModules').location]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('MCSModules').adminUsername]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('MCSModules').adminPassword]"
+                    },
+                     "orguser": {
+                        "value": "[parameters('MCSModules').orguser]"
                     },
                     "workstationSetupUrl2": {
-                        "value": "[variables('workstationSetupUrl2')]"
+                        "value": "[parameters('MCSModules').workstationSetupUrl2]"
                     },
                     "chef-server-fqdn": {
-                        "value": "[reference(variables('networkSettings').chefAutoPip).dnsSettings.fqdn]"
+                        "value": "[parameters('MCSModules').chefAutomateIPAddress]"
                     }
                 }
             }
