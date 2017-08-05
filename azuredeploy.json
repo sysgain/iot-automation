@@ -253,11 +253,27 @@
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]"
         },
-        "adServerSettings": {
+        "MCSModules": {
             "location": "[resourceGroup().location]",
             "adNicName": "adNic",
+            "splunkNicName": "splunkNic",
+            "clientNicName": "clientNic",
+            "splunkNsg": "splunkNsg",
+            "clientnsgName": "clientNsg",
             "adNicIPAddress": "10.0.2.4",
+            "splunkIPAddress": "10.0.2.5",
+            "clientIPAddress": "10.0.2.6",
+            "sshFrom": "0.0.0.0/0",
+            "forwardedDataFrom": "0.0.0.0/0",
             "adVMName": "adServer",
+            "splunkVMName": "splunkServer",
+             "clientVMName": "splunkServer",
+            "splunkExtensionName": "splunkExtension",
+            "typeHandlerVersion": "1.5",
+            "splunkImagePublisher": "splunk",
+            "splunkImageOffer": "splunk-enterprise-base-image",
+            "splunkImageSKU": "splunk-on-ubuntu-14-04-lts",
+            "splunkImageVersion": "1.1.1",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
             "domainName": "[parameters('domainName')]",
@@ -268,11 +284,14 @@
             "offer": "WindowsServer",
             "sku": "2016-Datacenter",
             "version": "latest",
+            "splunkVMSize": "Standard_D2",
             "storageAccountType": "Premium_LRS",
             "adNetworkSecurityGroupName": "adnsg",
             "adstorageAccountName": "[concat('adstrg',variables('suffix'))]",
             "diskCreateOption": "empty",
             "diskSizeGB": "1023",
+            "commandToExecute": "[concat('bash node-setup.sh', ' -r ', variables('splunkServerRole'), ' -p ', parameters('adminPassword'))]",
+            "splunkScriptsUrl": "",
             "dscScriptUrl": "[variables('dscScriptUrl')]"
         },
         "sqlServerSettings": {
@@ -315,7 +334,7 @@
             "databaseName": "iottestdb",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
-            "PIWebApiSimulatorUrl":"https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
+            "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
         },
         "AzurePaasevi": {
             "location": "[resourceGroup().location]",
@@ -374,6 +393,7 @@
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]"
         },
+        "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/phase2/",
         "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/phase2",
@@ -514,27 +534,6 @@
                 "publicIPAllocationMethod": "Dynamic",
                 "dnsSettings": {
                     "domainNameLabel": "[variables('WINDnsLabelPrefix')]"
-                }
-            }
-        },
-        {
-            "name": "virtualNetworksResource",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [],
-            "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/virtualNetwork.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
-                    },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
-                    }
                 }
             }
         },
@@ -1388,11 +1387,62 @@
             "properties": {}
         },
         {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('networkSettings').virtualNetworkName]",
+            "apiVersion": "[variables('apiVersions').networkApiVersion]",
+            "location": "[variables('networkSettings').location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('networkSettings').addressPrefix]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('networkSettings').subnet1Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[variables('networkSettings').subnet2Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[variables('networkSettings').subnet3Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet3Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[variables('networkSettings').subnet4Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet4Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[variables('networkSettings').subnet5Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet5Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[variables('networkSettings').subnet6Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet6Prefix]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "type": "Microsoft.Resources/deployments",
-            "name": "adServerSetup",
+            "name": "MCSModules",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "virtualNetworksResource"
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1402,7 +1452,7 @@
                 },
                 "parameters": {
                     "adServerSettings": {
-                        "value": "[variables('adServerSettings')]"
+                        "value": "[variables('MCSModules')]"
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
@@ -1418,7 +1468,7 @@
             "name": "UpdateVNetDNS",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "adServerSetup"
+                "MCSModules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1592,7 +1642,7 @@
         },
         "adServerIP": {
             "type": "string",
-            "value": "[variables('adServerSettings').adNicIPAddress]"
+            "value": "[variables('MCSModules').adNicIPAddress]"
         },
         "sqlServerIP": {
             "type": "string",

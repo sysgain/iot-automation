@@ -1,0 +1,426 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "MCSModules":{
+            "type": "object"
+        },
+          "networkSettings":{
+            "type": "object"
+        },
+        "apiVersions":{
+            "type": "object"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]"
+
+    },  
+    "resources": [
+        {
+            "name": "[parameters('MCSModules').adNetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+         {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('MCSModules').adstorageAccountName]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('MCSModules').adNicName]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+            "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').adNetworkSecurityGroupName)]"
+
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {     
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('MCSModules').adNicIPAddress]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                 "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('MCSModules').adNetworkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('MCSModules').adVMName]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').adNicName)]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('MCSModules').adstorageAccountName)]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('MCSModules').adVMName]",
+                    "adminUsername": "[parameters('MCSModules').Username]",
+                    "adminPassword": "[parameters('MCSModules').Password]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher":  "[parameters('MCSModules').publisher]",
+                        "offer":  "[parameters('MCSModules').offer]",
+                        "sku": "[parameters('MCSModules').sku]",
+                        "version": "[parameters('MCSModules').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').adNicName)]"
+                        }
+                    ]
+                },
+                 "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "type": "extensions",
+                    "name": "CreateADForest",
+                    "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+                    "location": "[parameters('MCSModules').location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('MCSModules').adVMName)]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Powershell",
+                        "type": "DSC",
+                        "typeHandlerVersion": "2.19",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "ModulesUrl": "[concat(parameters('MCSModules').dscScriptUrl, '/DSC/CreateADPDC.zip')]",
+                            "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
+                            "Properties": {
+                                "DomainName": "[parameters('MCSModules').domainName]",
+                                "AdminCreds": {
+                                    "UserName": "[parameters('MCSModules').Username]",
+                                    "Password": "PrivateSettingsRef:AdminPassword"
+                                }
+                            }
+                        },
+                        "protectedSettings": {
+                            "Items": {
+                                "AdminPassword": "[parameters('MCSModules').Password]"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('MCSModules').splunkNsg]",
+            "location": "[parameters('MCSModules').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "Allow-SSH",
+                        "properties": {
+                            "description": "Allows SSH traffic",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "[parameters('MCSModules').sshFrom]",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-HTTP",
+                        "properties": {
+                            "description": "Allows HTTP traffic on port 8000",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8000",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-HTTPS",
+                        "properties": {
+                            "description": "Allows HTTPS traffic on port 443",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-HTTP-Event-Collector",
+                        "properties": {
+                            "description": "Allows HTTP(S) Event Collector traffic on port 8088",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8088",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-Receiver-TCP",
+                        "properties": {
+                            "description": "Allows receiver TCP traffic on port 9997",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "9997",
+                            "sourceAddressPrefix": "[parameters('MCSModules').forwardedDataFrom]",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 140,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-Mgmt-From-VNET",
+                        "properties": {
+                            "description": "Allows mgmt on port 8089 from VNET only",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8089",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 150,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('MCSModules').splunkNicName]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('MCSModules').splunkNsg)]"
+            ],
+            "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').splunkNsg)]"
+                },
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                             "privateIPAddress": "[parameters('MCSModules').splunkIPAddress]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+         {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('MCSModules').splunkVMName]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').splunkNicName)]"
+            ],
+            "plan": {
+                "name": "[parameters('MCSModules').splunkImageSKU]",
+                "product": "[parameters('MCSModules').splunkImageOffer]",
+                "publisher": "[parameters('MCSModules').splunkImagePublisher]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('MCSModules').splunkVMSize]"
+                },
+                "osProfile": {
+                    "computername": "[parameters('MCSModules').splunkVMName]",
+                    "adminUsername": "[parameters('MCSModules').adminUsername]",
+                    "adminPassword": "[parameters('MCSModules').adminPassword]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('MCSModules').splunkImagePublisher]",
+                        "offer": "[parameters('MCSModules').splunkImageOffer]",
+                        "sku": "[parameters('MCSModules').splunkImageSKU]",
+                        "version": "[parameters('MCSModules').splunkImageVersion]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                        }
+                    },
+                   "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').splunkNicName)]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('MCSModules').splunkVMName,'/', parameters('MCSModules').splunkExtensionName)]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').splunkVMName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.OSTCExtensions",
+                "type": "CustomScriptForLinux",
+                "typeHandlerVersion": "[parameters('MCSModules').typeHandlerVersion]",
+                "settings": {
+                    "fileUris": [
+                         "[parameters('MCSModules').splunkScriptsUrl]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[parameters('MCSModules').commandToExecute]"
+                }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('MCSModules').clientnsgName]",
+            "location": "[parameters('MCSModules').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "clientout",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Outbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('apiVersions').clientNicName]",
+            "location": "[parameters('MCSModules').location]",
+            "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').clientnsgName)]"
+                },
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                     "privateIPAddress": "[parameters('MCSModules').clientIPAddress]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('MCSModules').clientnsgName)]"
+            ]
+        }
+    ]
+}
