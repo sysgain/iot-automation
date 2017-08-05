@@ -421,6 +421,81 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkSecurityGroups/', parameters('MCSModules').clientnsgName)]"
             ]
-        }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('MCSModules').clientVMName]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').clientNicName)]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('MCSModules').splunkVMSize]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('clientvmName')]",
+                    "adminUsername": "[parameters('clientadminUsername')]",
+                    "adminPassword": "[parameters('clientadminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('imagePublisher1')]",
+                        "offer": "[variables('imageOffer1')]",
+                        "sku": "[variables('imageSKU1')]",
+                        "version": "[variables('imageVersion1')]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
+                    },
+                    "dataDisks": [
+                        {
+                            "name": "[concat(variables('managedisks'),'0')]",
+                            "lun": 0,
+                            "caching": "None",
+                            "createOption": "Attach",
+                            "managedDisk": {
+                                "id": "[resourceId('Microsoft.Compute/disks',concat(variables('managedisks'),'0'))]"
+                            }
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('clientnetworkInterfaceName'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "[concat(variables('clientvmName'),'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[variables('location')]",
+            "apiVersion": "[variables('computeApiVersion')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('clientvmName'))]",
+                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),'/extensions/', variables('vmExtensionName'))]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "[variables('typeHandlerVersionwin')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[concat(variables('baseUrl'),variables('ScriptFileName'))]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFileName'), ' ',variables('splunkfqdn'))]"
+                }
+            }
+        },
     ]
 }
