@@ -1492,9 +1492,8 @@
             "name": "bastionServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "virtualNetworksResource",
                 "UpdateVNetDNS",
-                "adServerSetup"
+                "MCSModules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1520,9 +1519,8 @@
             "name": "sqlServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "virtualNetworksResource",
                 "UpdateVNetDNS",
-                "adServerSetup"
+                "MCSModules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1571,9 +1569,8 @@
             "name": "PIBAServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "virtualNetworksResource",
                 "UpdateVNetDNS",
-                "adServerSetup"
+                "MCSModules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -1599,9 +1596,8 @@
             "name": "PIDAServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "virtualNetworksResource",
                 "UpdateVNetDNS",
-                "adServerSetup"
+                "MCSModules"
             ],
             "properties": {
                 "mode": "Incremental",
