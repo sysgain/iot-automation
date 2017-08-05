@@ -2,24 +2,41 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "computeSettings": {
+        "wsVmName": {
             "type": "object"
+        },
+         "location": {
+            "type": "object"
+        },
+         "adminUsername": {
+            "type": "object"
+        },
+         "adminPassword": {
+            "type": "object"
+        },
+         "orguser": {
+            "type": "object"
+        },
+        "computeApiVersion":{
+            "type": "string"
         },
         "workstationSetupUrl2": {
             "type": "string"
         },
         "chef-server-fqdn": {
             "type": "string"
+        },
+        "splunkIP":{
+            "type": "string"
         }
-        
     },
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('computeSettings').wsVmName,'/workstation-setup')]",
+            "name": "[concat(parameters('wsVmName'),'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('computeSettings').location]",
-            "apiVersion": "2016-04-30-preview",
+            "location": "[parameters('location')]",
+            "apiVersion": "[parameters('computeApiVersion')]",
             "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
@@ -31,7 +48,7 @@
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstaionsetup2.ps1', ' ', parameters('computeSettings').adminUsername, ' ', parameters('computeSettings').adminpassword, ' ', parameters('chef-server-fqdn'), ' ', parameters('computeSettings').orguser,' ','splunkenterprisectdlw.westus.cloudapp.azure.com')]"
+                     "commandToExecute": "[concat('powershell.exe -File workstaionsetup2.ps1', ' ', parameters('adminUsername'), ' ', parameters('adminpassword'), ' ', parameters('chef-server-fqdn'), ' ', parameters('orguser'),' ',parameters('splunkIP'))]"
                 }
             }
         }

@@ -725,6 +725,9 @@
                     "adminPassword": {
                         "value": "[parameters('MCSModules').adminPassword]"
                     },
+                   "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    },
                      "orguser": {
                         "value": "[parameters('MCSModules').orguser]"
                     },
@@ -733,6 +736,9 @@
                     },
                     "chef-server-fqdn": {
                         "value": "[parameters('MCSModules').chefAutomateIPAddress]"
+                    },
+                    "splunkIP":{
+                        "value": "[parameters('MCSModules').splunkIPAddress]"
                     }
                 }
             }
