@@ -399,7 +399,7 @@
         {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('apiVersions').clientNicName]",
+            "name": "[parameters('MCSModules').clientNicName]",
             "location": "[parameters('MCSModules').location]",
             "properties": {
                 "networkSecurityGroup": {
@@ -435,67 +435,63 @@
                     "vmSize": "[parameters('MCSModules').splunkVMSize]"
                 },
                 "osProfile": {
-                    "computerName": "[variables('clientvmName')]",
-                    "adminUsername": "[parameters('clientadminUsername')]",
-                    "adminPassword": "[parameters('clientadminPassword')]"
+                    "computerName": "[parameters('MCSModules').clientVMName]",
+                     "adminUsername": "[parameters('MCSModules').adminUsername]",
+                    "adminPassword": "[parameters('MCSModules').adminPassword]"
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[variables('imagePublisher1')]",
-                        "offer": "[variables('imageOffer1')]",
-                        "sku": "[variables('imageSKU1')]",
-                        "version": "[variables('imageVersion1')]"
+                        "publisher": "[parameters('MCSModules').publisher]",
+                        "offer": "[parameters('MCSModules').offer]",
+                        "sku": "[parameters('MCSModules').sku]",
+                        "version": "[parameters('MCSModules').version]"
                     },
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                         }
                     },
                     "dataDisks": [
                         {
-                            "name": "[concat(variables('managedisks'),'0')]",
+                            "diskSizeGB": "1023",
                             "lun": 0,
-                            "caching": "None",
-                            "createOption": "Attach",
-                            "managedDisk": {
-                                "id": "[resourceId('Microsoft.Compute/disks',concat(variables('managedisks'),'0'))]"
-                            }
+                            "createOption": "Empty"
                         }
                     ]
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('clientnetworkInterfaceName'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('MCSModules').clientNicName)]"
                         }
                     ]
                 }
             }
         },
         {
-            "name": "[concat(variables('clientvmName'),'/CustomScriptExtension')]",
+            "name": "[concat(parameters('MCSModules').clientVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[variables('location')]",
-            "apiVersion": "[variables('computeApiVersion')]",
+            "location": "[parameters('MCSModules').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('clientvmName'))]",
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),'/extensions/', variables('vmExtensionName'))]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').clientVMName)]",
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('MCSModules').splunkVMName,'/extensions/', parameters('MCSModules').splunkExtensionName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
-                "typeHandlerVersion": "[variables('typeHandlerVersionwin')]",
+                "typeHandlerVersion": 1.8,
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[concat(variables('baseUrl'),variables('ScriptFileName'))]"
+                        "[parameters('MCSModules').clientScriptUrl]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFileName'), ' ',variables('splunkfqdn'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('MCSModules').scriptFileName, ' ',parameters('MCSModules').clientIPAddress)]"
                 }
             }
-        },
+        }
     ]
 }
