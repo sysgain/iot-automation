@@ -577,8 +577,8 @@
             "properties": {
                 "osProfile": {
                     "computerName": "[parameters('MCSModules').wsVmName]",
-                    "adminUsername": "[parameters('MCSModules').adminUsername]",
-                    "adminPassword": "[parameters('MCSModules').adminPassword]",
+                    "adminUsername": "[parameters('MCSModules').Username]",
+                    "adminPassword": "[parameters('MCSModules').Password]",
                     "windowsConfiguration": {
                         "provisionVmAgent": true
                     }
@@ -652,12 +652,12 @@
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('MCSModules').virtualMachineSize]"
+                    "vmSize": "[parameters('MCSModules').VMSize]"
                 },
                 "osProfile": {
                     "computerName": "[parameters('MCSModules').chefAutoVmName]",
-                    "adminUsername": "[parameters('MCSModules').adminUsername]",
-                    "adminPassword": "[parameters('MCSModules').adminPassword]"
+                    "adminUsername": "[parameters('MCSModules').Username]",
+                    "adminPassword": "[parameters('MCSModules').Password]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -702,7 +702,7 @@
                     "fileUris": [
                         "[parameters('MCSModules').chefAutoScriptUrl1]"
                     ],
-                    "commandToExecute": "[concat(parameters('MCSModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('MCSModules').chefAutomateIPAddress, '\" --license \"',parameters('MCSModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('MCSModules').adminUsername,'\"',' --firstname ','\"',parameters('MCSModules').firstname,'\"',' --lastname ','\"',parameters('MCSModules').orguser,'\"')]"
+                    "commandToExecute": "[concat(parameters('MCSModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('MCSModules').chefAutomateIPAddress, '\" --license \"',parameters('MCSModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('MCSModules').Username,'\"',' --firstname ','\"',parameters('MCSModules').firstname,'\"',' --lastname ','\"',parameters('MCSModules').orguser,'\"')]"
                 }
             },
             "dependsOn": [
@@ -730,10 +730,10 @@
                         "value": "[parameters('MCSModules').location]"
                     },
                     "adminUsername": {
-                        "value": "[parameters('MCSModules').adminUsername]"
+                        "value": "[parameters('MCSModules').Username]"
                     },
                     "adminPassword": {
-                        "value": "[parameters('MCSModules').adminPassword]"
+                        "value": "[parameters('MCSModules').Password]"
                     },
                     "computeApiVersion": {
                         "value": "[parameters('apiVersions').computeApiVersion]"
