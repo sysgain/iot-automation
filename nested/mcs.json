@@ -164,6 +164,60 @@
                 }
             ]
         },
+         {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('networkSettings').virtualNetworkName]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('networkSettings').location]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('networkSettings').addressPrefix]"
+                    ]
+                },
+                "dhcpOptions": {
+                    "dnsServers": "[parameters('MCSModules').adNicIPAddress]"
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('networkSettings').subnet1Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet2Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet3Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet3Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet4Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
+                        }
+                    },
+                      {
+                        "name": "[parameters('networkSettings').subnet5Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet5Prefix]"
+                        }
+                    },
+                      {
+                        "name": "[parameters('networkSettings').subnet6Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet6Prefix]"
+                        }
+                    }
+                ]
+            }
+        },
         {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/networkSecurityGroups",
@@ -759,8 +813,8 @@
             "name": "domainJoin",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').adVMName,'/extensions/CreateADForest')]",
-                "workstation-extension"
+                "workstation-extension",
+               "[concat('Microsoft.Network/virtualNetworks/',parameters('networkSettings').virtualNetworkName)]"
             ],
             "properties": {
                 "mode": "incremental",
