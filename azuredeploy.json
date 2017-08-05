@@ -314,7 +314,7 @@
             "workstationSetup": "[concat(variables('baseUrl'),'workstationsetup1.ps1')]",
             "workstationextensionurl": "[concat(variables('baseUrl'),'nested/workstation-extension.json')]",
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstaionsetup2.ps1')]",
-            "domainJoinUrl": "[concat(variables('baseUrl'),'scripts/domainjoin.json')]"
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "sqlServerSettings": {
             "location": "[resourceGroup().location]",
