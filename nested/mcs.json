@@ -305,8 +305,8 @@
                 },
                 "osProfile": {
                     "computername": "[parameters('MCSModules').splunkVMName]",
-                    "adminUsername": "[parameters('MCSModules').adminUsername]",
-                    "adminPassword": "[parameters('MCSModules').adminPassword]"
+                     "adminUsername": "[parameters('MCSModules').Username]",
+                    "adminPassword": "[parameters('MCSModules').Password]"
                 },
                 "storageProfile": {
                     "imageReference": {
