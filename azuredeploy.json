@@ -81,7 +81,7 @@
         },
         "webSiteName": {
             "type": "string",
-            "defaultValue": "phase21iotappsri",
+            "defaultValue": "phase2iotappsri",
             "metadata": {
                 "description": "Describes webSite name which should be unique"
             }
@@ -130,14 +130,14 @@
         },
         "b2cClientId": {
             "type": "string",
-            "defaultValue": "ca10d7a5-71eb-4dd8-aaa2-b2c534c202a1",
+            "defaultValue": "c24ebcd7-4d44-4540-93c7-e2713701b903",
             "metadata": {
                 "description": "Describes the client Id of the application registered in B2C Directory"
             }
         },
         "b2cClientSecret": {
             "type": "string",
-            "defaultValue": "{XIs91_*|g1XY4b8",
+            "defaultValue": "=A+_mG1d+rtX&(u7",
             "metadata": {
                 "description": "Describes the Client secret of the application registered in B2C Directory"
             }
