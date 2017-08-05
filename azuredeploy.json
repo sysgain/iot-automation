@@ -364,7 +364,7 @@
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
             "version": "latest",
-            "PIBAVMSize": "Standard_DS1_v2",
+            "PIBAVMSize": "Standard_E2s_v3",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
             "PIBAPrivateIPAddress": "10.0.5.4",
