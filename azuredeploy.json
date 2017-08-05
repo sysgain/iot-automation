@@ -1443,11 +1443,11 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/adServer.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/mcs.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "adServerSettings": {
+                    "MCSModules": {
                         "value": "[variables('MCSModules')]"
                     },
                     "networkSettings": {
