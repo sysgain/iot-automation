@@ -630,7 +630,7 @@
                     "fileUris": [
                         "[parameters('MCSModules').workstationSetup]"
                     ],
-                    "commandToExecute": "[concat('powershell.exe -File workstaionsetup1.ps1')]"
+                    "commandToExecute": "[concat('powershell.exe -File workstationsetup1.ps1')]"
                 }
             },
             "dependsOn": [

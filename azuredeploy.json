@@ -313,7 +313,7 @@
             "chefAutoScriptUrl1": "[concat(variables('baseUrl'),'scripts/automate_setup.rb')]",
             "workstationSetup": "[concat(variables('baseUrl'),'workstationsetup1.ps1')]",
             "workstationextensionurl": "[concat(variables('baseUrl'),'nested/workstation-extension.json')]",
-            "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstaionsetup2.ps1')]",
+            "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "sqlServerSettings": {
