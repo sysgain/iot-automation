@@ -663,7 +663,7 @@
                     "imageReference": {
                         "publisher": "[parameters('MCSModules').chefImagePublisher]",
                         "offer": "[parameters('MCSModules').chefImageOffer]",
-                        "sku": "parameters('MCSModules').chefImageSKU]",
+                        "sku": "[parameters('MCSModules').chefImageSKU]",
                         "version": "[parameters('MCSModules').chefImageVersion]"
                     },
                     "osDisk": {
