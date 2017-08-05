@@ -759,6 +759,7 @@
             "name": "domainJoin",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').adVMName,'/extensions/CreateADForest')]",
                 "workstation-extension"
             ],
             "properties": {
