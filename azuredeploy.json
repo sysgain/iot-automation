@@ -1489,7 +1489,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "bastionServerSetup",
+            "name": "BastionHost",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "UpdateVNetDNS",
@@ -1630,7 +1630,7 @@
         },
         "bastionFQDN": {
             "type": "string",
-            "value": "[reference('bastionServerSetup').outputs.bastionFQDN.value]"
+            "value": "[reference('BastionHost').outputs.bastionFQDN.value]"
         },
         "adServerIP": {
             "type": "string",
