@@ -540,7 +540,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses/', variables('SQLpublicIPAddressName'))]",
-"[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('SQLnetworkSecurityGroupName'))]"
             ],
             "properties": {
@@ -570,7 +570,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses/', variables('PIpublicIPAddressName'))]",
-               "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('PInetworkSecurityGroupName'))]"
             ],
             "properties": {
@@ -600,7 +600,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses/', variables('WINpublicIPAddressName'))]",
-               "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', variables('WINnetworkSecurityGroupName'))]"
             ],
             "properties": {
