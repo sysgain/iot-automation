@@ -367,10 +367,10 @@
             }
         },
         {
-            "name": "[variables('networkSettings').wsNsg]",
+            "name": "[parameters('MCSModules').wsNsg]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[variables('networkSettings').networkApiVersion]",
-            "location": "[variables('networkSettings').location]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('MCSModules').location]",
             "properties": {
                 "securityRules": [
                     {
@@ -443,9 +443,9 @@
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[variables('networksettings').chefAutoNsg]",
-            "apiVersion": "[variables('networkSettings').networkApiVersion]",
-            "location": "[variables('networkSettings').location]",
+            "name": "[parameters('MCSModules').chefAutoNsg]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('MCSModules').location]",
             "properties": {
                 "securityRules": [
                     {
@@ -517,14 +517,12 @@
             }
         },
         {
-            "name": "[variables('networkSettings').wsNic]",
+            "name": "[parameters('MCSModules').wsNic]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[variables('networkSettings').networkApiVersion]",
-            "location": "[variables('networkSettings').location]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('MCSModules').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/',variables('networkSettings').wsPip)]",
-                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
-                "[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSettings').wsNsg)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/',parameters('MCSModules').wsNsg)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -534,27 +532,23 @@
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIpAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('networkSettings').wsPip)]"
-                            }
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('MCSModules').wsIPAddress]"
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSettings').wsNsg)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').wsNsg)]"
                 }
             }
         },
         {
-            "name": "[variables('networkSettings').chefAutoNic]",
+            "name": "[parameters('MCSModules').chefAutoNic]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[variables('networkSettings').networkApiVersion]",
-            "location": "[variables('networkSettings').location]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('MCSModules').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/',variables('networkSettings').chefAutoPip)]",
-                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
-                "[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSettings').chefAutoNsg)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/',parameters('MCSModules').chefAutoNsg)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -564,37 +558,35 @@
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIpAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('networkSettings').chefAutoPip)]"
-                            }
+                            "privateIPAllocationMethod": "Static",
+                           "privateIPAddress": "[parameters('MCSModules').wsIPAddress]"
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSettings').chefAutoNsg)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').chefAutoNsg)]"
                 }
             }
         },
         {
-            "name": "[variables('computeSettings').wsVmName]",
+            "name": "[parameters('MCSModules').wsVmName]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[variables('computeSettings').computeApiVersion]",
-            "location": "[variables('computeSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('MCSModules').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', variables('networkSettings').wsNic)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').wsNic)]"
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "[variables('computeSettings').wsVmName]",
-                    "adminUsername": "[variables('computeSettings').adminUsername]",
-                    "adminPassword": "[variables('computeSettings').adminPassword]",
+                    "computerName": "[parameters('MCSModules').wsVmName]",
+                    "adminUsername": "[parameters('MCSModules').adminUsername]",
+                    "adminPassword": "[parameters('MCSModules').adminPassword]",
                     "windowsConfiguration": {
                         "provisionVmAgent": true
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[variables('computeSettings').virtualMachineSize]"
+                    "vmSize": "[parameters('MCSModules').wsVMSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -606,7 +598,7 @@
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType": "[variables('computeSettings').storageAccountType]"
+                            "storageAccountType": "Standard_LRS",
                         }
                     },
                     "dataDisks": []
@@ -614,14 +606,14 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('computeSettings').wsNic)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').wsNic)]"
                         }
                     ]
                 }
             }
         },
         {
-            "name": "[concat(variables('computeSettings').wsVmName,'/workstation-setup')]",
+            "name": "[concat(parameters('MCSModules').wsVmName,'/workstation-setup')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[variables('computeSettings').location]",
             "apiVersion": "2016-04-30-preview",
