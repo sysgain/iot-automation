@@ -318,7 +318,7 @@
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                            "storageAccountType": "Standard_LRS"
                         }
                     },
                    "dataDisks": [
@@ -363,6 +363,373 @@
                 },
                 "protectedSettings": {
                     "commandToExecute": "[parameters('MCSModules').commandToExecute]"
+                }
+            }
+        },
+        {
+            "name": "[variables('networkSettings').wsNsg]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[variables('networkSettings').networkApiVersion]",
+            "location": "[variables('networkSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "https",
+                        "properties": {
+                            "priority": 100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "http",
+                        "properties": {
+                            "priority": 101,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "80",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "winrm",
+                        "properties": {
+                            "priority": 102,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5985",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "httpsout",
+                        "properties": {
+                            "priority": 1070,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Outbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[variables('networksettings').chefAutoNsg]",
+            "apiVersion": "[variables('networkSettings').networkApiVersion]",
+            "location": "[variables('networkSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "ssh",
+                        "properties": {
+                            "priority": 1010,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "22",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "https",
+                        "properties": {
+                            "priority": 1020,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "git",
+                        "properties": {
+                            "priority": 1030,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "8989",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "httpsout",
+                        "properties": {
+                            "priority": 1050,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Outbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "udp",
+                        "properties": {
+                            "priority": 1040,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "8443",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('networkSettings').wsNic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[variables('networkSettings').networkApiVersion]",
+            "location": "[variables('networkSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIpAddresses/',variables('networkSettings').wsPip)]",
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSettings').wsNsg)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('networkSettings').wsPip)]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSettings').wsNsg)]"
+                }
+            }
+        },
+        {
+            "name": "[variables('networkSettings').chefAutoNic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[variables('networkSettings').networkApiVersion]",
+            "location": "[variables('networkSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIpAddresses/',variables('networkSettings').chefAutoPip)]",
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSettings').chefAutoNsg)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('networkSettings').chefAutoPip)]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSettings').chefAutoNsg)]"
+                }
+            }
+        },
+        {
+            "name": "[variables('computeSettings').wsVmName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[variables('computeSettings').computeApiVersion]",
+            "location": "[variables('computeSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkSettings').wsNic)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[variables('computeSettings').wsVmName]",
+                    "adminUsername": "[variables('computeSettings').adminUsername]",
+                    "adminPassword": "[variables('computeSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": true
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[variables('computeSettings').virtualMachineSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('computeSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('computeSettings').wsNic)]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "[concat(variables('computeSettings').wsVmName,'/workstation-setup')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[variables('computeSettings').location]",
+            "apiVersion": "2016-04-30-preview",
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/sudheermareddy/test/master/workstaionsetup1.ps1"
+                    ],
+                    "commandToExecute": "[concat('powershell.exe -File workstaionsetup1.ps1')]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('computeSettings').wsVmName)]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('computeSettings').chefAutoVmName]",
+            "apiVersion": "[variables('computeSettings').computeApiVersion]",
+            "location": "[variables('computeSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkSettings').chefAutoNic)]"
+            ],
+            "plan": {
+                "name": "[variables('computeSettings').imageSKU]",
+                "product": "[variables('computeSettings').imageOffer]",
+                "publisher": "[variables('computeSettings').imagePublisher]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[variables('computeSettings').virtualMachineSize]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('computeSettings').chefAutoVmName]",
+                    "adminUsername": "[variables('computeSettings').adminUsername]",
+                    "adminPassword": "[variables('computeSettings').adminPassword]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('computeSettings').imagePublisher]",
+                        "offer": "[variables('computeSettings').imageOffer]",
+                        "sku": "[variables('computeSettings').imageSKU]",
+                        "version": "[variables('computeSettings').imageVersion]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('computeSettings').storageAccountType]"
+                        }
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('computeSettings').chefAutoNic)]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('computeSettings').chefAutoVmName,'/automate_setup')]",
+            "apiVersion": "[variables('computeSettings').computeApiVersion]",
+            "location": "[variables('computeSettings').location]",
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[variables('computeSettings').chefAutoScriptUrl1]"
+                    ],
+                    "commandToExecute": "[concat(variables('computeSettings').rubyPath, ' ./automate_setup.rb --fqdn \"', variables('chefAutomatefqdn'), '\" --license \"', variables('computeSettings').automateLicenseUri, '\"',' --adminUsername \"',variables('computeSettings').adminUsername,'\"',' --firstname ','\"',variables('computeSettings').firstname,'\"',' --lastname ','\"',variables('computeSettings').lastname,'\"',' --mailid ','\"',variables('computeSettings').mailid,'\"',' --adminpassword ','\"',variables('computeSettings').adminPassword,'\"',' --orguser ','\"',variables('computeSettings').orguser,'\"')]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('computeSettings').chefAutoVmName)]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "workstation-extension",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('computeSettings').chefAutoVmName,'/extensions/automate_setup')]"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('workstationextensionurl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "computeSettings": {
+                        "value": "[variables('computeSettings')]"
+                    },
+                    "workstationSetupUrl2": {
+                        "value": "[variables('workstationSetupUrl2')]"
+                    },
+                    "chef-server-fqdn": {
+                        "value": "[reference(variables('networkSettings').chefAutoPip).dnsSettings.fqdn]"
+                    }
                 }
             }
         }
