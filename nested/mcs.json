@@ -88,7 +88,7 @@
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_DS1_v2"
+                    "vmSize": "[parameters('MCSModules').VMSize]"
                 },
                 "osProfile": {
                     "computerName": "[parameters('MCSModules').adVMName]",
@@ -299,7 +299,7 @@
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('MCSModules').splunkVMSize]"
+                    "vmSize": "[parameters('MCSModules').VMSize]"
                 },
                 "osProfile": {
                     "computername": "[parameters('MCSModules').splunkVMName]",
@@ -316,7 +316,7 @@
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
+                           "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                         }
                     },
                     "dataDisks": [
@@ -584,7 +584,7 @@
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('MCSModules').wsVMSize]"
+                    "vmSize": "[parameters('MCSModules').VMSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -596,7 +596,7 @@
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                         }
                     },
                     "dataDisks": []
@@ -663,7 +663,7 @@
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                         }
                     }
                 },
