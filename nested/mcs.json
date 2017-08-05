@@ -759,22 +759,22 @@
                         "value": "[parameters('MCSModules').wsVmName]"
                     },
                     "scriptFileName": {
-                        "value": "[parameters('MCSModules').wsVmName]"
+                        "value": "[parameters('MCSModules').scriptFileName]"
                     },
                     "domainName": {
                         "value": "[parameters('MCSModules').domainName]"
                     },
                     "Username": {
-                        "value": "[parameters('MCSModules').adminUsername]"
+                        "value": "[parameters('MCSModules').Username]"
                     },
                     "Password": {
-                        "value": "[parameters('MCSModules').adminPassword]"
+                        "value": "[parameters('MCSModules').Password]"
                     },
                     "fileUris": {
                         "value": "[parameters('MCSModules').fileUris]"
                     },
                     "computeApiVersion": {
-                        "value": "[parameters('MCSModules').computeApiVersion]"
+                        "value": "[parameters('apiVersions').computeApiVersion]"
                     }
                 }
             }
