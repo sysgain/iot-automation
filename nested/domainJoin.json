@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "MCSModules":{
+            "type": "object"
+        },
+          "networkSettings":{
+            "type": "object"
+        },
+        "apiVersions":{
+            "type": "object"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]"
+
+    },  
+    "resources": [
+        {
+            "name": "[concat(parameters('sqlServerSettings').sqlservername,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('sqlServerSettings').sqlservername,'/extensions/SqlIaasExtension')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('sqlServerSettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('sqlServerSettings').scriptFileName,' ',parameters('sqlServerSettings').domainName,' ',parameters('sqlServerSettings').Username,' ',parameters('sqlServerSettings').Password)]"
+                }
+            }
+        }
+    ]
+}
