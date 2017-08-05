@@ -607,6 +607,12 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').wsNic)]"
                         }
                     ]
+                },
+                 "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
                 }
             }
         },
@@ -673,6 +679,12 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').chefAutoNic)]"
                         }
                     ]
+                },
+                 "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
                 }
             }
         },
