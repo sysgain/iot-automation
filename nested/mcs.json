@@ -2,21 +2,20 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "MCSModules":{
+        "MCSModules": {
             "type": "object"
         },
-          "networkSettings":{
+        "networkSettings": {
             "type": "object"
         },
-        "apiVersions":{
+        "apiVersions": {
             "type": "object"
         }
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]"
-
-    },  
+    },
     "resources": [
         {
             "name": "[parameters('MCSModules').adNetworkSecurityGroupName]",
@@ -41,7 +40,7 @@
                 ]
             }
         },
-         {
+        {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('MCSModules').adstorageAccountName]",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
@@ -58,14 +57,13 @@
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('MCSModules').location]",
             "dependsOn": [
-            "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').adNetworkSecurityGroupName)]"
-
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').adNetworkSecurityGroupName)]"
             ],
             "properties": {
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
-                        "properties": {     
+                        "properties": {
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('MCSModules').adNicIPAddress]",
                             "subnet": {
@@ -74,7 +72,7 @@
                         }
                     }
                 ],
-                 "networkSecurityGroup": {
+                "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('MCSModules').adNetworkSecurityGroupName)]"
                 }
             }
@@ -99,8 +97,8 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher":  "[parameters('MCSModules').publisher]",
-                        "offer":  "[parameters('MCSModules').offer]",
+                        "publisher": "[parameters('MCSModules').publisher]",
+                        "offer": "[parameters('MCSModules').offer]",
                         "sku": "[parameters('MCSModules').sku]",
                         "version": "[parameters('MCSModules').version]"
                     },
@@ -125,7 +123,7 @@
                         }
                     ]
                 },
-                 "diagnosticsProfile": {
+                "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
                         "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
@@ -277,7 +275,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
-                             "privateIPAddress": "[parameters('MCSModules').splunkIPAddress]",
+                            "privateIPAddress": "[parameters('MCSModules').splunkIPAddress]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             }
@@ -286,7 +284,7 @@
                 ]
             }
         },
-         {
+        {
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('MCSModules').splunkVMName]",
@@ -305,7 +303,7 @@
                 },
                 "osProfile": {
                     "computername": "[parameters('MCSModules').splunkVMName]",
-                     "adminUsername": "[parameters('MCSModules').Username]",
+                    "adminUsername": "[parameters('MCSModules').Username]",
                     "adminPassword": "[parameters('MCSModules').Password]"
                 },
                 "storageProfile": {
@@ -321,7 +319,7 @@
                             "storageAccountType": "Standard_LRS"
                         }
                     },
-                   "dataDisks": [
+                    "dataDisks": [
                         {
                             "diskSizeGB": "1023",
                             "lun": 0,
@@ -358,7 +356,7 @@
                 "typeHandlerVersion": "[parameters('MCSModules').typeHandlerVersion]",
                 "settings": {
                     "fileUris": [
-                         "[parameters('MCSModules').splunkScriptsUrl]"
+                        "[parameters('MCSModules').splunkScriptsUrl]"
                     ]
                 },
                 "protectedSettings": {
@@ -559,7 +557,7 @@
                                 "id": "[variables('subnetRef')]"
                             },
                             "privateIPAllocationMethod": "Static",
-                           "privateIPAddress": "[parameters('MCSModules').chefAutomateIPAddress]"
+                            "privateIPAddress": "[parameters('MCSModules').chefAutomateIPAddress]"
                         }
                     }
                 ],
@@ -624,7 +622,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                         "[parameters('MCSModules').workstationSetup]"
+                        "[parameters('MCSModules').workstationSetup]"
                     ],
                     "commandToExecute": "[concat('powershell.exe -File workstaionsetup1.ps1')]"
                 }
@@ -681,7 +679,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('MCSModules').chefAutoVmName,'/automate_setup')]",
-            "apiVersion":"[parameters('apiVersions').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('MCSModules').location]",
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
@@ -716,7 +714,7 @@
                     "wsVmName": {
                         "value": "[parameters('MCSModules').wsVmName]"
                     },
-                     "location": {
+                    "location": {
                         "value": "[parameters('MCSModules').location]"
                     },
                     "adminUsername": {
@@ -725,10 +723,10 @@
                     "adminPassword": {
                         "value": "[parameters('MCSModules').adminPassword]"
                     },
-                   "computeApiVersion": {
+                    "computeApiVersion": {
                         "value": "[parameters('apiVersions').computeApiVersion]"
                     },
-                     "orguser": {
+                    "orguser": {
                         "value": "[parameters('MCSModules').orguser]"
                     },
                     "workstationSetupUrl2": {
@@ -737,8 +735,46 @@
                     "chef-server-fqdn": {
                         "value": "[parameters('MCSModules').chefAutomateIPAddress]"
                     },
-                    "splunkIP":{
+                    "splunkIP": {
                         "value": "[parameters('MCSModules').splunkIPAddress]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "domainJoin",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                "workstation-extension"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('MCSModules').domainJoinUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "wsVmName": {
+                        "value": "[parameters('MCSModules').wsVmName]"
+                    },
+                    "scriptFileName": {
+                        "value": "[parameters('MCSModules').wsVmName]"
+                    },
+                    "domainName": {
+                        "value": "[parameters('MCSModules').domainName]"
+                    },
+                    "Username": {
+                        "value": "[parameters('MCSModules').adminUsername]"
+                    },
+                    "Password": {
+                        "value": "[parameters('MCSModules').adminPassword]"
+                    },
+                    "fileUris": {
+                        "value": "[parameters('MCSModules').fileUris]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[parameters('MCSModules').computeApiVersion]"
                     }
                 }
             }
