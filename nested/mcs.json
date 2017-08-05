@@ -646,7 +646,7 @@
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').chefAutoNic)]"
             ],
             "plan": {
-                "name": "parameters('MCSModules').chefImageSKU]",
+                "name": "[parameters('MCSModules').chefImageSKU]",
                 "product": "[parameters('MCSModules').chefImageOffer]",
                 "publisher": "[parameters('MCSModules').chefImagePublisher]"
             },
