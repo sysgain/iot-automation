@@ -714,7 +714,8 @@
             "name": "workstation-extension",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName,'/extensions/automate_setup')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName,'/extensions/automate_setup')]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "incremental",
