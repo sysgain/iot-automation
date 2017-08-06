@@ -19,6 +19,17 @@
     },
     "resources": [
         {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('MCSModules').adstorageAccountName]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[parameters('MCSModules').publicIPAddressNameTrendDSM]",
@@ -28,35 +39,6 @@
                 "dnsSettings": {
                     "domainNameLabel": "[parameters('MCSModules').publicIPDomainNameLabelTrendDSM]"
                 }
-            }
-        },
-        {
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('MCSModules').nicNameTrendDSM]",
-            "location": "[parameters('MCSModules').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', parameters('MCSModules').publicIPAddressNameTrendDSM)]",
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('MCSModules').securityGroupNameTrendDSM)]"
-            ],
-            "properties": {
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').securityGroupNameTrendDSM)]"
-                },
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('MCSModules').publicIPAddressNameTrendDSM)]"
-                            },
-                            "subnet": {
-                                "id": "[variables('subnetRef1')]"
-                            }
-                        }
-                    }
-                ]
             }
         },
         {
@@ -148,6 +130,65 @@
             }
         },
         {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('MCSModules').nicNameTrendDSM]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', parameters('MCSModules').publicIPAddressNameTrendDSM)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('MCSModules').securityGroupNameTrendDSM)]"
+            ],
+            "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').securityGroupNameTrendDSM)]"
+                },
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('MCSModules').publicIPAddressNameTrendDSM)]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnetRef1')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "buildSQLServer",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[parameters('MCSModules').azuresqlUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('MCSModules').location]"
+                    },
+                    "newsqlServerName": {
+                        "value": "[parameters('MCSModules').newsqlServerName]"
+                    },
+                    "dbAdminName": {
+                        "value": "[parameters('MCSModules').dbAdminName]"
+                    },
+                    "dbAdminPassword": {
+                        "value": "[parameters('MCSModules').dbAdminPassword]"
+                    },
+                    "sqlDBName": {
+                        "value": "[parameters('MCSModules').dbName]"
+                    }
+                }
+            }
+        },
+        {
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('MCSModules').vmNameTrendDSM]",
@@ -201,40 +242,13 @@
             }
         },
         {
-            "name": "buildSQLServer",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
-            "dependsOn": [],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[parameters('MCSModules').azuresqlUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "location": {
-                        "value": "[parameters('MCSModules').location]"
-                    },
-                    "newsqlServerName": {
-                        "value": "[parameters('MCSModules').newsqlServerName]"
-                    },
-                    "dbAdminName": {
-                        "value": "[parameters('MCSModules').dbAdminName]"
-                    },
-                    "dbAdminPassword": {
-                        "value": "[parameters('MCSModules').dbAdminPassword]"
-                    },
-                    "sqlDBName": {
-                        "value": "[parameters('MCSModules').dbName]"
-                    }
-                }
-            }
-        },
-        {
             "name": "[parameters('MCSModules').adNetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').vmNameTrendDSM)]"
+            ],
             "properties": {
                 "securityRules": [
                     {
@@ -252,17 +266,6 @@
                     }
                 ]
             }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('MCSModules').adstorageAccountName]",
-            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('MCSModules').location]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage",
-            "properties": {}
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
@@ -439,6 +442,9 @@
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('MCSModules').splunkNsg]",
             "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('networkSettings').virtualNetworkName)]"
+            ],
             "properties": {
                 "securityRules": [
                     {
@@ -639,6 +645,9 @@
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').splunkVMName,'/extensions/',parameters('MCSModules').splunkExtensionName)]"
+            ],
             "properties": {
                 "securityRules": [
                     {
@@ -813,6 +822,9 @@
             "name": "[parameters('MCSModules').chefAutoNsg]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName,'/extensions/CustomScriptExtension')]"
+            ],
             "properties": {
                 "securityRules": [
                     {
@@ -1031,9 +1043,7 @@
             "name": "domainJoin",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "workstation-extension",
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]",
-                "[concat('Microsoft.Network/virtualNetworks/',parameters('networkSettings').virtualNetworkName)]"
+                "workstation-extension"
             ],
             "properties": {
                 "mode": "incremental",
