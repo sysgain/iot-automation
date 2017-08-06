@@ -183,7 +183,8 @@
                             "managedDisk": {
                                 "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                             }
-                        },
+                        }
+                },
                     "networkProfile": {
                         "networkInterfaces": [
                             {
@@ -198,8 +199,7 @@
                         }
                     }
                 }
-            }
-        },
+            },
         {
             "name": "buildSQLServer",
             "type": "Microsoft.Resources/deployments",
