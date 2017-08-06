@@ -249,8 +249,10 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     },
-                    "DNSServerAddress":{
-                        "value":  "[variables('DNSServerAddress')]"
+                   "DNSServerAddress": {
+                        "value": [
+                            "[variables('DNSServerAddress')]"
+                        ]
                     }
                 }
             }
