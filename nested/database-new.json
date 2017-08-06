@@ -8,9 +8,6 @@
         "newsqlServerName": {
             "type": "string"
         },
-        "existingSQLServerName": {
-            "type": "string"
-        },
         "dbAdminName": {
             "type": "string"
         },

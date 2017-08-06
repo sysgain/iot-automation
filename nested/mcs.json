@@ -218,9 +218,6 @@
                     "newsqlServerName": {
                         "value": "[parameters('MCSModules').newsqlServerName]"
                     },
-                    "existingSQLServerName": {
-                        "value": "[parameters('MCSModules').existingSQLServerName]"
-                    },
                     "dbAdminName": {
                         "value": "[parameters('MCSModules').dbAdminName]"
                     },
