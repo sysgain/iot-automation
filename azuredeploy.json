@@ -165,6 +165,7 @@
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
+        "DNSServerAddress":"10.0.2.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/staging/",
@@ -247,6 +248,9 @@
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
+                    },
+                    "DNSServerAddress":{
+                        "value":  "[variables('DNSServerAddress')]"
                     }
                 }
             }

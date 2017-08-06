@@ -10,6 +10,9 @@
         },
         "apiVersions": {
             "type": "object"
+        },
+        "DNSServerAddress":{
+            "type": "array"
         }
     },
     "variables": {
@@ -395,7 +398,7 @@
                     ]
                 },
                 "dhcpOptions": {
-                    "dnsServers": "[parameters('MCSModules').adNicIPAddress]"
+                    "dnsServers": "[parameters('DNSServerAddress')]"
                 },
                 "subnets": [
                     {
