@@ -791,8 +791,7 @@
             "location": "[parameters('MCSModules').location]",
             "apiVersion": "2016-04-30-preview",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]",
-                "domainJoin"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -987,7 +986,6 @@
             "name": "workstation-extension",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "domainJoin",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName,'/extensions/automate_setup')]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName,'/extensions/CustomScriptExtension')]"
             ],
@@ -1033,6 +1031,7 @@
             "name": "domainJoin",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
+                "workstation-extension",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]",
                 "[concat('Microsoft.Network/virtualNetworks/',parameters('networkSettings').virtualNetworkName)]"
             ],
