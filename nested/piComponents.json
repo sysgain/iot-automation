@@ -369,7 +369,7 @@
             "name": "[concat(parameters('PIAFSQLSettings').sqlservername,'/Installation')]",
             "location":  "[parameters('PIAFSQLSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]",
                 "sqlSimulatorSetup"
             ],
             "properties": {
@@ -385,6 +385,66 @@
                 "protectedSettings": {
                     "tenantID": "[parameters('PIAFSQLSettings').TenantIdentifier]",
                     "tenantPassword": "[parameters('PIAFSQLSettings').TenantActivationPassword]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDADiagStgAcnt]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDANetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDANic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef5')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
                 }
             }
         },
@@ -463,10 +523,34 @@
             }
         },
         {
-            "name": "[parameters('PIDAServersettings').PIDADiagStgAcnt]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('PIDAServersettings').PIDAVMName,'/Installation')]",
+            "location":  "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIDAServersettings').PIDAVMName,'/extensions/CustomScriptExtension')]"
+            ],
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "9.6",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('PIDAServersettings').ManagerAddress]",
+                    "DSMport": "[parameters('PIDAServersettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('PIDAServersettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('PIDAServersettings').TenantActivationPassword]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIBAServerSettings').PIBADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('PIDAServersettings').location]",
+            "location": "[parameters('PIBAServerSettings').location]",
             "sku": {
                 "name": "Standard_LRS"
             },
@@ -474,36 +558,10 @@
             "properties": {}
         },
         {
-            "name": "[parameters('PIDAServersettings').PIDANic]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('PIDAServersettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef5')]"
-                            },
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
-                        }
-                    }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
-                }
-            }
-        },
-        {
-            "name": "[parameters('PIDAServersettings').PIDANetworkSecurityGroupName]",
+            "name": "[parameters('PIBAServerSettings').PIBANetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('PIDAServersettings').location]",
+            "location": "[parameters('PIBAServerSettings').location]",
             "properties": {
                 "securityRules": [
                     {
@@ -521,17 +579,6 @@
                     }
                 ]
             }
-        },
-        {
-            "name": "[parameters('PIBAServerSettings').PIBADiagStgAcnt]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('PIBAServerSettings').location]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage",
-            "properties": {}
         },
         {
             "name": "[parameters('PIBAServerSettings').PIBANic]",
@@ -557,29 +604,6 @@
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIBAServerSettings').PIBANetworkSecurityGroupName)]"
                 }
-            }
-        },
-        {
-            "name": "[parameters('PIBAServerSettings').PIBANetworkSecurityGroupName]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('PIBAServerSettings').location]",
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "default-allow-rdp",
-                        "properties": {
-                            "priority": 1000,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "TCP",
-                            "destinationPortRange": "3389",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    }
-                ]
             }
         },
         {
@@ -653,6 +677,30 @@
                 },
                 "protectedSettings": {
                     "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIBAServerSettings').scriptFileName,' ',parameters('PIBAServerSettings').domainName,' ',parameters('PIBAServerSettings').Username,' ',parameters('PIBAServerSettings').Password)]"
+                }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/Installation')]",
+            "location":  "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIBAServerSettings').PIBAVMName,'/extensions/CustomScriptExtension')]"
+            ],
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "9.6",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('PIBAServerSettings').ManagerAddress]",
+                    "DSMport": "[parameters('PIBAServerSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('PIBAServerSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('PIBAServerSettings').TenantActivationPassword]"
                 }
             }
         }

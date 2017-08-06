@@ -412,7 +412,11 @@
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]"
+            "Password": "[parameters('adminPassword')]",
+            "TenantIdentifier": "NA",
+            "TenantActivationPassword": "NA",
+            "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
+            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
         },
         "AzurePaasevi": {
             "location": "[resourceGroup().location]",
@@ -469,7 +473,6 @@
         "adAvailabilitySetName": "adAvailabiltySet",
         "adLBName": "adLoadBalancer",
         "scriptFileName": "psscript.ps1",
-        "prefix": "[uniqueString(resourceGroup().id)]",
         "dnsPrefix": "[concat('dns',substring(variables('prefix') ,0 ,5))]",
         "domainName": "iottests.com",
         "managedDiskName": "datadisk",
@@ -478,8 +481,6 @@
         "diskSizeGB": "1023",
         "computeApiVersion": "2016-04-30-preview",
         "networkApiVersion": "2016-03-30",
-        "deploymentApiVersion": "2016-02-01",
-        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "PIOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempPICoreVM.vhd",
         "SQLOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempSQLServerVM.vhd",
         "SQLstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlvm')]",
