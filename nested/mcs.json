@@ -1046,6 +1046,7 @@
             "name": "domainJoin",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
+                 "[concat('Microsoft.Network/virtualNetworks/', parameters('networkSettings').virtualNetworkName)]",
                 "workstation-extension"
             ],
             "properties": {
