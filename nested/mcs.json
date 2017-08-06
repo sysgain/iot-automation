@@ -178,28 +178,28 @@
                         "sku": "[parameters('MCSModules').trendVMSku]",
                         "version": "latest"
                     },
-                        "osDisk": {
-                            "createOption": "FromImage",
-                            "managedDisk": {
-                                "storageAccountType": "[parameters('MCSModules').storageAccountType]"
-                            }
-                        }
-                },
-                    "networkProfile": {
-                        "networkInterfaces": [
-                            {
-                                "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('MCSModules').nicNameTrendDSM)]"
-                            }
-                        ]
-                    },
-                    "diagnosticsProfile": {
-                        "bootDiagnostics": {
-                            "enabled": "true",
-                            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                         }
                     }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('MCSModules').nicNameTrendDSM)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
                 }
-            },
+            }
+        },
         {
             "name": "buildSQLServer",
             "type": "Microsoft.Resources/deployments",
