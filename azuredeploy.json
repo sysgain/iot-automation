@@ -413,6 +413,7 @@
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
             "TenantIdentifier": "NA",
             "TenantActivationPassword": "NA",
             "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
@@ -451,7 +452,8 @@
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]"
+            "Password": "[parameters('adminPassword')]",
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "heartbeatPortTrendDSM": "4120",
         "publicIPDomainNameLabelTrendDSM": "[concat('publicdnstrenddsm',variables('suffix'))]",

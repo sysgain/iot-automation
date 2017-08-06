@@ -327,7 +327,7 @@
             "name": "sqlSimulatorSetup",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -367,7 +367,7 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('PIAFSQLSettings').sqlservername,'/Installation')]",
-            "location":  "[parameters('PIAFSQLSettings').location]",
+            "location": "[parameters('PIAFSQLSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]",
                 "sqlSimulatorSetup"
@@ -448,7 +448,7 @@
                 }
             }
         },
-         {
+        {
             "name": "[parameters('PIDAServersettings').PIDAVMName]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
@@ -479,7 +479,7 @@
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType":"[parameters('PIDAServersettings').storageAccountType]"
+                            "storageAccountType": "[parameters('PIDAServersettings').storageAccountType]"
                         }
                     },
                     "dataDisks": []
@@ -500,25 +500,40 @@
             }
         },
         {
-            "name": "[concat(parameters('PIDAServersettings').PIDAVMName,'/CustomScriptExtension')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIDADomainJoin",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIDAServersettings').PIDAVMName)]"
             ],
             "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.8",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "[parameters('PIDAServersettings').fileUris]"
-                    ]
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('PIDAServersettings').domainJoinUrl]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIDAServersettings').scriptFileName,' ',parameters('PIDAServersettings').domainName,' ',parameters('PIDAServersettings').Username,' ',parameters('PIDAServersettings').Password)]"
+                "parameters": {
+                    "wsVmName": {
+                        "value": "[parameters('PIDAServersettings').PIDAVMName]"
+                    },
+                    "scriptFileName": {
+                        "value": "[parameters('PIDAServersettings').scriptFileName]"
+                    },
+                    "domainName": {
+                        "value": "[parameters('PIDAServersettings').domainName]"
+                    },
+                    "Username": {
+                        "value": "[parameters('PIDAServersettings').Username]"
+                    },
+                    "Password": {
+                        "value": "[parameters('PIDAServersettings').Password]"
+                    },
+                    "fileUris": {
+                        "value": "[parameters('PIDAServersettings').fileUris]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    }
                 }
             }
         },
@@ -526,9 +541,9 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('PIDAServersettings').PIDAVMName,'/Installation')]",
-            "location":  "[parameters('PIAFSQLSettings').location]",
+            "location": "[parameters('PIDAServersettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIDAServersettings').PIDAVMName,'/extensions/CustomScriptExtension')]"
+                "PIDADomainJoin"
             ],
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
@@ -658,25 +673,40 @@
             }
         },
         {
-            "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/CustomScriptExtension')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIBADomainJoin",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]"
             ],
             "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.8",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "[parameters('PIBAServerSettings').fileUris]"
-                    ]
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('PIBAServerSettings').domainJoinUrl]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIBAServerSettings').scriptFileName,' ',parameters('PIBAServerSettings').domainName,' ',parameters('PIBAServerSettings').Username,' ',parameters('PIBAServerSettings').Password)]"
+                "parameters": {
+                    "wsVmName": {
+                        "value": "[parameters('PIBAServerSettings').PIBAVMName]"
+                    },
+                    "scriptFileName": {
+                        "value": "[parameters('PIBAServerSettings').scriptFileName]"
+                    },
+                    "domainName": {
+                        "value": "[parameters('PIBAServerSettings').domainName]"
+                    },
+                    "Username": {
+                        "value": "[parameters('PIBAServerSettings').Username]"
+                    },
+                    "Password": {
+                        "value": "[parameters('PIBAServerSettings').Password]"
+                    },
+                    "fileUris": {
+                        "value": "[parameters('PIBAServerSettings').fileUris]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[parameters('PIBAServerSettings').computeApiVersion]"
+                    }
                 }
             }
         },
@@ -684,9 +714,9 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/Installation')]",
-            "location":  "[parameters('PIAFSQLSettings').location]",
+            "location": "[parameters('PIBAServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIBAServerSettings').PIBAVMName,'/extensions/CustomScriptExtension')]"
+                "PIBADomainJoin"
             ],
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
