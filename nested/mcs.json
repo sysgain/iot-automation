@@ -176,7 +176,7 @@
                         "publisher": "[parameters('MCSModules').trendPublisher]",
                         "offer": "[parameters('MCSModules').trendProduct]",
                         "sku": "[parameters('MCSModules').trendVMSku]",
-                        "version": "2.0.0",
+                        "version": "latest",
                         "osDisk": {
                             "createOption": "FromImage",
                             "managedDisk": {
