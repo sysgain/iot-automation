@@ -165,7 +165,31 @@
                     "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('bastionServerSettings').scriptFileName,' ',parameters('bastionServerSettings').domainName,' ',parameters('bastionServerSettings').Username,' ',parameters('bastionServerSettings').Password)]"
                 }
             }
+        },
+        {
+      "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/Installation')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName)]"
+      ],
+      "properties": {
+        "publisher": "TrendMicro.DeepSecurity",
+        "type": "TrendMicroDSA",
+        "typeHandlerVersion": "10.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "DSMname": "[parameters('bastionServerSettings').ManagerAddress]",
+          "DSMport": "[parameters('bastionServerSettings').ActivationPort]",
+          "policyNameorID": ""
+        },
+        "protectedSettings": {
+          "tenantID": "[parameters('bastionServerSettings').TenantIdentifier]",
+          "tenantPassword": "[parameters('bastionServerSettings').TenantActivationPassword]"
         }
+      }
+    }
     ],
     "outputs": {
         "adminUsername": {
