@@ -300,6 +300,18 @@
         "adServerIP": {
             "type": "string",
             "value": "[variables('MCSModules').adNicIPAddress]"
+        },
+        "workstationIPAddress":{
+            "type": "string",
+            "value": "[variables('MCSModules').wsIPAddress]"
+        },
+        "splunkIPAddress":{
+            "type": "string",
+            "value": "[variables('MCSModules').splunkIPAddress]"
+        },
+        "chefAutomateIPAddress":{
+            "type": "string",
+            "value": "[variables('MCSModules').chefAutomateIPAddress]"
         }
     }
 }
