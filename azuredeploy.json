@@ -74,8 +74,8 @@
             "domainName": "[parameters('domainName')]",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
-            "TenantIdentifier": "null",
-            "TenantActivationPassword": "null",
+            "TenantIdentifier": "NA",
+            "TenantActivationPassword": "NA",
             "ActivationPort": "[variables('MCSModules').heartbeatPortTrendDSM]",
             "ManagerAddress": "[concat(variables('MCSModules').publicIPDomainNameLabelTrendDSM,'.',resourceGroup().location,'.cloudapp.azure.com')]"
         },

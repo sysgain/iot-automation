@@ -178,7 +178,7 @@
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
                 "type": "TrendMicroDSA",
-                "typeHandlerVersion": "10.0",
+                "typeHandlerVersion": "9.6",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "DSMname": "[parameters('bastionServerSettings').ManagerAddress]",
