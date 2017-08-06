@@ -148,7 +148,7 @@
             }
         },
         {
-            "apiVersion": "[parameters('MCSModules').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('MCSModules').vmNameTrendDSM]",
             "location": "[parameters('MCSModules').location]",
