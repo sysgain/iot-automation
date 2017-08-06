@@ -2,187 +2,530 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "PIAFSQLSettings": {
+            "type": "object"
+        },
+        "PIDAServersettings": {
+            "type": "object"
+        },
         "PIBAServersettings": {
-            "type": "string"
+            "type": "object"
         },
-        "adminUsername": {
-            "type": "string"
+        "networkSettings": {
+            "type": "object"
         },
-        "adminPassword": {
-            "type": "string"
-        },
-        "domainName": {
-            "type": "string"
-        },
-        "baseUrl": {
-            "type": "string"
-        },
-        "heartbeatPortTrendDSM": {
-            "type": "string"
-        },
-        "publicIPDomainNameLabelTrendDSM": {
-            "type": "string"
-        },
-        "deploymentApiVersion": {
-            "type": "string"
-        },
-        "storageAccountType": {
-            "type": "string"
+        "apiVersions": {
+            "type": "object"
         }
     },
     "variables": {
-        "apiVersions": {
-            "computeApiVersion": "2016-04-30-preview",
-            "networkApiVersion": "2016-09-01",
-            "storageApiVersion": "2016-01-01",
-            "deploymentApiVersion": "2016-02-01",
-            "sqlServerApiVersion": "2015-05-01-preview",
-            "sqlDBApiVersion": "2014-04-01-preview"
-        },
-        "networkSettings": {
-            "location": "[resourceGroup().location]",
-            "networkApiVersion": "2016-03-30",
-            "virtualNetworkName": "MyVNET",
-            "addressPrefix": "10.0.0.0/16",
-            "subnet1Name": "subnet1",
-            "subnet1Prefix": "10.0.0.0/24",
-            "subnet2Name": "subnet2",
-            "subnet2Prefix": "10.0.1.0/24",
-            "subnet3Name": "subnet3",
-            "subnet3Prefix": "10.0.2.0/24",
-            "subnet4Name": "subnet4",
-            "subnet4Prefix": "10.0.3.0/24",
-            "subnet5Name": "subnet5",
-            "subnet5Prefix": "10.0.4.0/24",
-            "subnet6Name": "subnet6",
-            "subnet6Prefix": "10.0.5.0/24"
-        },
-        "PIAFSQLSettings": {
-            "location": "[resourceGroup().location]",
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
-            "networkInterfaceName": "sqlNic",
-            "networkSecurityGroupName": "sqlNsg",
-            "publicIpAddressName": "sqlpip",
-            "sqlAuthenticationLogin": "sqluser",
-            "sqlAuthenticationPassword": "Password@1234",
-            "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlserver')]",
-            "sqlservername": "sqlServer",
-            "storageAccountType": "Premium_LRS",
-            "publisher": "MicrosoftSQLServer",
-            "offer": "SQL2016SP1-WS2016",
-            "sku": "Express",
-            "version": "latest",
-            "vmSize": "Standard_DS1_v2",
-            "sqlConnectivityType": "Private",
-            "sqlPrivateIPAddress": "10.0.3.4",
-            "sqlStorageDisksCount": "1",
-            "sqlStorageWorkloadType": "GENERAL",
-            "sqlAutopatchingDayOfWeek": "Sunday",
-            "sqlAutopatchingStartHour": "2",
-            "sqlAutopatchingWindowDuration": "60",
-            "sqlStorageDeploymentToken": "456",
-            "scriptFileName": "psscript.ps1",
-            "scriptFileName2": "defaultdb.ps1",
-            "scriptFileName3": "simulatorsetup.ps1",
-            "domainName": "[parameters('domainName')]",
-            "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]",
-            "baseUrl": "[parameters('baseUrl')]",
-            "fileUris": "[concat(parameters('baseUrl'),'scripts/psscript.ps1')]",
-            "fileUris2": "[concat(parameters('baseUrl'),'scripts/defaultdb.ps1')]",
-            "fileUris3": "[concat(parameters('baseUrl'),'scripts/simulatorsetup.ps1')]",
-            "sqlQueryUrl": "[concat(parameters('baseUrl'),'scripts/SQLQuery2.sql')]",
-            "piserverscript": "[concat(parameters('baseUrl'),'scripts/PiServerSQLscript.sql')]",
-            "databaseName": "iottestdb",
-            "TenantIdentifier": "NA",
-            "TenantActivationPassword": "NA",
-            "ActivationPort": "[parameters('heartbeatPortTrendDSM')]",
-            "ManagerAddress": "[concat(parameters('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
-            "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
-            "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
-            "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
-        },
-        "PIDAServersettings": {
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
-            "location": "[resourceGroup().location]",
-            "PIDAVMName": "PIDAVMServer",
-            "PIDANic": "PIDAVMNic",
-            "PIDANetworkSecurityGroupName": "PIDANsg",
-            "PIDADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
-            "publisher": "MicrosoftWindowsServer",
-            "offer": "WindowsServer",
-            "sku": "2012-R2-Datacenter",
-            "version": "latest",
-            "PIDAVMSize": "Standard_DS1_v2",
-            "storageAccountType": "[parameters('storageAccountType')]",
-            "diagStorageAccountType": "Standard_LRS",
-            "PIDAPrivateIPAddress": "10.0.4.4",
-            "scriptFileName": "psscript.ps1",
-            "domainName": "[parameters('domainName')]",
-            "fileUris": "[concat(parameters('baseUrl'),'scripts/psscript.ps1')]",
-            "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]"
-        },
-        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('networkSettings').subnet6Name)]"
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef4": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet4Name)]",
+        "subnetRef5": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet5Name)]",
+        "subnetRef6": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet6Name)]"
     },
     "resources": [
         {
-            "type": "Microsoft.Resources/deployments",
-            "name": "PIComponents",
-            "apiVersion": "[parameters('deploymentApiVersion')]",
-            "dependsOn": [],
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('PIAFSQLSettings').sqlStorageAccountName]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "name": "[parameters('PIAFSQLSettings').networkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(parameters('baseUrl'), 'nested/PIAFSQL.json')]",
-                    "contentVersion": "1.0.0.0"
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "default-allow-sql",
+                        "properties": {
+                            "priority": 1001,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "1433",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "https",
+                        "properties": {
+                            "priority": 1002,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Outbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIData",
+                        "properties": {
+                            "priority": 1600,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5450",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "SQLAnalysis2383",
+                        "properties": {
+                            "priority": 2000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "2383",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "SQLAnalysis2382",
+                        "properties": {
+                            "priority": 2100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "2382",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "HTTP",
+                        "properties": {
+                            "priority": 100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "80",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIUFLConnector",
+                        "properties": {
+                            "priority": 2200,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5460",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIServer",
+                        "properties": {
+                            "priority": 2201,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5457",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('PIAFSQLSettings').networkInterfaceName]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIAFSQLSettings').networkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef4')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIAFSQLSettings').sqlPrivateIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIAFSQLSettings').networkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIAFSQLSettings').sqlservername]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIAFSQLSettings').networkInterfaceName)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIAFSQLSettings').sqlStorageAccountName)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIAFSQLSettings').sqlservername]",
+                    "adminUsername": "[parameters('PIAFSQLSettings').adminUsername]",
+                    "adminPassword": "[parameters('PIAFSQLSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
                 },
-                "parameters": {
-                    "PIAFSQLSettings": {
-                        "value": "[variables('PIAFSQLSettings')]"
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIAFSQLSettings').vmSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIAFSQLSettings').publisher]",
+                        "offer": "[parameters('PIAFSQLSettings').offer]",
+                        "sku": "[parameters('PIAFSQLSettings').sku]",
+                        "version": "[parameters('PIAFSQLSettings').version]"
                     },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('PIAFSQLSettings').storageAccountType]"
+                        }
                     },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIAFSQLSettings').networkInterfaceName)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('PIAFSQLSettings').sqlStorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             }
         },
         {
-            "type": "Microsoft.Resources/deployments",
-            "name": "PIDAServerSetup",
-            "apiVersion": "[parameters('deploymentApiVersion')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('PIAFSQLSettings').sqlservername, '/SqlIaasExtension')]",
+            "location": "[parameters('PIAFSQLSettings').location]",
             "dependsOn": [
-                "PIComponents"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername)]"
+            ],
+            "properties": {
+                "type": "SqlIaaSAgent",
+                "publisher": "Microsoft.SqlServer.Management",
+                "typeHandlerVersion": "1.2",
+                "autoUpgradeMinorVersion": "true",
+                "settings": {
+                    "AutoTelemetrySettings": {
+                        "Region": "[parameters('PIAFSQLSettings').location]"
+                    },
+                    "AutoPatchingSettings": {
+                        "PatchCategory": "WindowsMandatoryUpdates",
+                        "Enable": true,
+                        "DayOfWeek": "[parameters('PIAFSQLSettings').sqlAutopatchingDayOfWeek]",
+                        "MaintenanceWindowStartingHour": "[parameters('PIAFSQLSettings').sqlAutopatchingStartHour]",
+                        "MaintenanceWindowDuration": "[parameters('PIAFSQLSettings').sqlAutopatchingWindowDuration]"
+                    },
+                    "KeyVaultCredentialSettings": {
+                        "Enable": false,
+                        "CredentialName": ""
+                    },
+                    "ServerConfigurationsManagementSettings": {
+                        "SQLConnectivityUpdateSettings": {
+                            "ConnectivityType": "[parameters('PIAFSQLSettings').sqlConnectivityType]",
+                            "Port": "1433"
+                        },
+                        "SQLWorkloadTypeUpdateSettings": {
+                            "SQLWorkloadType": "[parameters('PIAFSQLSettings').sqlStorageWorkloadType]"
+                        },
+                        "SQLStorageUpdateSettings": {
+                            "DiskCount": "[parameters('PIAFSQLSettings').sqlStorageDisksCount]",
+                            "NumberOfColumns": "[parameters('PIAFSQLSettings').sqlStorageDisksCount]",
+                            "StartingDeviceID": "2",
+                            "DiskConfigurationType": "New"
+                        },
+                        "AdditionalFeaturesServerConfigurations": {
+                            "IsRServicesEnabled": "false"
+                        }
+                    }
+                },
+                "protectedSettings": {
+                    "SQLAuthUpdateUserName": "[parameters('PIAFSQLSettings').sqlAuthenticationLogin]",
+                    "SQLAuthUpdatePassword": "[parameters('PIAFSQLSettings').sqlAuthenticationPassword]"
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('PIAFSQLSettings').sqlservername,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFSQLSettings').sqlservername,'/extensions/SqlIaasExtension')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIAFSQLSettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIAFSQLSettings').scriptFileName,' ',parameters('PIAFSQLSettings').domainName,' ',parameters('PIAFSQLSettings').Username,' ',parameters('PIAFSQLSettings').Password)]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "sqlSimulatorSetup",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('baseUrl'), 'nested/PIDAServer.json')]",
+                    "uri": "[concat(parameters('PIAFSQLSettings').baseUrl, 'nested/sqlsimulator.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "PIDAServersettings": {
-                        "value": "[variables('PIDAServersettings')]"
+                    "sqlservername": {
+                        "value": "[parameters('PIAFSQLSettings').sqlservername]"
                     },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
                     },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
+                    "location": {
+                        "value": "[parameters('PIAFSQLSettings').location]"
+                    },
+                    "fileUris3": {
+                        "value": "[parameters('PIAFSQLSettings').fileUris3]"
+                    },
+                    "scriptFileName3": {
+                        "value": "[parameters('PIAFSQLSettings').scriptFileName3]"
+                    },
+                    "simulatorUrl": {
+                        "value": "[parameters('PIAFSQLSettings').simulatorUrl]"
+                    },
+                    "dataserviceUrl": {
+                        "value": "[parameters('PIAFSQLSettings').dataserviceUrl]"
+                    },
+                    "PIWebApiSimulatorUrl": {
+                        "value": "[parameters('PIAFSQLSettings').PIWebApiSimulatorUrl]"
                     }
                 }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('PIAFSQLSettings').sqlservername,'/Installation')]",
+            "location":  "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername)]",
+                "sqlSimulatorSetup"
+            ],
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "9.6",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('PIAFSQLSettings').ManagerAddress]",
+                    "DSMport": "[parameters('PIAFSQLSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('PIAFSQLSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('PIAFSQLSettings').TenantActivationPassword]"
+                }
+            }
+        },
+         {
+            "name": "[parameters('PIDAServersettings').PIDAVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIDAServersettings').PIDANic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIDAServersettings').PIDADiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIDAServersettings').PIDAVMName]",
+                    "adminUsername": "[parameters('PIDAServersettings').adminUsername]",
+                    "adminPassword": "[parameters('PIDAServersettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIDAServersettings').PIDAVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIDAServersettings').publisher]",
+                        "offer": "[parameters('PIDAServersettings').offer]",
+                        "sku": "[parameters('PIDAServersettings').sku]",
+                        "version": "[parameters('PIDAServersettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType":"[parameters('PIDAServersettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIDAServersettings').PIDANic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIDAServersettings').PIDADiagStgAcnt)).primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('PIDAServersettings').PIDAVMName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIDAServersettings').PIDAVMName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIDAServersettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIDAServersettings').scriptFileName,' ',parameters('PIDAServersettings').domainName,' ',parameters('PIDAServersettings').Username,' ',parameters('PIDAServersettings').Password)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDADiagStgAcnt]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDANic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef5')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIDAServersettings').PIDANetworkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIDAServersettings').PIDANetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
             }
         },
         {
             "name": "[parameters('PIBAServerSettings').PIBADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "[variables('apiVersions').storageApiVersion]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('PIBAServerSettings').location]",
             "sku": {
                 "name": "Standard_LRS"
@@ -193,7 +536,7 @@
         {
             "name": "[parameters('PIBAServerSettings').PIBANic]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[variables('apiVersions').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('PIBAServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIBAServerSettings').PIBANetworkSecurityGroupName)]"
@@ -204,7 +547,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[variables('subnetRef')]"
+                                "id": "[variables('subnetRef6')]"
                             },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('PIBAServerSettings').PIBAPrivateIPAddress]"
@@ -219,7 +562,7 @@
         {
             "name": "[parameters('PIBAServerSettings').PIBANetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[variables('apiVersions').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('PIBAServerSettings').location]",
             "properties": {
                 "securityRules": [
@@ -242,7 +585,7 @@
         {
             "name": "[parameters('PIBAServerSettings').PIBAVMName]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[variables('apiVersions').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('PIBAServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('PIBAServerSettings').PIBANic)]",
@@ -294,7 +637,7 @@
             "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
-            "apiVersion": "[variables('apiVersions').computeApiVersion]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]"
             ],

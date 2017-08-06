@@ -168,6 +168,74 @@
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
+        "PIAFSQLSettings": {
+            "location": "[resourceGroup().location]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "networkInterfaceName": "sqlNic",
+            "networkSecurityGroupName": "sqlNsg",
+            "publicIpAddressName": "sqlpip",
+            "sqlAuthenticationLogin": "sqluser",
+            "sqlAuthenticationPassword": "Password@1234",
+            "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlserver')]",
+            "sqlservername": "sqlServer",
+            "storageAccountType": "Premium_LRS",
+            "publisher": "MicrosoftSQLServer",
+            "offer": "SQL2016SP1-WS2016",
+            "sku": "Express",
+            "version": "latest",
+            "vmSize": "Standard_DS1_v2",
+            "sqlConnectivityType": "Private",
+            "sqlPrivateIPAddress": "10.0.3.4",
+            "sqlStorageDisksCount": "1",
+            "sqlStorageWorkloadType": "GENERAL",
+            "sqlAutopatchingDayOfWeek": "Sunday",
+            "sqlAutopatchingStartHour": "2",
+            "sqlAutopatchingWindowDuration": "60",
+            "sqlStorageDeploymentToken": "456",
+            "scriptFileName": "psscript.ps1",
+            "scriptFileName2": "defaultdb.ps1",
+            "scriptFileName3": "simulatorsetup.ps1",
+            "domainName": "[parameters('domainName')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]",
+            "baseUrl": "[variables('baseUrl')]",
+            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+            "fileUris2": "[concat(variables('baseUrl'),'scripts/defaultdb.ps1')]",
+            "fileUris3": "[concat(variables('baseUrl'),'scripts/simulatorsetup.ps1')]",
+            "sqlQueryUrl": "[concat(variables('baseUrl'),'scripts/SQLQuery2.sql')]",
+            "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
+            "databaseName": "iottestdb",
+            "TenantIdentifier": "NA",
+            "TenantActivationPassword": "NA",
+            "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
+            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
+            "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
+            "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
+            "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
+        },
+        "PIDAServersettings": {
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "location": "[resourceGroup().location]",
+            "PIDAVMName": "PIDAVMServer",
+            "PIDANic": "PIDAVMNic",
+            "PIDANetworkSecurityGroupName": "PIDANsg",
+            "PIDADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest",
+            "PIDAVMSize": "Standard_DS1_v2",
+            "storageAccountType": "[variables('storageAccountType')]",
+            "diagStorageAccountType": "Standard_LRS",
+            "PIDAPrivateIPAddress": "10.0.4.4",
+            "scriptFileName": "psscript.ps1",
+            "domainName": "[parameters('domainName')]",
+            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]"
+        },
         "AzurePaasevi": {
             "location": "[resourceGroup().location]",
             "AzureSqlLogin": "sqluser",
@@ -337,32 +405,20 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
+                    "PIAFSQLSettings": {
+                        "value": "[variables('PIAFSQLSettings')]"
+                    },
+                    "PIDAServersettings": {
+                        "value": "[variables('PIDAServersettings')]"
+                    },
                     "PIBAServersettings": {
                         "value": "[variables('PIBAServersettings')]"
                     },
-                    "adminUsername": {
-                        "value": "[parameters('adminUsername')]"
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
                     },
-                    "adminPassword": {
-                        "value": "[parameters('adminPassword')]"
-                    },
-                    "domainName": {
-                        "value": "[parameters('domainName')]"
-                    },
-                    "baseUrl": {
-                        "value": "[variables('baseUrl')]"
-                    },
-                    "heartbeatPortTrendDSM": {
-                        "value": "[variables('heartbeatPortTrendDSM')]"
-                    },
-                    "publicIPDomainNameLabelTrendDSM": {
-                        "value": "[variables('publicIPDomainNameLabelTrendDSM')]"
-                    },
-                    "deploymentApiVersion": {
-                        "value": "[variables('deploymentApiVersion')]"
-                    },
-                    "storageAccountType":{
-                        "value": "[variables('storageAccountType')]"
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
                     }
                 }
             }
