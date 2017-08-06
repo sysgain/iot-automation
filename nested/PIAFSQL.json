@@ -1,0 +1,394 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "PIAFSQLSettings": {
+            "type": "object"
+        },
+        "networkSettings": {
+            "type": "object"
+        },
+        "apiVersions": {
+            "type": "object"
+        }
+    },
+    "variables": {
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks',parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/',parameters('networkSettings').subnet4Name)]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('PIAFSQLSettings').sqlStorageAccountName]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "name": "[parameters('PIAFSQLSettings').networkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "default-allow-sql",
+                        "properties": {
+                            "priority": 1001,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "1433",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "https",
+                        "properties": {
+                            "priority": 1002,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Outbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIData",
+                        "properties": {
+                            "priority": 1600,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5450",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "SQLAnalysis2383",
+                        "properties": {
+                            "priority": 2000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "2383",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "SQLAnalysis2382",
+                        "properties": {
+                            "priority": 2100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "2382",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "HTTP",
+                        "properties": {
+                            "priority": 100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "80",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIUFLConnector",
+                        "properties": {
+                            "priority": 2200,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5460",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "PIServer",
+                        "properties": {
+                            "priority": 2201,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5457",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('PIAFSQLSettings').networkInterfaceName]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIAFSQLSettings').networkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIAFSQLSettings').sqlPrivateIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIAFSQLSettings').networkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIAFSQLSettings').sqlservername]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIAFSQLSettings').networkInterfaceName)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIAFSQLSettings').sqlStorageAccountName)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIAFSQLSettings').sqlservername]",
+                    "adminUsername": "[parameters('PIAFSQLSettings').adminUsername]",
+                    "adminPassword": "[parameters('PIAFSQLSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIAFSQLSettings').vmSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIAFSQLSettings').publisher]",
+                        "offer": "[parameters('PIAFSQLSettings').offer]",
+                        "sku": "[parameters('PIAFSQLSettings').sku]",
+                        "version": "[parameters('PIAFSQLSettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('PIAFSQLSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIAFSQLSettings').networkInterfaceName)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('PIAFSQLSettings').sqlStorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('PIAFSQLSettings').sqlservername, '/SqlIaasExtension')]",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername)]"
+            ],
+            "properties": {
+                "type": "SqlIaaSAgent",
+                "publisher": "Microsoft.SqlServer.Management",
+                "typeHandlerVersion": "1.2",
+                "autoUpgradeMinorVersion": "true",
+                "settings": {
+                    "AutoTelemetrySettings": {
+                        "Region": "[parameters('PIAFSQLSettings').location]"
+                    },
+                    "AutoPatchingSettings": {
+                        "PatchCategory": "WindowsMandatoryUpdates",
+                        "Enable": true,
+                        "DayOfWeek": "[parameters('PIAFSQLSettings').sqlAutopatchingDayOfWeek]",
+                        "MaintenanceWindowStartingHour": "[parameters('PIAFSQLSettings').sqlAutopatchingStartHour]",
+                        "MaintenanceWindowDuration": "[parameters('PIAFSQLSettings').sqlAutopatchingWindowDuration]"
+                    },
+                    "KeyVaultCredentialSettings": {
+                        "Enable": false,
+                        "CredentialName": ""
+                    },
+                    "ServerConfigurationsManagementSettings": {
+                        "SQLConnectivityUpdateSettings": {
+                            "ConnectivityType": "[parameters('PIAFSQLSettings').sqlConnectivityType]",
+                            "Port": "1433"
+                        },
+                        "SQLWorkloadTypeUpdateSettings": {
+                            "SQLWorkloadType": "[parameters('PIAFSQLSettings').sqlStorageWorkloadType]"
+                        },
+                        "SQLStorageUpdateSettings": {
+                            "DiskCount": "[parameters('PIAFSQLSettings').sqlStorageDisksCount]",
+                            "NumberOfColumns": "[parameters('PIAFSQLSettings').sqlStorageDisksCount]",
+                            "StartingDeviceID": "2",
+                            "DiskConfigurationType": "New"
+                        },
+                        "AdditionalFeaturesServerConfigurations": {
+                            "IsRServicesEnabled": "false"
+                        }
+                    }
+                },
+                "protectedSettings": {
+                    "SQLAuthUpdateUserName": "[parameters('PIAFSQLSettings').sqlAuthenticationLogin]",
+                    "SQLAuthUpdatePassword": "[parameters('PIAFSQLSettings').sqlAuthenticationPassword]"
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('PIAFSQLSettings').sqlservername,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('PIAFSQLSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFSQLSettings').sqlservername,'/extensions/SqlIaasExtension')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIAFSQLSettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIAFSQLSettings').scriptFileName,' ',parameters('PIAFSQLSettings').domainName,' ',parameters('PIAFSQLSettings').Username,' ',parameters('PIAFSQLSettings').Password)]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "sqlSimulatorSetup",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('PIAFSQLSettings').baseUrl, 'nested/sqlsimulator.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sqlservername": {
+                        "value": "[parameters('PIAFSQLSettings').sqlservername]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    },
+                    "location": {
+                        "value": "[parameters('PIAFSQLSettings').location]"
+                    },
+                    "fileUris3": {
+                        "value": "[parameters('PIAFSQLSettings').fileUris3]"
+                    },
+                    "scriptFileName3": {
+                        "value": "[parameters('PIAFSQLSettings').scriptFileName3]"
+                    },
+                    "simulatorUrl": {
+                        "value": "[parameters('PIAFSQLSettings').simulatorUrl]"
+                    },
+                    "dataserviceUrl": {
+                        "value": "[parameters('PIAFSQLSettings').dataserviceUrl]"
+                    },
+                    "PIWebApiSimulatorUrl": {
+                        "value": "[parameters('PIAFSQLSettings').PIWebApiSimulatorUrl]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('PIAFSQLSettings').sqlservername,'/Installation')]",
+            "location":  "[parameters('PIAFSQLSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername)]",
+                "sqlSimulatorSetup"
+            ],
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "9.6",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('PIAFSQLSettings').ManagerAddress]",
+                    "DSMport": "[parameters('PIAFSQLSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('PIAFSQLSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('PIAFSQLSettings').TenantActivationPassword]"
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "storageKey": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('PIAFSQLSettings').sqlStorageAccountName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+        },
+        "storageAccountName": {
+            "type": "string",
+            "value": "[parameters('PIAFSQLSettings').sqlStorageAccountName]"
+        }
+    }
+}

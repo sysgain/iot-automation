@@ -1,0 +1,127 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "type": "string"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "baseUrl": {
+            "type": "string"
+        },
+        "heartbeatPortTrendDSM":{
+            "type": "string"
+        },
+        "publicIPDomainNameLabelTrendDSM":{
+            "type": "string"
+        },
+        "deploymentApiVersion":{
+            "type": "string"
+        }
+    },
+    "variables": {
+         "apiVersions": {
+            "computeApiVersion": "2016-04-30-preview",
+            "networkApiVersion": "2016-09-01",
+            "storageApiVersion": "2016-01-01",
+            "deploymentApiVersion": "2016-02-01",
+            "sqlServerApiVersion": "2015-05-01-preview",
+            "sqlDBApiVersion": "2014-04-01-preview"
+        },
+        "networkSettings": {
+            "location": "[resourceGroup().location]",
+            "networkApiVersion": "2016-03-30",
+            "virtualNetworkName": "MyVNET",
+            "addressPrefix": "10.0.0.0/16",
+            "subnet1Name": "subnet1",
+            "subnet1Prefix": "10.0.0.0/24",
+            "subnet2Name": "subnet2",
+            "subnet2Prefix": "10.0.1.0/24",
+            "subnet3Name": "subnet3",
+            "subnet3Prefix": "10.0.2.0/24",
+            "subnet4Name": "subnet4",
+            "subnet4Prefix": "10.0.3.0/24",
+            "subnet5Name": "subnet5",
+            "subnet5Prefix": "10.0.4.0/24",
+            "subnet6Name": "subnet6",
+            "subnet6Prefix": "10.0.5.0/24"
+        },
+        "PIAFSQLSettings": {
+            "location": "[resourceGroup().location]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "networkInterfaceName": "sqlNic",
+            "networkSecurityGroupName": "sqlNsg",
+            "publicIpAddressName": "sqlpip",
+            "sqlAuthenticationLogin": "sqluser",
+            "sqlAuthenticationPassword": "Password@1234",
+            "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlserver')]",
+            "sqlservername": "sqlServer",
+            "storageAccountType": "Premium_LRS",
+            "publisher": "MicrosoftSQLServer",
+            "offer": "SQL2016SP1-WS2016",
+            "sku": "Express",
+            "version": "latest",
+            "vmSize": "Standard_DS1_v2",
+            "sqlConnectivityType": "Private",
+            "sqlPrivateIPAddress": "10.0.3.4",
+            "sqlStorageDisksCount": "1",
+            "sqlStorageWorkloadType": "GENERAL",
+            "sqlAutopatchingDayOfWeek": "Sunday",
+            "sqlAutopatchingStartHour": "2",
+            "sqlAutopatchingWindowDuration": "60",
+            "sqlStorageDeploymentToken": "456",
+            "scriptFileName": "psscript.ps1",
+            "scriptFileName2": "defaultdb.ps1",
+            "scriptFileName3": "simulatorsetup.ps1",
+            "domainName": "[parameters('domainName')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]",
+            "baseUrl": "[parameters('baseUrl')]",
+            "fileUris": "[concat(parameters('baseUrl'),'scripts/psscript.ps1')]",
+            "fileUris2": "[concat(parameters('baseUrl'),'scripts/defaultdb.ps1')]",
+            "fileUris3": "[concat(parameters('baseUrl'),'scripts/simulatorsetup.ps1')]",
+            "sqlQueryUrl": "[concat(parameters('baseUrl'),'scripts/SQLQuery2.sql')]",
+            "piserverscript": "[concat(parameters('baseUrl'),'scripts/PiServerSQLscript.sql')]",
+            "databaseName": "iottestdb",
+            "TenantIdentifier": "NA",
+            "TenantActivationPassword": "NA",
+            "ActivationPort": "[parameters('heartbeatPortTrendDSM')]",
+            "ManagerAddress": "[concat(parameters('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
+            "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
+            "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
+            "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIComponents",
+            "apiVersion": "[parameters('deploymentApiVersion')]",
+            "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('baseUrl'), 'nested/PIAFSQL.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PIAFSQLSettings": {
+                        "value": "[variables('PIAFSQLSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        }
+    ]
+}

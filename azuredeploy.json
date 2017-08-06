@@ -76,7 +76,7 @@
             "Password": "[parameters('adminPassword')]",
             "TenantIdentifier": "NA",
             "TenantActivationPassword": "NA",
-            "ActivationPort": "[variables('MCSModules').heartbeatPortTrendDSM]",
+            "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
             "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
         },
         "MCSModules": {
@@ -141,7 +141,7 @@
             "securityGroupNameTrendDSM": "trendnsg",
             "publicIPDomainNameLabelTrendDSM": "[variables('publicIPDomainNameLabelTrendDSM')]",
             "managerPortTrendDSM": "443",
-            "heartbeatPortTrendDSM": "4120",
+            "heartbeatPortTrendDSM": "[variables('heartbeatPortTrendDSM')]",
             "vmAdminNameTrendDSM": "trend",
             "publicIPAddressNameTrendDSM": "publicIPTrendDSM",
             "vmAdminPasswordTrendDSM": "[parameters('adminPassword')]",
@@ -208,7 +208,7 @@
             "databaseName": "iottestdb",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
-            "PIWebApiSimulatorUrl":"https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
+            "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
         },
         "AzurePaasevi": {
             "location": "[resourceGroup().location]",
@@ -267,6 +267,7 @@
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]"
         },
+        "heartbeatPortTrendDSM": "4120",
         "publicIPDomainNameLabelTrendDSM": "[concat('publicdnstrenddsm',variables('suffix'))]",
         "DNSServerAddress": "10.0.2.4",
         "splunkServerRole": "splunk_server",
@@ -396,18 +397,30 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/sqlServer.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/piComponents.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "sqlServerSettings": {
-                        "value": "[variables('sqlServerSettings')]"
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
                     },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
                     },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
+                    "domainName": {
+                        "value": "[parameters('domainName')]"
+                    },
+                    "baseUrl": {
+                        "value": "[variables('baseUrl')]"
+                    },
+                    "heartbeatPortTrendDSM": {
+                        "value": "[variables('heartbeatPortTrendDSM')]"
+                    },
+                    "publicIPDomainNameLabelTrendDSM": {
+                        "value": "[variables('publicIPDomainNameLabelTrendDSM')]"
+                    },
+                    "deploymentApiVersion": {
+                        "value": "[variables('deploymentApiVersion')]"
                     }
                 }
             }
