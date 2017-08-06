@@ -162,7 +162,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('bastionServerSettings').scriptFileName,' ',parameters('bastionServerSettings').domainName,' ',parameters('bastionServerSettings').Username,' ',parameters('bastionServerSettings').Password)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('bastionServerSettings').domainName,' ',parameters('bastionServerSettings').Username,' ',parameters('bastionServerSettings').Password)]"
                 }
             }
         },
