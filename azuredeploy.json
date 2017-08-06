@@ -22,27 +22,6 @@
             "metadata": {
                 "description": "The FQDN of the Active Directory Domain to be created on VM"
             }
-        },
-        "sqlAdministratorLogin": {
-            "type": "string",
-            "defaultValue": "sqluser",
-            "metadata": {
-                "description": "The admin user of the Azure SQL Server"
-            }
-        },
-        "sqlAdministratorLoginPassword": {
-            "type": "securestring",
-            "defaultValue": "Password@1234",
-            "metadata": {
-                "description": "The password of the admin user of the Azure SQL Server"
-            }
-        },
-        "sqldatabasename": {
-            "type": "string",
-            "defaultValue": "sqldatabase",
-            "metadata": {
-                "description": "The name of Azure SQL database"
-            }
         }
     },
     "variables": {
