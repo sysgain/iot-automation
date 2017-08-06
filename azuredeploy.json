@@ -22,6 +22,184 @@
             "metadata": {
                 "description": "The FQDN of the Active Directory Domain to be created on VM"
             }
+        },
+        "sqlAdministratorLogin": {
+            "type": "string",
+            "defaultValue": "sqluser",
+            "metadata": {
+                "description": "The admin user of the Azure SQL Server"
+            }
+        },
+        "sqlAdministratorLoginPassword": {
+            "type": "securestring",
+            "defaultValue": "Password@1234",
+            "metadata": {
+                "description": "The password of the admin user of the Azure SQL Server"
+            }
+        },
+        "sqldatabasename": {
+            "type": "string",
+            "defaultValue": "sqldatabase",
+            "metadata": {
+                "description": "The name of Azure SQL database"
+            }
+        },
+        "skuName": {
+            "type": "string",
+            "defaultValue": "S1",
+            "allowedValues": [
+                "D1",
+                "B1",
+                "B2",
+                "B3",
+                "S1",
+                "S2",
+                "S3",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+            ],
+            "metadata": {
+                "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+            }
+        },
+        "skuCapacity": {
+            "type": "int",
+            "defaultValue": 1,
+            "minValue": 1,
+            "metadata": {
+                "description": "Describes plan's instance count"
+            }
+        },
+        "hostingPlanName": {
+            "type": "string",
+            "defaultValue": "AppServPlan",
+            "metadata": {
+                "description": "Describes Hosting plan's name"
+            }
+        },
+        "webSiteName": {
+            "type": "string",
+            "defaultValue": "phase21iotappsri",
+            "metadata": {
+                "description": "Describes webSite name which should be unique"
+            }
+        },
+        "apiServerName": {
+            "type": "string",
+            "defaultValue": "apiserverapi322",
+            "metadata": {
+                "description": "Describes API Server name which should be unique"
+            }
+        },
+        "emailHost": {
+            "type": "string",
+            "defaultValue": "ermhost",
+            "metadata": {
+                "description": "Describes the host name for sending email notifications"
+            }
+        },
+        "emailHostPort": {
+            "type": "string",
+            "defaultValue": "25",
+            "metadata": {
+                "description": "Describes the port number for email host"
+            }
+        },
+        "senderEmail": {
+            "type": "string",
+            "defaultValue": "ermhost@ermdeploy.com",
+            "metadata": {
+                "description": "Describes the email ID of the sender for email notifications"
+            }
+        },
+        "senderEmailPassword": {
+            "type": "string",
+            "defaultValue": "Password@1234",
+            "metadata": {
+                "descrition": "Describes the password for sender email ID for email notifications"
+            }
+        },
+        "b2cTenant": {
+            "type": "string",
+            "defaultValue": "testiot22.onmicrosoft.com",
+            "metadata": {
+                "description": "Describes B2C Tenant Name Directory"
+            }
+        },
+        "b2cClientId": {
+            "type": "string",
+            "defaultValue": "ca10d7a5-71eb-4dd8-aaa2-b2c534c202a1",
+            "metadata": {
+                "description": "Describes the client Id of the application registered in B2C Directory"
+            }
+        },
+        "b2cClientSecret": {
+            "type": "string",
+            "defaultValue": "{XIs91_*|g1XY4b8",
+            "metadata": {
+                "description": "Describes the Client secret of the application registered in B2C Directory"
+            }
+        },
+        "b2cSignUpPolicyId": {
+            "type": "string",
+            "defaultValue": "B2C_1_suppolicy2",
+            "metadata": {
+                "description": "Describes the B2C Sign Up policy"
+            }
+        },
+        "b2cSignInPolicyId": {
+            "type": "string",
+            "defaultValue": "B2C_1_sinpolicy2",
+            "metadata": {
+                "description": "Describes the B2C Sign in policy"
+            }
+        },
+        "b2cEditProfilePolicyId": {
+            "type": "string",
+            "defaultValue": "B2C_1_peditpolicy2",
+            "metadata": {
+                "description": "Describes the B2C Profile Editing policy"
+            }
+        },
+        "b2cChangePasswordPolicy": {
+            "type": "string",
+            "defaultValue": "B2C_1_cpasspolicy",
+            "metadata": {
+                "description": "Describes the B2C Change Password policy"
+            }
+        },
+        "webjobStorageType": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_ZRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Premium_LRS"
+            ]
+        },
+        "workspaceName": {
+            "type": "string",
+            "defaultValue": "workspace12",
+            "maxLength": 17,
+            "metadata": {
+                "description": "Name of the Workspace to be created"
+            }
+        },
+        "MLskuName": {
+            "type": "string",
+            "defaultValue": "S1",
+            "allowedValues": [
+                "S1",
+                "S2",
+                "S3"
+            ],
+            "metadata": {
+                "description": "Pricing tier for Workspace"
+            }
         }
     },
     "variables": {
