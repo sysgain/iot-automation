@@ -286,6 +286,113 @@
                     }
                 }
             }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "sqlServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource",
+                "UpdateVNetDNS",
+                "adServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/sqlServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sqlServerSettings": {
+                        "value": "[variables('sqlServerSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "AzuresqlServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "sqlServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/azurepaas.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "AzurePaasevi": {
+                        "value": "[variables('AzurePaasevi')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIBAServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource",
+                "UpdateVNetDNS",
+                "adServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/PIBAServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PIBAServersettings": {
+                        "value": "[variables('PIBAServersettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIDAServerSetup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "virtualNetworksResource",
+                "UpdateVNetDNS",
+                "adServerSetup"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/PIDAserver.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PIDAServersettings": {
+                        "value": "[variables('PIDAServersettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
         }
     ],
     "outputs": {
