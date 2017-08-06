@@ -164,11 +164,14 @@
                 }
             ]
         },
-         {
+        {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('networkSettings').virtualNetworkName]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('networkSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').adVMName,'/extensions/CreateADForest')]"
+            ],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -203,13 +206,13 @@
                             "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
                         }
                     },
-                      {
+                    {
                         "name": "[parameters('networkSettings').subnet5Name]",
                         "properties": {
                             "addressPrefix": "[parameters('networkSettings').subnet5Prefix]"
                         }
                     },
-                      {
+                    {
                         "name": "[parameters('networkSettings').subnet6Name]",
                         "properties": {
                             "addressPrefix": "[parameters('networkSettings').subnet6Prefix]"
@@ -370,7 +373,7 @@
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                           "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                         }
                     },
                     "dataDisks": [
@@ -494,6 +497,104 @@
             }
         },
         {
+            "name": "[parameters('MCSModules').wsNic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/',parameters('MCSModules').wsNsg)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('MCSModules').wsIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').wsNsg)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('MCSModules').wsVmName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').wsNic)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('MCSModules').wsVmName]",
+                    "adminUsername": "[parameters('MCSModules').Username]",
+                    "adminPassword": "[parameters('MCSModules').Password]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": true
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('MCSModules').VMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').wsNic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('MCSModules').wsVmName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('MCSModules').location]",
+            "apiVersion": "2016-04-30-preview",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]",
+                "domainJoin"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('MCSModules').workstationSetup]"
+                    ],
+                    "commandToExecute": "[concat('powershell.exe -File workstationsetup1.ps1')]"
+                }
+            }
+        },
+        {
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('MCSModules').chefAutoNsg]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -569,32 +670,6 @@
             }
         },
         {
-            "name": "[parameters('MCSModules').wsNic]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('MCSModules').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/',parameters('MCSModules').wsNsg)]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('MCSModules').wsIPAddress]"
-                        }
-                    }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').wsNsg)]"
-                }
-            }
-        },
-        {
             "name": "[parameters('MCSModules').chefAutoNic]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -619,77 +694,6 @@
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').chefAutoNsg)]"
                 }
             }
-        },
-        {
-            "name": "[parameters('MCSModules').wsVmName]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('MCSModules').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').wsNic)]"
-            ],
-            "properties": {
-                "osProfile": {
-                    "computerName": "[parameters('MCSModules').wsVmName]",
-                    "adminUsername": "[parameters('MCSModules').Username]",
-                    "adminPassword": "[parameters('MCSModules').Password]",
-                    "windowsConfiguration": {
-                        "provisionVmAgent": true
-                    }
-                },
-                "hardwareProfile": {
-                    "vmSize": "[parameters('MCSModules').VMSize]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2012-R2-Datacenter",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "createOption": "fromImage",
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
-                        }
-                    },
-                    "dataDisks": []
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').wsNic)]"
-                        }
-                    ]
-                },
-                 "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "[concat(parameters('MCSModules').wsVmName,'/CustomScriptExtension')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('MCSModules').location]",
-            "apiVersion": "2016-04-30-preview",
-            "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.8",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "[parameters('MCSModules').workstationSetup]"
-                    ],
-                    "commandToExecute": "[concat('powershell.exe -File workstationsetup1.ps1')]"
-                }
-            },
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]"
-            ]
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
@@ -734,7 +738,7 @@
                         }
                     ]
                 },
-                 "diagnosticsProfile": {
+                "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
                         "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
@@ -768,6 +772,7 @@
             "name": "workstation-extension",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
+                "domainJoin",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName,'/extensions/automate_setup')]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName,'/extensions/CustomScriptExtension')]"
             ],
@@ -813,8 +818,8 @@
             "name": "domainJoin",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "workstation-extension",
-               "[concat('Microsoft.Network/virtualNetworks/',parameters('networkSettings').virtualNetworkName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]",
+                "[concat('Microsoft.Network/virtualNetworks/',parameters('networkSettings').virtualNetworkName)]"
             ],
             "properties": {
                 "mode": "incremental",
