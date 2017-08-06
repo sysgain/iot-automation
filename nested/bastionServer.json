@@ -146,7 +146,7 @@
         {
             "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
+            "location":  "[parameters('bastionServerSettings').location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionServerSettings').bastionVMName)]"
@@ -170,7 +170,7 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/Installation')]",
-            "location": "[resourceGroup().location]",
+            "location":  "[parameters('bastionServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName)]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"

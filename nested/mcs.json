@@ -1096,7 +1096,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "DSMname": "[parameters('MCSModules').ManagerAddress]",
-                    "DSMport": "[parameters('MCSModules').ActivationPort]",
+                    "DSMport": "[parameters('MCSModules').heartbeatPortTrendDSM]",
                     "policyNameorID": ""
                 },
                 "protectedSettings": {

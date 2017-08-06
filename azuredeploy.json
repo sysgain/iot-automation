@@ -77,7 +77,7 @@
             "TenantIdentifier": "NA",
             "TenantActivationPassword": "NA",
             "ActivationPort": "[variables('MCSModules').heartbeatPortTrendDSM]",
-            "ManagerAddress": "[concat(variables('MCSModules').publicIPDomainNameLabelTrendDSM,'.',resourceGroup().location,'.cloudapp.azure.com')]"
+            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
         },
         "MCSModules": {
             "location": "[resourceGroup().location]",
@@ -139,7 +139,7 @@
             "vmNameTrendDSM": "trendMicroDSM",
             "nicNameTrendDSM": "trendnic",
             "securityGroupNameTrendDSM": "trendnsg",
-            "publicIPDomainNameLabelTrendDSM": "[concat('publicdnstrenddsm',variables('suffix'))]",
+            "publicIPDomainNameLabelTrendDSM": "[variables('publicIPDomainNameLabelTrendDSM')]",
             "managerPortTrendDSM": "443",
             "heartbeatPortTrendDSM": "4120",
             "vmAdminNameTrendDSM": "trend",
@@ -154,8 +154,7 @@
             "licenseMode": "10",
             "TenantIdentifier": "NA",
             "TenantActivationPassword": "NA",
-            "ActivationPort": "[variables('MCSModules').heartbeatPortTrendDSM]",
-            "ManagerAddress": "[concat(variables('MCSModules').publicIPDomainNameLabelTrendDSM,'.',resourceGroup().location,'.cloudapp.azure.com')]",
+            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
             "newsqlServerName": "[tolower(concat('trend',uniquestring(resourceGroup().id),'-sql'))]",
             "azuresqlUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -169,6 +168,7 @@
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
+        "publicIPDomainNameLabelTrendDSM": "[concat('publicdnstrenddsm',variables('suffix'))]",
         "DNSServerAddress": "10.0.2.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
