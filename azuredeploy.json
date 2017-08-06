@@ -326,7 +326,7 @@
             "dbName":"dsm",
             "databaseOption": "new",
             "licenseMode": "10",
-            "newsqlServerName": "[tolower(concat('trend'),uniquestring(resourceGroup().id),'-sql'))]",
+            "newsqlServerName": "[tolower(concat('trend',uniquestring(resourceGroup().id),'-sql'))]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "commandToExecute": "[concat('bash node-setup.sh', ' -r ', variables('splunkServerRole'), ' -p ', parameters('adminPassword'))]",
             "splunkScriptsUrl": "[concat(variables('baseUrl'),'scripts/node-setup.sh')]",

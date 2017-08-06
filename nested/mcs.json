@@ -802,7 +802,9 @@
                 "settings": {
                     "fileUris": [
                         "[parameters('MCSModules').workstationSetup]"
-                    ],
+                    ]
+                },
+                 "protectedSettings": {
                     "commandToExecute": "[concat('powershell.exe -File workstationsetup1.ps1')]"
                 }
             }
