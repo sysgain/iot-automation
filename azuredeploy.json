@@ -165,7 +165,7 @@
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
-        "DNSServerAddress":"10.0.2.4",
+        "DNSServerAddress": "10.0.2.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/staging/",
@@ -249,7 +249,7 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     },
-                   "DNSServerAddress": {
+                    "DNSServerAddress": {
                         "value": [
                             "[variables('DNSServerAddress')]"
                         ]
@@ -301,17 +301,21 @@
             "type": "string",
             "value": "[variables('MCSModules').adNicIPAddress]"
         },
-        "workstationIPAddress":{
+        "workstationIPAddress": {
             "type": "string",
             "value": "[variables('MCSModules').wsIPAddress]"
         },
-        "splunkIPAddress":{
+        "splunkIPAddress": {
             "type": "string",
             "value": "[variables('MCSModules').splunkIPAddress]"
         },
-        "chefAutomateIPAddress":{
+        "chefAutomateIPAddress": {
             "type": "string",
             "value": "[variables('MCSModules').chefAutomateIPAddress]"
+        },
+        "trendFQDN": {
+            "type": "string",
+            "value": "[variables('bastionServerSettings').ManagerAddress]"
         }
     }
 }
