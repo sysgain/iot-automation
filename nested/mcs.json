@@ -14,9 +14,225 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]"
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]",
+        "subnetRef1": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
     },
     "resources": [
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('MCSModules').publicIPAddressNameTrendDSM]",
+            "location": "[parameters('MCSModules').location]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('MCSModules').publicIPDomainNameLabelTrendDSM]"
+                }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('MCSModules').nicNameTrendDSM]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', parameters('MCSModules').publicIPAddressNameTrendDSM)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('MCSModules').securityGroupNameTrendDSM)]"
+            ],
+            "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').securityGroupNameTrendDSM)]"
+                },
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('MCSModules').publicIPAddressNameTrendDSM)]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnetRef1')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('MCSModules').securityGroupNameTrendDSM]",
+            "location": "[parameters('MCSModules').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "allow-inbound-ssh",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmportal",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "[parameters('MCSModules').managerPortTrendDSM]",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmagent",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "4118",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1200,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmheartbeat",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "[parameters('MCSModules').heartbeatPortTrendDSM]",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1300,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmdownload",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "4122",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1400,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmwebinstaller",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1500,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('MCSModules').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('MCSModules').vmNameTrendDSM]",
+            "location": "[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').nicNameTrendDSM)]",
+                "[concat('Microsoft.Resources/deployments/', 'buildSQLServer')]"
+            ],
+            "plan": {
+                "publisher": "[parameters('MCSModules').trendPublisher]",
+                "product": "[parameters('MCSModules').trendProduct]",
+                "name": "[parameters('MCSModules').trendVMSku]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('MCSModules').trendVMSize]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('MCSModules').vmNameTrendDSM]",
+                    "adminUsername": "[parameters('MCSModules').vmAdminNameTrendDSM]",
+                    "adminPassword": "[parameters('MCSModules').vmAdminPasswordTrendDSM]",
+                    "customData": "[base64(concat('vmName:',base64(parameters('MCSModules').vmNameTrendDSM),',databaseServer:',reference('buildSQLServer').outputs.sqlServerFQDN.value,',databaseName:',base64(parameters('MCSModules').dbName),',location:',parameters('MCSModules').location,',managerPort:',parameters('MCSModules').managerPortTrendDSM,',heartbeatPort:',parameters('MCSModules').heartbeatPortTrendDSM,',vmFQDN:',reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('MCSModules').publicIPAddressNameTrendDSM),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn,',publicIP:,adminUserName:',base64(parameters('MCSModules').dsmAdminName),',adminPassword:',base64(parameters('MCSModules').dsmAdminPassword),',databaseUserName:',base64(parameters('MCSModules').dbAdminName),',databaseUserPassword:',base64(parameters('MCSModules').dbAdminPassword),',subscriptionId:',subscription().subscriptionId,',databaseOption:',parameters('MCSModules').databaseOption,',vmSize:',parameters('MCSModules').trendVMSize,',licenseMode:',parameters('MCSModules').licenseMode))]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('MCSModules').trendPublisher]",
+                        "offer": "[parameters('MCSModules').trendProduct]",
+                        "sku": "[parameters('MCSModules').trendVMSku]",
+                        "version": "2.0.0",
+                        "osDisk": {
+                            "createOption": "FromImage",
+                            "managedDisk": {
+                                "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                            }
+                        }
+                    },
+                    "networkProfile": {
+                        "networkInterfaces": [
+                            {
+                                "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('MCSModules').nicNameTrendDSM)]"
+                            }
+                        ]
+                    },
+                    "diagnosticsProfile": {
+                        "bootDiagnostics": {
+                            "enabled": "true",
+                            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "buildSQLServer",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('MCSModules').baseUrl, '/nested/database-',parameters('MCSModules').databaseOption,'.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('MCSModules').location]"
+                    },
+                    "newsqlServerName": {
+                        "value": "[parameters('MCSModules').newsqlServerName]"
+                    },
+                    "existingSQLServerName": {
+                        "value": "[parameters('MCSModules').existingSQLServerName]"
+                    },
+                    "dbAdminName": {
+                        "value": "[parameters('MCSModules').dbAdminName]"
+                    },
+                    "dbAdminPassword": {
+                        "value": "[parameters('MCSModules').dbAdminPassword]"
+                    },
+                    "sqlDBName": {
+                        "value": "[parameters('MCSModules').dbName]"
+                    }
+                }
+            }
+        },
         {
             "name": "[parameters('MCSModules').adNetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
