@@ -459,6 +459,7 @@
         "prefix": "[uniqueString(resourceGroup().id)]",
         "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('networkSettings').virtualNetworkName)]",
         "adsubnetRef": "[concat(variables('vnetID'),'/subnets/',variables('networkSettings').subnet2Name)]",
         "virtualNetworksResourcesURL": "[concat(variables('baseUrl'),'nested/virtualNetwork.json')]",
         "adNicName": "adNic",
