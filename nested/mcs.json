@@ -975,7 +975,7 @@
                     "fileUris": [
                         "[parameters('MCSModules').chefAutoScriptUrl1]"
                     ],
-                    "commandToExecute": "[concat(parameters('MCSModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('MCSModules').chefAutomateIPAddress, '\" --license \"',parameters('MCSModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('MCSModules').Username,'\"',' --firstname ','\"',parameters('MCSModules').firstname,'\"',' --lastname ','\"',parameters('MCSModules').lastname,'\"',' --mailid ','\"',parameters('MCSModules').mailid,'\"',' --adminpassword ','\"',parameters('MCSModules').adminPassword,'\"',' --orguser ','\"',parameters('MCSModules').orguser,'\"')]"
+                    "commandToExecute": "[concat(parameters('MCSModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('MCSModules').chefAutomateIPAddress, '\" --license \"',parameters('MCSModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('MCSModules').Username,'\"',' --firstname ','\"',parameters('MCSModules').firstname,'\"',' --lastname ','\"',parameters('MCSModules').lastname,'\"',' --mailid ','\"',parameters('MCSModules').mailid,'\"',' --adminpassword ','\"',parameters('MCSModules').Password,'\"',' --orguser ','\"',parameters('MCSModules').orguser,'\"')]"
                 }
             },
             "dependsOn": [
