@@ -2,13 +2,13 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "bastionServerSettings":{
+        "bastionServerSettings": {
             "type": "object"
         },
-        "networkSettings":{
+        "networkSettings": {
             "type": "object"
         },
-         "apiVersions":{
+        "apiVersions": {
             "type": "object"
         }
     },
@@ -123,7 +123,7 @@
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType":"[parameters('bastionServerSettings').storageAccountType]"
+                            "storageAccountType": "[parameters('bastionServerSettings').storageAccountType]"
                         }
                     },
                     "dataDisks": []
@@ -149,7 +149,8 @@
             "location": "[resourceGroup().location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionServerSettings').bastionVMName)]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionServerSettings').bastionVMName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/Installation')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -167,40 +168,40 @@
             }
         },
         {
-      "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/Installation')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName)]"
-      ],
-      "properties": {
-        "publisher": "TrendMicro.DeepSecurity",
-        "type": "TrendMicroDSA",
-        "typeHandlerVersion": "10.0",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "DSMname": "[parameters('bastionServerSettings').ManagerAddress]",
-          "DSMport": "[parameters('bastionServerSettings').ActivationPort]",
-          "policyNameorID": ""
-        },
-        "protectedSettings": {
-          "tenantID": "[parameters('bastionServerSettings').TenantIdentifier]",
-          "tenantPassword": "[parameters('bastionServerSettings').TenantActivationPassword]"
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/Installation')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName)]"
+            ],
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('bastionServerSettings').ManagerAddress]",
+                    "DSMport": "[parameters('bastionServerSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('bastionServerSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('bastionServerSettings').TenantActivationPassword]"
+                }
+            }
         }
-      }
-    }
     ],
     "outputs": {
         "adminUsername": {
             "type": "string",
             "value": "[parameters('bastionServerSettings').adminUsername]"
         },
-         "adminPassword": {
+        "adminPassword": {
             "type": "string",
             "value": "[parameters('bastionServerSettings').adminPassword]"
         },
-         "bastionFQDN": {
+        "bastionFQDN": {
             "type": "string",
             "value": "[reference(parameters('bastionServerSettings').publicIpAddressName).dnsSettings.fqdn]"
         }
