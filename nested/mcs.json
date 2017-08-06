@@ -801,7 +801,7 @@
             "name": "[concat(parameters('MCSModules').wsVmName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[parameters('MCSModules').location]",
-            "apiVersion": "2016-04-30-preview",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]"
             ],
@@ -1077,6 +1077,31 @@
                     "computeApiVersion": {
                         "value": "[parameters('apiVersions').computeApiVersion]"
                     }
+                }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('MCSModules').wsVmName,'/Installation')]",
+            "location":"[parameters('MCSModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName)]",
+                "domainJoin"
+            ],
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "9.6",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('MCSModules').ManagerAddress]",
+                    "DSMport": "[parameters('MCSModules').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('MCSModules').TenantIdentifier]",
+                    "tenantPassword": "[parameters('MCSModules').TenantActivationPassword]"
                 }
             }
         }
