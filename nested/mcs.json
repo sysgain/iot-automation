@@ -208,7 +208,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(parameters('MCSModules').baseUrl, '/nested/database-',parameters('MCSModules').databaseOption,'.json')]",
+                    "uri": "[parameters('MCSModules').azuresqlUrl]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
