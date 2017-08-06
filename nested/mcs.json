@@ -176,14 +176,14 @@
                         "publisher": "[parameters('MCSModules').trendPublisher]",
                         "offer": "[parameters('MCSModules').trendProduct]",
                         "sku": "[parameters('MCSModules').trendVMSku]",
-                        "version": "latest",
+                        "version": "latest"
+                    },
                         "osDisk": {
                             "createOption": "FromImage",
                             "managedDisk": {
                                 "storageAccountType": "[parameters('MCSModules').storageAccountType]"
                             }
-                        }
-                    },
+                        },
                     "networkProfile": {
                         "networkInterfaces": [
                             {
