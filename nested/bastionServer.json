@@ -149,8 +149,7 @@
             "location": "[resourceGroup().location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionServerSettings').bastionVMName)]",
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/Installation')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionServerSettings').bastionVMName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -173,7 +172,8 @@
             "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/Installation')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
