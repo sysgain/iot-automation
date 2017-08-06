@@ -6,7 +6,7 @@ param
 
 [string] $password = "$3"
 )
-
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 $usernamenNew = $domainName+"\"+${username}
 Set-DnsClient `
     -InterfaceAlias "Ethernet*" `
