@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "PIBAServersettings": {
+            "type": "string"
+        },
         "adminUsername": {
             "type": "string"
         },
@@ -14,18 +17,21 @@
         "baseUrl": {
             "type": "string"
         },
-        "heartbeatPortTrendDSM":{
+        "heartbeatPortTrendDSM": {
             "type": "string"
         },
-        "publicIPDomainNameLabelTrendDSM":{
+        "publicIPDomainNameLabelTrendDSM": {
             "type": "string"
         },
-        "deploymentApiVersion":{
+        "deploymentApiVersion": {
+            "type": "string"
+        },
+        "storageAccountType": {
             "type": "string"
         }
     },
     "variables": {
-         "apiVersions": {
+        "apiVersions": {
             "computeApiVersion": "2016-04-30-preview",
             "networkApiVersion": "2016-09-01",
             "storageApiVersion": "2016-01-01",
@@ -96,7 +102,31 @@
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
             "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
-        }
+        },
+        "PIDAServersettings": {
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "location": "[resourceGroup().location]",
+            "PIDAVMName": "PIDAVMServer",
+            "PIDANic": "PIDAVMNic",
+            "PIDANetworkSecurityGroupName": "PIDANsg",
+            "PIDADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2012-R2-Datacenter",
+            "version": "latest",
+            "PIDAVMSize": "Standard_DS1_v2",
+            "storageAccountType": "[parameters('storageAccountType')]",
+            "diagStorageAccountType": "Standard_LRS",
+            "PIDAPrivateIPAddress": "10.0.4.4",
+            "scriptFileName": "psscript.ps1",
+            "domainName": "[parameters('domainName')]",
+            "fileUris": "[concat(parameters('baseUrl'),'scripts/psscript.ps1')]",
+            "Username": "[parameters('adminUsername')]",
+            "Password": "[parameters('adminPassword')]"
+        },
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('networkSettings').virtualNetworkName)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('networkSettings').subnet6Name)]"
     },
     "resources": [
         {
@@ -120,6 +150,166 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "PIDAServerSetup",
+            "apiVersion": "[parameters('deploymentApiVersion')]",
+            "dependsOn": [
+                "PIComponents"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('baseUrl'), 'nested/PIDAServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PIDAServersettings": {
+                        "value": "[variables('PIDAServersettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIBAServerSettings').PIBADiagStgAcnt]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[variables('apiVersions').storageApiVersion]",
+            "location": "[parameters('PIBAServerSettings').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
+            "name": "[parameters('PIBAServerSettings').PIBANic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[variables('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIBAServerSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('PIBAServerSettings').PIBANetworkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIBAServerSettings').PIBAPrivateIPAddress]"
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('PIBAServerSettings').PIBANetworkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('PIBAServerSettings').PIBANetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[variables('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIBAServerSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('PIBAServerSettings').PIBAVMName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[variables('apiVersions').computeApiVersion]",
+            "location": "[parameters('PIBAServerSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('PIBAServerSettings').PIBANic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('PIBAServerSettings').PIBADiagStgAcnt)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('PIBAServerSettings').PIBAVMName]",
+                    "adminUsername": "[parameters('PIBAServerSettings').adminUsername]",
+                    "adminPassword": "[parameters('PIBAServerSettings').adminPassword]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('PIBAServerSettings').PIBAVMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('PIBAServerSettings').publisher]",
+                        "offer": "[parameters('PIBAServerSettings').offer]",
+                        "sku": "[parameters('PIBAServerSettings').sku]",
+                        "version": "[parameters('PIBAServerSettings').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('PIBAServerSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('PIBAServerSettings').PIBANic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('PIBAServerSettings').PIBADiagStgAcnt)).primaryEndpoints['blob']]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "[variables('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIBAServerSettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIBAServerSettings').scriptFileName,' ',parameters('PIBAServerSettings').domainName,' ',parameters('PIBAServerSettings').Username,' ',parameters('PIBAServerSettings').Password)]"
                 }
             }
         }

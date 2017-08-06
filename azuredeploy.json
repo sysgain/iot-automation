@@ -168,48 +168,6 @@
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
-        "sqlServerSettings": {
-            "location": "[resourceGroup().location]",
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
-            "networkInterfaceName": "sqlNic",
-            "networkSecurityGroupName": "sqlNsg",
-            "publicIpAddressName": "sqlpip",
-            "sqlAuthenticationLogin": "sqluser",
-            "sqlAuthenticationPassword": "Password@1234",
-            "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlserver')]",
-            "sqlservername": "sqlServer",
-            "storageAccountType": "Premium_LRS",
-            "publisher": "MicrosoftSQLServer",
-            "offer": "SQL2016SP1-WS2016",
-            "sku": "Express",
-            "version": "latest",
-            "vmSize": "Standard_DS1_v2",
-            "sqlConnectivityType": "Private",
-            "sqlPrivateIPAddress": "10.0.3.4",
-            "sqlStorageDisksCount": "1",
-            "sqlStorageWorkloadType": "GENERAL",
-            "sqlAutopatchingDayOfWeek": "Sunday",
-            "sqlAutopatchingStartHour": "2",
-            "sqlAutopatchingWindowDuration": "60",
-            "sqlStorageDeploymentToken": "456",
-            "scriptFileName": "psscript.ps1",
-            "scriptFileName2": "defaultdb.ps1",
-            "scriptFileName3": "simulatorsetup.ps1",
-            "domainName": "[parameters('domainName')]",
-            "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]",
-            "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/phase2/",
-            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
-            "fileUris2": "[concat(variables('baseUrl'),'scripts/defaultdb.ps1')]",
-            "fileUris3": "[concat(variables('baseUrl'),'scripts/simulatorsetup.ps1')]",
-            "sqlQueryUrl": "[concat(variables('baseUrl'),'scripts/SQLQuery2.sql')]",
-            "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
-            "databaseName": "iottestdb",
-            "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
-            "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
-            "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
-        },
         "AzurePaasevi": {
             "location": "[resourceGroup().location]",
             "AzureSqlLogin": "sqluser",
@@ -222,28 +180,6 @@
             "serverName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
             "storageKeyType": "SharedAccessKey",
             "storageKey": "?"
-        },
-        "PIDAServersettings": {
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
-            "location": "[resourceGroup().location]",
-            "PIDAVMName": "PIDAVMServer",
-            "PIDANic": "PIDAVMNic",
-            "PIDANetworkSecurityGroupName": "PIDANsg",
-            "PIDADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
-            "publisher": "MicrosoftWindowsServer",
-            "offer": "WindowsServer",
-            "sku": "2012-R2-Datacenter",
-            "version": "latest",
-            "PIDAVMSize": "Standard_DS1_v2",
-            "storageAccountType": "[variables('storageAccountType')]",
-            "diagStorageAccountType": "Standard_LRS",
-            "PIDAPrivateIPAddress": "10.0.4.4",
-            "scriptFileName": "psscript.ps1",
-            "domainName": "[parameters('domainName')]",
-            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
-            "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]"
         },
         "PIBAServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
@@ -272,8 +208,8 @@
         "DNSServerAddress": "10.0.2.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
-        "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/staging/",
-        "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/staging",
+        "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/iot/",
+        "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/iot",
         "prefix": "[uniqueString(resourceGroup().id)]",
         "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
@@ -401,6 +337,9 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
+                    "PIBAServersettings": {
+                        "value": "[variables('PIBAServersettings')]"
+                    },
                     "adminUsername": {
                         "value": "[parameters('adminUsername')]"
                     },
@@ -421,6 +360,9 @@
                     },
                     "deploymentApiVersion": {
                         "value": "[variables('deploymentApiVersion')]"
+                    },
+                    "storageAccountType":{
+                        "value": "[variables('storageAccountType')]"
                     }
                 }
             }
@@ -430,8 +372,7 @@
             "name": "AzuresqlServerSetup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "PIComponents",
-                "MCSModules"
+                "PIComponents"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -442,58 +383,6 @@
                 "parameters": {
                     "AzurePaasevi": {
                         "value": "[variables('AzurePaasevi')]"
-                    },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "PIBAServerSetup",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [
-                "MCSModules"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/PIBAServer.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "PIBAServersettings": {
-                        "value": "[variables('PIBAServersettings')]"
-                    },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
-                    },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "PIDAServerSetup",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [
-                "MCSModules"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/PIDAserver.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "PIDAServersettings": {
-                        "value": "[variables('PIDAServersettings')]"
-                    },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
