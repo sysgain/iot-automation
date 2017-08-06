@@ -181,7 +181,7 @@
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                            "storageAccountType": "Standard_LRS"
                         }
                     }
                 },
