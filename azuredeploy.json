@@ -1614,7 +1614,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "AzuresqlServerSetup",
+            "name": "AppComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "PIComponents"
@@ -1622,7 +1622,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/azurepaas.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/appComponents.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
