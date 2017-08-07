@@ -356,7 +356,7 @@
             "sqlAuthenticationLogin": "sqluser",
             "sqlAuthenticationPassword": "Password@1234",
             "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlserver')]",
-            "sqlservername": "sqlServer",
+            "sqlservername": "PIAFSQLServer",
             "storageAccountType": "Premium_LRS",
             "publisher": "MicrosoftSQLServer",
             "offer": "SQL2016SP1-WS2016",
