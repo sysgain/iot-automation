@@ -1653,7 +1653,11 @@
             "type": "string",
             "value": "[variables('MCSModules').adNicIPAddress]"
         },
-        "workstationIPAddress": {
+         "PIAFSQLServerIP": {
+            "type": "string",
+            "value": "[variables('PIAFSQLSettings').sqlPrivateIPAddress]"
+        },
+         "workstationIPAddress": {
             "type": "string",
             "value": "[variables('MCSModules').wsIPAddress]"
         },
@@ -1668,6 +1672,14 @@
         "trendFQDN": {
             "type": "string",
             "value": "[variables('bastionServerSettings').ManagerAddress]"
+        },
+         "PIDAServerIP": {
+            "type": "string",
+            "value": "[variables('PIDAServersettings').PIDAPrivateIPAddress]"
+        },
+         "PIBAServerIP": {
+            "type": "string",
+            "value": "[variables('PIBAServersettings').PIBAPrivateIPAddress]"
         }
     }
 }
