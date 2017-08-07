@@ -23,6 +23,34 @@
                 "description": "The FQDN of the Active Directory Domain to be created on VM"
             }
         },
+        "azureAccountUsername": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Username for Azure Account"
+            }
+        },
+        "azureAccountPassword": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Password for Azure Account"
+            }
+        },
+        "tenantID": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "tenantID for Azure Account"
+            }
+        },
+        "applicationName": {
+            "type": "string",
+            "defaultValue": "iotapp",
+            "metadata": {
+                "decription": "Application name for Active Directory"
+            }
+        },
         "sqlAdministratorLogin": {
             "type": "string",
             "defaultValue": "sqluser",
