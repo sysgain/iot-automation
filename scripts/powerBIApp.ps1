@@ -13,6 +13,7 @@ param(
 $IdentifierUris = "https://${DisplayName}${UniqueString}.azurewebsites.net"
 
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted  -Force
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module AzureADPreview -Force
 
 $azureAccountName = $Username
