@@ -384,6 +384,51 @@
             ]
         },
         {
+            "type": "Microsoft.Resources/deployments",
+            "name": "workstation-extension",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName,'/extensions/automate_setup')]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').wsVmName,'/extensions/CustomScriptExtension')]"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('MCSModules').workstationextensionurl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "wsVmName": {
+                        "value": "[parameters('MCSModules').wsVmName]"
+                    },
+                    "location": {
+                        "value": "[parameters('MCSModules').location]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('MCSModules').Username]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('MCSModules').Password]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    },
+                    "orguser": {
+                        "value": "[parameters('MCSModules').orguser]"
+                    },
+                    "workstationSetupUrl2": {
+                        "value": "[parameters('MCSModules').workstationSetupUrl2]"
+                    },
+                    "chef-server-fqdn": {
+                        "value": "[parameters('MCSModules').chefAutomateIPAddress]"
+                    },
+                    "splunkIP": {
+                        "value": "[parameters('MCSModules').splunkIPAddress]"
+                    }
+                }
+            }
+        },
+        {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('networkSettings').virtualNetworkName]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
