@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adVMName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "computeApiVersion": {
+            "type": "string"
+        },
+        "azureAccountUsername": {
+            "type": "string"
+        },
+        "azureAccountPassword": {
+            "type": "securestring"
+        },
+        "tenantID": {
+            "type": "string"
+        },
+        "applicationName": {
+            "type": "string"
+        },
+        "uniqueString": {
+            "type": "string"
+        },
+        "appScriptUrl": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[concat(parameters('adVMName'),'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('location')]",
+            "apiVersion": "[parameters('computeApiVersion')]",
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('appScriptUrl')]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File powerBIApp.ps1',' ',parameters('azureAccountUsername'),' ',parameters('azureAccountPassword'),' ',parameters('tenantID'),' ',parameters('applicationName'),' ',parameters('uniqueString'))]"
+                }
+            }
+        }
+    ]
+}
