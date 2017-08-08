@@ -364,31 +364,6 @@
             }
         },
         {
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('PIAFSQLSettings').sqlservername,'/Installation')]",
-            "location": "[parameters('PIAFSQLSettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]",
-                "sqlSimulatorSetup"
-            ],
-            "properties": {
-                "publisher": "TrendMicro.DeepSecurity",
-                "type": "TrendMicroDSA",
-                "typeHandlerVersion": "9.6",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "DSMname": "[parameters('PIAFSQLSettings').ManagerAddress]",
-                    "DSMport": "[parameters('PIAFSQLSettings').ActivationPort]",
-                    "policyNameorID": ""
-                },
-                "protectedSettings": {
-                    "tenantID": "[parameters('PIAFSQLSettings').TenantIdentifier]",
-                    "tenantPassword": "[parameters('PIAFSQLSettings').TenantActivationPassword]"
-                }
-            }
-        },
-        {
             "name": "[parameters('PIDAServersettings').PIDADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
@@ -538,30 +513,6 @@
             }
         },
         {
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('PIDAServersettings').PIDAVMName,'/Installation')]",
-            "location": "[parameters('PIDAServersettings').location]",
-            "dependsOn": [
-                "PIDADomainJoin"
-            ],
-            "properties": {
-                "publisher": "TrendMicro.DeepSecurity",
-                "type": "TrendMicroDSA",
-                "typeHandlerVersion": "9.6",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "DSMname": "[parameters('PIDAServersettings').ManagerAddress]",
-                    "DSMport": "[parameters('PIDAServersettings').ActivationPort]",
-                    "policyNameorID": ""
-                },
-                "protectedSettings": {
-                    "tenantID": "[parameters('PIDAServersettings').TenantIdentifier]",
-                    "tenantPassword": "[parameters('PIDAServersettings').TenantActivationPassword]"
-                }
-            }
-        },
-        {
             "name": "[parameters('PIBAServerSettings').PIBADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
@@ -707,30 +658,6 @@
                     "computeApiVersion": {
                         "value": "[parameters('PIBAServerSettings').computeApiVersion]"
                     }
-                }
-            }
-        },
-        {
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/Installation')]",
-            "location": "[parameters('PIBAServerSettings').location]",
-            "dependsOn": [
-                "PIBADomainJoin"
-            ],
-            "properties": {
-                "publisher": "TrendMicro.DeepSecurity",
-                "type": "TrendMicroDSA",
-                "typeHandlerVersion": "9.6",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "DSMname": "[parameters('PIBAServerSettings').ManagerAddress]",
-                    "DSMport": "[parameters('PIBAServerSettings').ActivationPort]",
-                    "policyNameorID": ""
-                },
-                "protectedSettings": {
-                    "tenantID": "[parameters('PIBAServerSettings').TenantIdentifier]",
-                    "tenantPassword": "[parameters('PIBAServerSettings').TenantActivationPassword]"
                 }
             }
         }
