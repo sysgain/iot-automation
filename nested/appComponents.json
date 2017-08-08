@@ -319,7 +319,7 @@
                         "remoteDebuggingEnabled": true,
                         "remoteDebuggingVersion": "VS2015",
                         "cors": {
-                            "allowedOrigins": [
+                        "allowedOrigins": [
                                 "[concat('https://', parameters('webSiteSettings').webSiteName, '.azurewebsites.net')]"
                             ]
                         }
