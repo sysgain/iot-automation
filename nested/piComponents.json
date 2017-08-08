@@ -637,7 +637,7 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "wsVmName": {
+                    "VmName": {
                         "value": "[parameters('PIBAServerSettings').PIBAVMName]"
                     },
                     "scriptFileName": {

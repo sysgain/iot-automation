@@ -2,7 +2,7 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "PIDAVMName": {
+        "VmName": {
             "type": "string"
         },
         "scriptFileName": {
@@ -27,7 +27,7 @@
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('PIDAVMName'),'/CustomScriptExtension')]",
+            "name": "[concat(parameters('VmName'),'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
             "apiVersion": "[parameters('computeApiVersion')]",
