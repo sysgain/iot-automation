@@ -65,13 +65,6 @@
                 "description": "The password of the admin user of the SQL Server"
             }
         },
-        "sqldatabasename": {
-            "type": "string",
-            "defaultValue": "sqldatabase",
-            "metadata": {
-                "description": "The name of Azure SQL database"
-            }
-        },
         "skuName": {
             "type": "string",
             "defaultValue": "S1",
@@ -189,25 +182,6 @@
             "defaultValue": "B2C_1_cpasspolicy",
             "metadata": {
                 "description": "Describes the B2C Change Password policy"
-            }
-        },
-        "webjobStorageType": {
-            "type": "string",
-            "defaultValue": "Standard_LRS",
-            "allowedValues": [
-                "Standard_LRS",
-                "Standard_ZRS",
-                "Standard_GRS",
-                "Standard_RAGRS",
-                "Premium_LRS"
-            ]
-        },
-        "workspaceName": {
-            "type": "string",
-            "defaultValue": "workspace12",
-            "maxLength": 17,
-            "metadata": {
-                "description": "Name of the Workspace to be created"
             }
         },
         "MLskuName": {
@@ -513,12 +487,12 @@
             "signInSignUpPolicyName": "[parameters('b2cSignUpPolicyId')]",
             "editProfilePolicyName": "[parameters('b2cEditProfilePolicyId')]",
             "tenantName": "[parameters('b2cTenant')]",
-            "b2cClientSecret":"[parameters('b2cClientSecret')]",
-            "b2cChangePasswordPolicy":"[parameters('b2cChangePasswordPolicy')]",
-            "emailHost":"[parameters('emailHost')]",
-            "emailHostPort":"[parameters('emailHostPort')]",
-            "senderEmail":"[parameters('senderEmail')]",
-            "senderEmailPassword":"[parameters('senderEmailPassword')]",
+            "b2cClientSecret": "[parameters('b2cClientSecret')]",
+            "b2cChangePasswordPolicy": "[parameters('b2cChangePasswordPolicy')]",
+            "emailHost": "[parameters('emailHost')]",
+            "emailHostPort": "[parameters('emailHostPort')]",
+            "senderEmail": "[parameters('senderEmail')]",
+            "senderEmailPassword": "[parameters('senderEmailPassword')]",
             "websiteFullAddress": "[variables('websiteFullAddress')]",
             "b2cAadInstance": "https://login.microsoftonline.com/{0}/v2.0/.well-known/openid-configuration?p={1}",
             "notificationIcon": "./csu/Assets/logo.png",
@@ -542,57 +516,7 @@
         "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/iot",
         "prefix": "[uniqueString(resourceGroup().id)]",
         "deploymentApiVersion": "2016-02-01",
-        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
-        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('networkSettings').virtualNetworkName)]",
-        "adsubnetRef": "[concat(variables('vnetID'),'/subnets/',variables('networkSettings').subnet2Name)]",
-        "virtualNetworksResourcesURL": "[concat(variables('baseUrl'),'nested/virtualNetwork.json')]",
-        "adNicName": "adNic",
-        "adNicIPAddress": "10.0.2.4",
-        "adVMName": "adVM",
-        "publicIPAddressName": "adPublicIP",
-        "adAvailabilitySetName": "adAvailabiltySet",
-        "adLBName": "adLoadBalancer",
-        "scriptFileName": "psscript.ps1",
-        "dnsPrefix": "[concat('dns',substring(variables('prefix') ,0 ,5))]",
-        "domainName": "iottests.com",
-        "managedDiskName": "datadisk",
-        "count": 2,
-        "diskCreateOption": "empty",
-        "diskSizeGB": "1023",
-        "computeApiVersion": "2016-04-30-preview",
-        "networkApiVersion": "2016-03-30",
-        "PIOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempPICoreVM.vhd",
-        "SQLOsDiskVhdUri": "https://vhdst.blob.core.windows.net/images/TempSQLServerVM.vhd",
-        "SQLstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlvm')]",
-        "PIstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'pivm')]",
-        "WINstorageAccountName": "[concat(uniquestring(resourceGroup().id), 'winvm')]",
-        "SQLDnsLabelPrefix": "[concat('sqlserver',variables('suffix'))]",
-        "PIDnsLabelPrefix": "[concat('piserver',variables('suffix'))]",
-        "WINDnsLabelPrefix": "[concat('winserver',variables('suffix'))]",
-        "SQLnicName": "SQLVMNic",
-        "PInicName": "PIVMNic",
-        "WINnicName": "WINVMNic",
-        "SQLpublicIPAddressName": "SQLPublicIP",
-        "PIpublicIPAddressName": "PIPublicIP",
-        "WINpublicIPAddressName": "WINPublicIP",
-        "SQLvmName": "TempSQLServerVM",
-        "PIvmName": "TempPICoreVM",
-        "WINvmName": "TempWinServerVM",
-        "SQLnetworkSecurityGroupName": "SQLNSG",
-        "PInetworkSecurityGroupName": "PINSG",
-        "WINnetworkSecurityGroupName": "WINNSG",
-        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('networkSettings').virtualNetworkName, variables('networkSettings').subnet1Name)]",
-        "WINwindowsOSVersion": "2016-Datacenter",
-        "PIimageName": "myPICustomImage",
-        "SQLimageName": "mySQLCustomImage",
-        "ADResourcesURL": "https://emdeployment.blob.core.windows.net/releasemtr/CreateADPDC.zip",
-        "webjobStorageName": "[concat('webjobstr', uniqueString(resourceGroup().id))]",
-        "MLStorageName": "[concat('mlstr', uniqueString(resourceGroup().id))]",
-        "sqlserverName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
-        "storageKeyType": "SharedAccessKey",
-        "storageKey": "?",
-        "bacpacUri": "https://emdeployment.blob.core.windows.net/releasemtr/EnergyManagement.bacpac",
-        "databaseConnString": "[concat('data source=',variables('sqlserverName'),'.database.windows.net;initial catalog=',parameters('sqldatabasename'),';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'))]"
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
     },
     "resources": [
         {
