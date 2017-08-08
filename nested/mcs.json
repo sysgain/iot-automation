@@ -857,7 +857,7 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "wsVmName": {
+                    "VmName": {
                         "value": "[parameters('MCSModules').wsVmName]"
                     },
                     "scriptFileName": {
