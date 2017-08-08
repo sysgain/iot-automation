@@ -255,7 +255,7 @@
             "TenantIdentifier": "NA",
             "TenantActivationPassword": "NA",
             "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
-            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
+            "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
         },
         "MCSModules": {
             "location": "[resourceGroup().location]",
@@ -317,7 +317,7 @@
             "vmNameTrendDSM": "trendMicroDSM",
             "nicNameTrendDSM": "trendnic",
             "securityGroupNameTrendDSM": "trendnsg",
-            "chefPublicIPDomainNameLabel": "[variables('publicIPDomainNameLabelTrendDSM')]",
+            "chefPublicIPDomainNameLabel": "[variables('chefPublicIPDomainName')]",
             "managerPortTrendDSM": "443",
             "heartbeatPortTrendDSM": "[variables('heartbeatPortTrendDSM')]",
             "vmAdminNameTrendDSM": "trend",
@@ -339,7 +339,7 @@
             "uniqueString": "[variables('suffix')]",
             "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
-            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
+            "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
             "newsqlServerName": "[tolower(concat('trend',uniquestring(resourceGroup().id),'-sql'))]",
             "azuresqlUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -394,7 +394,7 @@
             "TenantIdentifier": "NA",
             "TenantActivationPassword": "NA",
             "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
-            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
+            "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
             "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
@@ -424,7 +424,7 @@
             "TenantIdentifier": "NA",
             "TenantActivationPassword": "NA",
             "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
-            "ManagerAddress": "[concat(variables('publicIPDomainNameLabelTrendDSM'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
+            "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
         },
         "PIBAServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
@@ -508,7 +508,7 @@
         "RestServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
         "SasToken": "?",
         "heartbeatPortTrendDSM": "4120",
-        "publicIPDomainNameLabelTrendDSM": "[concat('publicdnstrenddsm',variables('suffix'))]",
+        "chefPublicIPDomainName": "[concat('publicdnschef',variables('suffix'))]",
         "DNSServerAddress": "10.0.2.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
