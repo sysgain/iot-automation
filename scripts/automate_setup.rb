@@ -1,106 +1,77 @@
-#  Grab the Azure AD Service principal
+# TODO: This might be better served as a chef-marketplace-ctl command. We might
+# want to eventually convert it into a recipe and have a ctl-command to pass
+# the attributes to chef run when the process for publishing the Azure template
+# has matured.
 
-#Example to Run Command
-#.\AAD.ps1 -TenantId "ac12acb5-a79a-4ca7-87eb-c5e6ebbbcd38" -DisplayName "myappauto" -IdentifierUris "https://yapp.azurewebsites.net"
+require "optparse"
+require "mixlib/shellout"
+require "open-uri"
+require "fileutils"
 
-param(
-[string] $Username,
-[string] $Password,
-[string] $Tenantid,
-[string] $DisplayName,
-[string] $UniqueString
-)
-$IdentifierUris = "https://${DisplayName}${UniqueString}.azurewebsites.net"
+@license = nil
+@fqdn = nil
+@adminUsername = nil
+@firstname = nil 
+@lastname = nil
+@mailid = nil
+@adminpassword = nil
+@orguser = nil
+OptionParser.new do |opts|
+  opts.on("--fqdn FQDN", String, "The machine FQDN") { |fqdn| @fqdn = fqdn }
+  opts.on("--adminUsername adminUsername", String, "The machine adminusername") { |adminUsername| @adminUsername = adminUsername }
+  opts.on("--firstname firstname", String, "The machine firstname") { |firstname| @firstname = firstname }
+  opts.on("--lastname lastname", String, "The machine lastname") { |lastname| @lastname = lastname }
+  opts.on("--mailid mailid", String, "The machine mailid") { |mailid| @mailid = mailid }
+  opts.on("--adminpassword adminpassword", String, "The machine adminpassword") { |adminpassword| @adminpassword = adminpassword }
+  opts.on("--orguser orguser", String, "The machine orguser") { |orguser| @orguser = orguser }
+  opts.on("--license [LICENSE]", "The Automate license file") do |license|
+    @license = license
+  end
+end.parse!(ARGV)
 
-Set-ExecutionPolicy -ExecutionPolicy Unrestricted  -Force
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-Install-Module AzureADPreview -Force
+# Write the Automate license file
+if !@license.nil? && !@license.empty?
+  license_dir = "/var/opt/delivery/license"
+  license_file_path = File.join(license_dir, "delivery.license")
 
-$azureAccountName = $Username
-$azurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
-$psCred = New-Object System.Management.Automation.PSCredential($azureAccountName, $azurePassword)
-connect-azuread -TenantId $TenantId -Credential $psCred -InformationAction Ignore
-$aad = (Get-AzureADServicePrincipal | `
-    where {$_.ServicePrincipalNames.Contains("https://graph.windows.net")})[0]
-#  Grab the User.Read permission
-$userRead = $aad.Oauth2Permissions | ? {$_.Value -eq "User.Read"}
-#  Grab the Directory.ReadWrite.All permission
-$directoryWrite = $aad.Oauth2Permissions | `
-  ? {$_.Value -eq "Directory.ReadWrite.All"}
- 
- 
- 
- $DirectoryAccessAsUserAll = $aad.Oauth2Permissions | `
-  ? {$_.Value -eq "Directory.AccessAsUser.All"}
+  FileUtils.mkdir_p(license_dir)
+  File.write(license_file_path, open(@license, "rb").read)
+end
 
-   $DirectoryReadAll = $aad.Oauth2Permissions | `
-  ? {$_.Value -eq "Directory.Read.All"} 
+# Append the FQDN to the marketplace config
+open("/etc/chef-marketplace/marketplace.rb", "a") do |config|
+  config.puts(%Q{api_fqdn "#{@fqdn}"})
+end
 
-    $GroupReadWriteAll = $aad.Oauth2Permissions | `
-  ? {$_.Value -eq "Group.ReadWrite.All"} 
- 
-#  Resource Access User.Read + Sign in & Directory.ReadWrite.All
-$readWriteAccess = [Microsoft.Open.AzureAD.Model.RequiredResourceAccess]@{
-  ResourceAppId=$aad.AppId ;
-  ResourceAccess=[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = $userRead.Id ;
-    Type = "Scope"}, [Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = $directoryWrite.Id ;
-    Type = "Scope"}, [Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = $DirectoryAccessAsUserAll.Id ;
-    Type = "Scope"}, [Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = $DirectoryReadAll.Id ;
-    Type = "Scope"}, [Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = $GroupReadWriteAll.Id ;
-    Type = "Scope"}}
- 
- $readWriteAccess1 = [Microsoft.Open.AzureAD.Model.RequiredResourceAccess]@{
-  ResourceAppId="00000009-0000-0000-c000-000000000000" ;
-  ResourceAccess=[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "7504609f-c495-4c64-8542-686125a5a36f";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "a65a6bd9-0978-46d6-a261-36b3e6fdd32e";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "47df08d3-85e6-4bd3-8c77-680fbe28162e";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "4ae1bf56-f562-4747-b7bc-2fa0874ed46f";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "f3076109-ca66-412a-be10-d4ee1be95d47";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "ecf4e395-4315-4efa-ba57-a253fe0438b4";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "322b68b2-0804-416e-86a5-d772c567b6e6";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "7f33e027-4039-419b-938e-2f8ca153e68e";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "2448370f-f988-42cd-909c-6528efd67c1a";
-    Type = "Scope"},[Microsoft.Open.AzureAD.Model.ResourceAccess]@{
-    Id = "ecc85717-98b0-4465-af6d-1cbba6f9c961";
-    Type = "Scope"}}
+# Configure the hostname
+hostname = Mixlib::ShellOut.new("chef-marketplace-ctl hostname #{@fqdn}")
+hostname.run_command
 
-#  Create querying App
-$queryApp = New-AzureADApplication -DisplayName "$DisplayName" `
-    -IdentifierUris "$IdentifierUris" -ReplyUrls "$IdentifierUris" -Homepage "$IdentifierUris" `
-    -RequiredResourceAccess $readWriteAccess , $readWriteAccess1
+# Configure Automate
+configure = Mixlib::ShellOut.new("chef-marketplace-ctl setup --preconfigure")
+configure.run_command
+#chef Upgrade shell Script
+upgrade = Mixlib::ShellOut.new("chef-marketplace-ctl upgrade -y")
+upgrade.run_command
 
- 
-#  Associate a Service Principal so it can login
-$spQuery = New-AzureADServicePrincipal -AppId $queryApp.AppId 
- 
-#  Create a key credential for the app valid from now
-#  (-1 day, to accomodate client / service time difference)
-#  till three months from now
-$startDate = (Get-Date).AddDays(-1)
-$endDate = $startDate.AddYears(1)
- 
-$pwd = New-AzureADApplicationPasswordCredential -ObjectId $queryApp.ObjectId `
-  -StartDate $startDate -EndDate $endDate `
-  -CustomKeyIdentifier "MyCredentials"
+ reconfigure = Mixlib::ShellOut.new("chef-server-ctl reconfigure")
+ reconfigure.run_command
 
+restartserver = Mixlib::ShellOut.new("chef-server-ctl restart")
+restartserver.run_command
 
-  
-  
+##Creating user for Chef Web UI
+FileUtils.touch('/var/opt/delivery/.telemetry.disabled')
+#exec(sudo touch /var/opt/delivery/.telemetry.disabled)
+creatuser= Mixlib::ShellOut.new("automate-ctl create-user default #{@adminUsername} --password #{@adminpassword}")
+creatuser.run_command
 
-   #$Test = [Microsoft.Open.AzureAD.Model.OAuth2PermissionGrant]@{  ConsentType = "AllPrincipals"; ClientId =  $spQuery.AppId; Scope = "Dataset.ReadWrite.All Dashboard.Read.All Report.Read.All Group.Read Group.Read.All Content.Create Metadata.View_Any Dataset.Read.All Data.Alter_Any"}
- #$queryApp.OAuth2PermissionGrant  = $Test
- 
+usercreate= Mixlib::ShellOut.new("chef-server-ctl user-create  #{@adminUsername}  #{@firstname}  #{@lastname}  #{@mailid}  #{@adminpassword} | tee /etc/opscode/#{@adminUsername}.pem")
+usercreate.run_command
+
+ orgcreate= Mixlib::ShellOut.new(" chef-server-ctl org-create #{@orguser} NewOrg  -a  #{@adminUsername} | tee /etc/opscode/#{@orguser}-validator.pem")
+ orgcreate.run_command
+
+# system("sed -i ' s/127.0.1.1       10.0.2.6 10/127.0.1.1       10.0.2.6/g' /etc/hosts")
+system("hostname 10.0.2.6") 
+system("chef-server-ctl reconfigure")
