@@ -33,18 +33,6 @@
             "properties": {}
         },
         {
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[parameters('MCSModules').chefPublicIPAddressName]",
-            "location": "[parameters('MCSModules').location]",
-            "properties": {
-                "publicIPAllocationMethod": "Dynamic",
-                "dnsSettings": {
-                    "domainNameLabel": "[parameters('MCSModules').chefPublicIPDomainNameLabel]"
-                }
-            }
-        },
-        {
             "name": "[parameters('MCSModules').adNetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -488,6 +476,18 @@
             }
         },
         {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('MCSModules').chefPublicIPAddressName]",
+            "location": "[parameters('MCSModules').location]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('MCSModules').chefPublicIPDomainNameLabel]"
+                }
+            }
+        },
+        {
             "name": "[parameters('MCSModules').wsNsg]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -581,8 +581,11 @@
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('MCSModules').wsIPAddress]"
+                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAddress": "[parameters('MCSModules').wsIPAddress]",
+                             "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('MCSModules').chefPublicIPAddressName)]"
+                            }
                         }
                     }
                 ],
