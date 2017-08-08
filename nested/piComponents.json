@@ -20,9 +20,9 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
+        "subnetRef3": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]",
         "subnetRef4": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet4Name)]",
-        "subnetRef5": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet5Name)]",
-        "subnetRef6": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet6Name)]"
+        "subnetRef5": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet5Name)]"
     },
     "resources": [
         {
@@ -177,7 +177,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[variables('subnetRef4')]"
+                                "id": "[variables('subnetRef3')]"
                             },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('PIAFSQLSettings').sqlPrivateIPAddress]"
@@ -411,7 +411,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[variables('subnetRef5')]"
+                                "id": "[variables('subnetRef4')]"
                             },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
@@ -560,7 +560,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[variables('subnetRef6')]"
+                                "id": "[variables('subnetRef5')]"
                             },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('PIBAServerSettings').PIBAPrivateIPAddress]"

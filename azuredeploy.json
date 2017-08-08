@@ -225,9 +225,7 @@
             "subnet4Name": "subnet4",
             "subnet4Prefix": "10.0.3.0/24",
             "subnet5Name": "subnet5",
-            "subnet5Prefix": "10.0.4.0/24",
-            "subnet6Name": "subnet6",
-            "subnet6Prefix": "10.0.5.0/24"
+            "subnet5Prefix": "10.0.4.0/24"
         },
         "bastionServerSettings": {
             "location": "[resourceGroup().location]",
@@ -262,10 +260,10 @@
             "adNicName": "adNic",
             "splunkNicName": "splunkNic",
             "splunkNsg": "splunkNsg",
-            "adNicIPAddress": "10.0.2.4",
-            "splunkIPAddress": "10.0.2.5",
-            "chefAutomateIPAddress": "10.0.2.6",
-            "wsIPAddress": "10.0.2.7",
+            "adNicIPAddress": "10.0.1.4",
+            "splunkIPAddress": "10.0.1.5",
+            "chefAutomateIPAddress": "10.0.1.6",
+            "wsIPAddress": "10.0.1.7",
             "sshFrom": "0.0.0.0/0",
             "forwardedDataFrom": "0.0.0.0/0",
             "adVMName": "adServer",
@@ -371,7 +369,7 @@
             "version": "latest",
             "vmSize": "Standard_DS1_v2",
             "sqlConnectivityType": "Private",
-            "sqlPrivateIPAddress": "10.0.3.4",
+            "sqlPrivateIPAddress": "10.0.2.4",
             "sqlStorageDisksCount": "1",
             "sqlStorageWorkloadType": "GENERAL",
             "sqlAutopatchingDayOfWeek": "Sunday",
@@ -414,7 +412,7 @@
             "PIDAVMSize": "Standard_DS1_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "PIDAPrivateIPAddress": "10.0.4.4",
+            "PIDAPrivateIPAddress": "10.0.3.4",
             "scriptFileName": "psscript.ps1",
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -441,7 +439,7 @@
             "PIBAVMSize": "Standard_DS4_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "PIBAPrivateIPAddress": "10.0.5.4",
+            "PIBAPrivateIPAddress": "10.0.4.4",
             "scriptFileName": "psscript.ps1",
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -559,12 +557,6 @@
                         "name": "[variables('networkSettings').subnet5Name]",
                         "properties": {
                             "addressPrefix": "[variables('networkSettings').subnet5Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[variables('networkSettings').subnet6Name]",
-                        "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet6Prefix]"
                         }
                     }
                 ]
