@@ -2,7 +2,13 @@
     "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "AzurePaasevi": {
+        "AzureSQL": {
+            "type": "object"
+        },
+        "MLSettings":{
+            "type": "object"
+        },
+        "webSiteSettings":{
             "type": "object"
         },
         "apiVersions":{
@@ -14,11 +20,11 @@
         {
             "apiVersion": "[parameters('apiVersions').sqlServerApiVersion]",
             "type": "Microsoft.Sql/servers",
-            "location": "[resourceGroup().location]",
-            "name": "[parameters('AzurePaasevi').serverName]",
+            "location": "[parameters('AzureSQL').location]",
+            "name": "[parameters('AzureSQL').serverName]",
             "properties": {
-                "administratorLogin": "[parameters('AzurePaasevi').AzureSqlLogin]",
-                "administratorLoginPassword": "[parameters('AzurePaasevi').AzureSqlPwd]",
+                "administratorLogin": "[parameters('AzureSQL').AzureSqlLogin]",
+                "administratorLoginPassword": "[parameters('AzureSQL').AzureSqlPwd]",
                 "version": "12.0"
             },
             "resources": [
@@ -26,15 +32,15 @@
                     "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
                     "type": "databases",
                     "dependsOn": [
-                        "[concat('Microsoft.Sql/servers/', parameters('AzurePaasevi').serverName)]"
+                        "[concat('Microsoft.Sql/servers/', parameters('AzureSQL').serverName)]"
                     ],
                     "location": "[resourceGroup().location]",
-                    "name": "[parameters('AzurePaasevi').databaseName]",
+                    "name": "[parameters('AzureSQL').databaseName]",
                     "properties": {
-                        "collation": "[parameters('AzurePaasevi').collation]",
-                        "edition": "[parameters('AzurePaasevi').edition]",
-                        "maxSizeBytes": "[parameters('AzurePaasevi').maxSizeBytes]",
-                        "requestedServiceObjectiveName": "[parameters('AzurePaasevi').requestedServiceObjectiveName]"
+                        "collation": "[parameters('AzureSQL').collation]",
+                        "edition": "[parameters('AzureSQL').edition]",
+                        "maxSizeBytes": "[parameters('AzureSQL').maxSizeBytes]",
+                        "requestedServiceObjectiveName": "[parameters('AzureSQL').requestedServiceObjectiveName]"
                     },
                     "resources": [
                         {
@@ -42,31 +48,360 @@
                             "type": "extensions",
                             "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
                             "dependsOn": [
-                                "[concat('Microsoft.Sql/servers/',parameters('AzurePaasevi').serverName, '/databases/', parameters('AzurePaasevi').databaseName)]"
+                                "[concat('Microsoft.Sql/servers/',parameters('AzureSQL').serverName, '/databases/', parameters('AzureSQL').databaseName)]"
                             ],
                             "properties": {
-                                "storageKeyType": "[parameters('AzurePaasevi').storageKeyType]",
-                                "storageKey": "[parameters('AzurePaasevi').storageKey]",
-                                "storageUri": "https://projectiot.blob.core.windows.net/iotp2/EnergyManagement.bacpac",
-                                "administratorLogin": "[parameters('AzurePaasevi').AzureSqlLogin]",
-                                "administratorLoginPassword": "[parameters('AzurePaasevi').AzureSqlPwd]",
+                                "storageKeyType": "[parameters('AzureSQL').storageKeyType]",
+                                "storageKey": "[parameters('AzureSQL').storageKey]",
+                                "storageUri": "[parameters('AzureSQL').storageUri]",
+                                "administratorLogin": "[parameters('AzureSQL').AzureSqlLogin]",
+                                "administratorLoginPassword": "[parameters('AzureSQL').AzureSqlPwd]",
                                 "operationMode": "Import"
                             }
                         }
                     ]
                 },
                 {
+                    "type": "firewallrules",
+                    "location": "[parameters('AzureSQL').location]",
+                    "name": "AllowAllWindowsAzureIps",
                     "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
                     "dependsOn": [
-                        "[concat('Microsoft.Sql/servers/', parameters('AzurePaasevi').serverName)]"
+                        "[concat('Microsoft.Sql/servers/', parameters('AzureSQL').serverName)]"
                     ],
-                    "location": "[resourceGroup().location]",
-                    "name": "AllowAllWindowsAzureIps",
                     "properties": {
                         "endIpAddress": "0.0.0.0",
                         "startIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion":"[parameters('apiVersions').workspaceApiVersion]",
+            "name": "[parameters('mlSettings').workspaceName]",
+            "location": "[parameters('mlSettings').location]",
+            "type": "Microsoft.MachineLearning/workspaces",
+            "properties": {
+                "userStorageAccountId": "[resourceId('Microsoft.Storage/storageAccounts',toLower(parameters('mlSettings').MLStorageName))]"
+            },
+            "dependsOn": [
+                "[toLower(parameters('mlSettings').MLStorageName)]"
+            ]
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "name": "[toLower(parameters('mlSettings').MLStorageName)]",
+            "location": "[parameters('mlSettings').location]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage"
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').planApiVersion]",
+            "name": "[concat(parameters('mlSettings').workspaceName,'Plan')]",
+            "type": "Microsoft.MachineLearning/commitmentPlans",
+            "location": "[parameters('mlSettings').location]",
+            "sku": {
+                "name": "[parameters('mlSettings').MLskuName]",
+                "tier": "Standard",
+                "capacity": "1"
+            },
+            "properties": {}
+        },
+        {
+            "name": "[parameters('webSiteSettings').webjobStorageName]",
+            "location": "[parameters('webSiteSettings').location]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "dependsOn": [],
+            "kind": "Storage",
+            "sku": {
+                "name": "[parameters('webSiteSettings').webjobStorageType]"
+            },
+            "tags": {
+                "displayName": "webjobStorage"
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').webApiVersion]",
+            "name": "[parameters('webSiteSettings').hostingPlanName]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('webSiteSettings').location]",
+            "tags": {
+                "displayName": "HostingPlan"
+            },
+            "sku": {
+                "name": "[parameters('webSiteSettings').skuName]",
+                "capacity": "[parameters('webSiteSettings').skuCapacity]"
+            },
+            "properties": {
+                "name": "[parameters('webSiteSettings').hostingPlanName]"
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').webApiVersion]",
+            "name": "[parameters('webSiteSettings').webSiteName]",
+            "type": "Microsoft.Web/sites",
+            "location": "[parameters('webSiteSettings').location]",
+            "dependsOn": [
+                "[parameters('webSiteSettings').hostingPlanName]"
+            ],
+            "tags": {
+                "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('webSiteSettings').hostingPlanName))]": "empty",
+                "displayName": "Website"
+            },
+            "properties": {
+                "name": "[parameters('webSiteSettings').webSiteName]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('webSiteSettings').hostingPlanName)]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                    "name": "web",
+                    "type": "config",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').webSiteName)]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').webSiteName, '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppConfig"
                     },
-                    "type": "firewallrules"
+                    "properties": {
+                        "phpVersion": "5.6",
+                        "netFrameworkVersion": "v4.6",
+                        "use32BitWorkerProcess": false,
+                        "webSocketsEnabled": true,
+                        "alwaysOn": true,
+                        "remoteDebuggingEnabled": true,
+                        "remoteDebuggingVersion": "VS2015"
+                    }
+                },
+                {
+                    "name": "MSDeploy",
+                    "type": "extensions",
+                    "location": "[parameters('webSiteSettings').location]",
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').webSiteName)]",
+                        "[concat('Microsoft.Storage/storageAccounts/', parameters('webSiteSettings').webjobStorageName)]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppMSDeploy"
+                    },
+                    "properties": {
+                        "packageUri": "[parameters('webSiteSettings').WebAppPackageURI]"
+                    }
+                },
+                {
+                    "name": "connectionstrings",
+                    "type": "config",
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                     "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').webSiteName)]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').webSiteName, '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppConnectionStrings"
+                    },
+                    "properties": {
+                        "BlobConnection": {
+                            "value": "[parameters('webSiteSettings').WebAppPackageURI]",
+                            "type": "Custom"
+                        }
+                    }
+                },
+                {
+                    "name": "appsettings",
+                    "type": "config",
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').webSiteName)]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').webSiteName, '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "websiteAppSettings"
+                    },
+                    "properties": {
+                        "restServer": "[concat('https://', parameters('webSiteSettings').apiServerName,'.azurewebsites.net/')]",
+                        "b2cApplicationId": "[parameters('webSiteSettings').b2cClientId]",
+                        "signInPolicyName": "[parameters('webSiteSettings').b2cSignInPolicyId]",
+                        "signInSignUpPolicyName": "[parameters('webSiteSettings').b2cSignUpPolicyId]",
+                        "editProfilePolicyName": "[parameters('webSiteSettings').b2cEditProfilePolicyId]",
+                        "tenantName": "[parameters('webSiteSettings').b2cTenant]",
+                        "redirect_uri": "[concat(parameters('webSiteSettings').websiteFullAddress,'#/dashboard')]"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').webApiVersion2]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/Sites',  parameters('webSiteSettings').apiServerName)]"
+            ],
+            "location":  "[parameters('webSiteSettings').location]",
+            "name": "[parameters('webSiteSettings').jobCollectionName]",
+            "properties": {
+                "sku": {
+                    "name": "Standard"
+                },
+                "quota": {
+                    "maxJobCount": "10",
+                    "maxRecurrence": {
+                        "Frequency": "minute",
+                        "interval": "1"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "apiVersion": "[parameters('apiVersions').webApiVersion2]",
+                    "name": "DataUtilWebJob",
+                    "type": "jobs",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Scheduler/jobCollections',  parameters('webSiteSettings').jobCollectionName)]"
+                    ],
+                    "properties": {
+                        "startTime": "2015-02-10T00:08:00Z",
+                        "action": {
+                            "request": {
+                            "uri": "[concat(list(resourceId('Microsoft.Web/sites/config', parameters('webSiteSettings').apiServerName, 'publishingcredentials'), '2014-06-01').properties.scmUri, '')]",
+                                "method": "GET"
+                            },
+                            "type": "HTTP",
+                            "retryPolicy": {
+                                "retryType": "Fixed",
+                                "retryInterval": "PT1M",
+                                "retryCount": 2
+                            }
+                        },
+                        "state": "Enabled"
+                    }
+                }
+            ],
+            "type": "Microsoft.Scheduler/jobCollections"
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').webApiVersion]",
+            "name": "[parameters('webSiteSettings').apiServerName]",
+            "type": "Microsoft.Web/sites",
+            "location": "[parameters('webSiteSettings').location]",
+            "dependsOn": [
+                "[parameters('webSiteSettings').hostingPlanName]"
+            ],
+            "tags": {
+                "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('webSiteSettings').hostingPlanName))]": "empty",
+                "displayName": "Website"
+            },
+            "properties": {
+                "name": "[parameters('webSiteSettings').apiServerName]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('webSiteSettings').hostingPlanName)]"
+            },
+            "resources": [
+                {
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                    "name": "web",
+                    "type": "config",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').apiServerName)]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').apiServerName, '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppConfig"
+                    },
+                    "properties": {
+                        "phpVersion": "5.6",
+                        "netFrameworkVersion": "v4.6",
+                        "use32BitWorkerProcess": false,
+                        "webSocketsEnabled": true,
+                        "alwaysOn": true,
+                        "remoteDebuggingEnabled": true,
+                        "remoteDebuggingVersion": "VS2015",
+                        "cors": {
+                            "allowedOrigins": [
+                                "[concat('https://', parameters('webSiteSettings').webSiteName, '.azurewebsites.net')]"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "MSDeploy",
+                    "type": "extensions",
+                    "location": "[parameters('webSiteSettings').location]",
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').apiServerName)]",
+                        "[concat('Microsoft.Storage/storageAccounts/',parameters('webSiteSettings').webjobStorageName)]"
+                    ],
+                    "tags": {
+                        "displayName": "WebAppMSDeploy"
+                    },
+                    "properties": {
+                        "packageUri": "[parameters('webSiteSettings').RESTServerPackageURI]"
+                    }
+                },
+                {
+                    "name": "connectionstrings",
+                    "type": "config",
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').apiServerName)]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').apiServerName, '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "RESTServerConnectionStrings"
+                    },
+                    "properties": {
+                        "BlobConnection": {
+                            "value": "[parameters('webSiteSettings').BlobconnectionString]",
+                            "type": "Custom"
+                        },
+                        "PowerGridEntities": {
+                            "value": "[parameters('webSiteSettings').PowerGridEntities]",
+                            "type": "Custom"
+                        },
+                        "AzureWebJobsDashboard": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('webSiteSettings').webjobStorageName,';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('webSiteSettings').webjobStorageName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                            "type": "Custom"
+                        },
+                        "AzureWebJobsStorage": {
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('webSiteSettings').webjobStorageName,';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts',parameters('webSiteSettings').webjobStorageName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+                            "type": "Custom"
+                        }
+                    }
+                },
+                {
+                    "name": "appsettings",
+                    "type": "config",
+                    "apiVersion": "[parameters('apiVersions').webApiVersion1]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('webSiteSettings').apiServerName)]",
+                        "[concat('Microsoft.Web/sites/', parameters('webSiteSettings').apiServerName, '/extensions/MSDeploy')]"
+                    ],
+                    "tags": {
+                        "displayName": "restAppSettings"
+                    },
+                    "properties": {
+                        "AnomalyThreshold": "[parameters('webSiteSettings').anomalyThreshold]",
+                        "MeterKwhCost": "[parameters('webSiteSettings').meterKWHCost]",
+                        "DbConnectionString": "[parameters('webSiteSettings').databaseConnString]",
+                        "NotificationIcon": "[parameters('webSiteSettings').notificationIcon]",
+                        "NotificationClickAction": "[parameters('webSiteSettings').notificationClickAction]",
+                        "PowerGridEntities": "[parameters('webSiteSettings').PowerGridEntities]",
+                        "b2c:AadInstance": "[parameters('webSiteSettings').b2cAadInstance]",
+                        "b2c:Tenant": "[parameters('webSiteSettings').b2cTenant]",
+                        "b2c:ClientId": "parameters('webSiteSettings').b2cClientId]",
+                        "b2c:SignUpPolicyId": "[parameters('webSiteSettings').b2cSignUpPolicyId]",
+                        "b2c:SignInPolicyId": "parameters('webSiteSettings').b2cSignInPolicyId]",
+                        "b2c:ClientSecret": "[parameters('webSiteSettings').b2cClientSecret]",
+                        "b2c:ChangePasswordPolicy": "[parameters('webSiteSettings').b2cChangePasswordPolicy]",
+                        "EmailHost": "[parameters('webSiteSettings').emailHost]",
+                        "EmailHostPort": "[parameters('webSiteSettings').emailHostPort]",
+                        "EmailSender": "[parameters('webSiteSettings').senderEmail]",
+                        "EmailHostPassword": "[parameters('webSiteSettings').senderEmailPassword]",
+                        "BlobStorageConnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('webSiteSettings').webjobStorageName,';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('webSiteSettings').webjobStorageName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+                    }
                 }
             ]
         }
@@ -74,11 +409,11 @@
     "outputs": {
         "azureSqlServerName":{
             "type": "string",
-            "value": "[concat(parameters('AzurePaasevi').serverName,'.database.windows.net')]"
+            "value": "[concat(parameters('AzureSQL').serverName,'.database.windows.net')]"
         },
         "azureDBName":{
             "type": "string",
-            "value": "[parameters('AzurePaasevi').databaseName]"
+            "value": "[parameters('AzureSQL').databaseName]"
         }
     }
 }
