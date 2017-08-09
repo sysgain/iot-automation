@@ -451,7 +451,7 @@
             "RestServerDeployPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
             "BlobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('DeployStorageAccountName'),';AccountKey=',variables('DeployStorageAccountKey'))]",
             "apiServerName": "[concat(parameters('apiServerName'),variables('suffix'))]",
-            "b2cClientId":"[parameters('b2cClientId')]",
+            "b2cClientId": "[parameters('b2cClientId')]",
             "b2cSignInPolicyId": "[parameters('b2cSignInPolicyId')]",
             "b2cSignUpPolicyId": "[parameters('b2cSignUpPolicyId')]",
             "b2cEditProfilePolicyId": "[parameters('b2cEditProfilePolicyId')]",
@@ -472,7 +472,6 @@
             "RESTServerPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
             "PowerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('AzureSQL').serverName,'.database.windows.net;initial catalog=',variables('AzureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
-        
         "uniqueString": "aug",
         "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
         "DeployStorageAccountName": "releasemtr",
@@ -569,6 +568,44 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
+            "name": "BastionHost",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "MCSModules"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/bastionServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "bastionServerSettings": {
+                        "value": "[variables('bastionServerSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    },
+                    "MCSModules": {
+                        "value": "[variables('MCSModules')]"
+                    },
+                    "PIAFSQLSettings": {
+                        "value": "[variables('PIAFSQLSettings')]"
+                    },
+                    "PIDAServersettings": {
+                        "value": "[variables('PIDAServersettings')]"
+                    },
+                    "PIBAServersettings": {
+                        "value": "[variables('PIBAServersettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
             "name": "PIComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
@@ -601,7 +638,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "BastionHost",
+            "name": "WorkStation",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "PIComponents"
