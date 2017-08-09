@@ -314,7 +314,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('PIAFSQLSettings').fileUris]"
+                        "https://projectiot.blob.core.windows.net/iotp2/psscript.ps1"
                     ]
                 },
                 "protectedSettings": {
@@ -503,7 +503,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('PIDAServersettings').fileUris]"
+                        "https://projectiot.blob.core.windows.net/iotp2/psscript.ps1"
                     ]
                 },
                 "protectedSettings": {
@@ -637,7 +637,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('PIBAServerSettings').fileUris]"
+                        "https://projectiot.blob.core.windows.net/iotp2/psscript.ps1"
                     ]
                 },
                 "protectedSettings": {
