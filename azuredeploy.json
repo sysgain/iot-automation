@@ -705,7 +705,7 @@
         },
         "workstationFQDN": {
             "type": "string",
-            "value": "[reference('BastionHost').outputs.workstationFQDN.value]"
+            "value": "[reference('WorkStation').outputs.workstationFQDN.value]"
         },
         "adServerIP": {
             "type": "string",
