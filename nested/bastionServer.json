@@ -394,6 +394,7 @@
             "name": "workstation-extension",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
+                "PowerBIInstall",
                  "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').wsVmName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
