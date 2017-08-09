@@ -135,7 +135,7 @@
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('bastionServerSettings').chefPublicIPAddressName)]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('bastionServerSettings').wsPublicIpName)]"
                             }
                         }
                     }
@@ -270,7 +270,7 @@
                         "value": "[parameters('MCSModules').adNicIPAddress]"
                     },
                     "bastianIP": {
-                        "value": "[reference(parameters('bastionServerSettings').publicIpAddressName).dnsSettings.fqdn]"
+                        "value": "[concat(parameters('bastionServerSettings').bastionDnsLabelPrefix,'.',parameters('bastionServerSettings').location,'.cloudapp.azure.com')]"
                     }
                 }
             }
