@@ -166,7 +166,26 @@
                 }
             }
         },
-        
+{
+            "type": "Microsoft.Resources/deployments",
+            "name": "PowerBIInstall",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                "workstation-extension"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('bastionServerSettings').domainJoinUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VmName": {
+                        "value": "[parameters('bastionServerSettings').wsVmName]"
+                    }
+                }
+            }
+},
         {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/publicIPAddresses",
@@ -358,7 +377,6 @@
                 }
             }
         },
-       
         {
             "type": "Microsoft.Resources/deployments",
             "name": "workstation-extension",
