@@ -256,7 +256,7 @@
             "wsPublicIpName": "ws-publicip",
             "VMSize": "Standard_DS2_v2",
             "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
-            "powerBIUrl":"[concat(variables('baseUrl'),'scripts/powerbiinstall.json')]",
+            "powerBIUrl":"[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
             "powerBIScriptUrl":"[concat(variables('baseUrl'),'scripts/powerbidesktop.ps1')]",
             "powerBITemplatesUrl":"[concat(variables('dscScriptUrl'),'/powerBItemplates/PowerBI_Templates.zip')]",
             "powerBIDesktopUrl":"https://projectiot.blob.core.windows.net/iotp2/PBIDesktop_x64.msi",
