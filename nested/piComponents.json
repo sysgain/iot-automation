@@ -318,7 +318,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('PIAFSQLSettings').domainName,' ',parameters('PIAFSQLSettings').Username,' ',parameters('PIAFSQLSettings').Password)]"
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('PIAFSQLSettings').domainName,' ',parameters('PIAFSQLSettings').Username,' ',parameters('PIAFSQLSettings').Password)]"
                 }
             }
         },
