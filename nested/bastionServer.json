@@ -10,6 +10,18 @@
         },
         "apiVersions": {
             "type": "object"
+        },
+        "MCSModules": {
+            "type": "object"
+        },
+        "PIAFSQLSettings": {
+            "type": "object"
+        },
+        "PIDAServersettings": {
+            "type": "object"
+        },
+        "PIBAServersettings": {
+            "type": "object"
         }
     },
     "variables": {
@@ -146,7 +158,7 @@
         {
             "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location":  "[parameters('bastionServerSettings').location]",
+            "location": "[parameters('bastionServerSettings').location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('bastionServerSettings').bastionVMName)]"
@@ -166,7 +178,7 @@
                 }
             }
         },
-{
+        {
             "type": "Microsoft.Resources/deployments",
             "name": "PowerBIInstall",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
@@ -183,21 +195,21 @@
                     "powerBITemplatesUrl": {
                         "value": "[parameters('bastionServerSettings').powerBITemplatesUrl]"
                     },
-                     "powerBIDesktopUrl": {
+                    "powerBIDesktopUrl": {
                         "value": "[parameters('bastionServerSettings').powerBIDesktopUrl]"
                     },
-                    "powerBIScriptUrl":{
-                        "value":"[parameters('bastionServerSettings').powerBIScriptUrl]"
+                    "powerBIScriptUrl": {
+                        "value": "[parameters('bastionServerSettings').powerBIScriptUrl]"
                     },
-                    "bastionVMName":{
-                        "value":"[parameters('bastionServerSettings').bastionVMName]"
+                    "bastionVMName": {
+                        "value": "[parameters('bastionServerSettings').bastionVMName]"
                     },
-                     "computeApiVersion":{
-                        "value":"[parameters('apiVersions').computeApiVersion]"
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
                     }
                 }
             }
-},
+        },
         {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/publicIPAddresses",
@@ -215,9 +227,7 @@
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
-            "dependsOn": [
-            
-            ],
+            "dependsOn": [],
             "properties": {
                 "securityRules": [
                     {
@@ -305,7 +315,7 @@
                                 "id": "[variables('subnetRef')]"
                             },
                             "privateIPAllocationMethod": "Dynamic",
-                             "publicIPAddress": {
+                            "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('bastionServerSettings').chefPublicIPAddressName)]"
                             }
                         }
@@ -323,7 +333,7 @@
             "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionServerSettings').wsNic)]",
-                 "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').bastionDiagStgAcnt)]"
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').bastionDiagStgAcnt)]"
             ],
             "properties": {
                 "osProfile": {
@@ -396,7 +406,7 @@
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
                 "PowerBIInstall",
-                 "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').wsVmName,'/extensions/CustomScriptExtension')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').wsVmName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "incremental",
@@ -429,8 +439,20 @@
                     "chef-server-fqdn": {
                         "value": "[parameters('bastionServerSettings').chefAutomateIPAddress]"
                     },
-                    "splunkIP": {
-                        "value": "[parameters('bastionServerSettings').splunkIPAddress]"
+                   "PIAFSQLIP": {
+                        "value": "[parameters('PIAFSQLSettings').sqlPrivateIPAddress]"
+                    },
+                    "PIDAIP": {
+                        "value": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
+                    },
+                    "PIBAIP": {
+                        "value": "[parameters('PIBAServersettings').PIBAPrivateIPAddress]"
+                    },
+                    "adIP": {
+                        "value": "[parameters('MCSModules').adNicIPAddress]"
+                    },
+                     "bastianIP": {
+                        "value": "[reference(parameters('bastionServerSettings').publicIpAddressName).dnsSettings.fqdn]"
                     }
                 }
             }

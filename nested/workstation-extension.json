@@ -26,7 +26,19 @@
         "chef-server-fqdn": {
             "type": "string"
         },
-        "splunkIP":{
+        "PIAFSQLIP":{
+            "type": "string"
+        },
+        "PIDAIP":{
+            "type": "string"
+        },
+        "PIBAIP":{
+            "type": "string"
+        },
+        "adIP":{
+            "type": "string"
+        },
+        "bastianIP":{
             "type": "string"
         }
     },
@@ -48,7 +60,7 @@
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', parameters('chef-server-fqdn'), ' ', parameters('orguser'),' ',parameters('splunkIP'))]"
+                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', parameters('chef-server-fqdn'), ' ', parameters('orguser'),' ',parameters('PIAFSQLIP'),' ',parameters('PIDAIP'),' ',parameters('PIBAIP'),' ',parameters('adIP'),' ',parameters('bastianIP'))]"
                 }
             }
         }
