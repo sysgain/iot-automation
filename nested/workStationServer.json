@@ -163,7 +163,7 @@
             "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionServerSettings').wsNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').bastionDiagStgAcnt)]"
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').WSDiagStgAcnt)]"
             ],
             "properties": {
                 "osProfile": {
