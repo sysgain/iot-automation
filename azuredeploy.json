@@ -316,7 +316,7 @@
             "azureAccountPassword": "[parameters('azureAccountPassword')]",
             "tenantID": "[parameters('tenantID')]",
             "applicationName": "[parameters('applicationName')]",
-            "uniqueString": "[variables('suffix')]",
+            "uniqueString": ""
             "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
             "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
