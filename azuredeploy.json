@@ -634,7 +634,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/bastionServer.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/workStationServer.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
