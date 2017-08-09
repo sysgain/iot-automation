@@ -30,6 +30,17 @@
     },
     "resources": [
         {
+            "name": "[parameters('bastionServerSettings').WSDiagStgAcnt]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[parameters('bastionServerSettings').wsPublicIpName]",
@@ -191,7 +202,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').bastionDiagStgAcnt)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').WSDiagStgAcnt)).primaryEndpoints.blob]"
                     }
                 }
             }

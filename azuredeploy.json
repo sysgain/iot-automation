@@ -241,6 +241,7 @@
             "version": "latest",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
+            "WSDiagStgAcnt":"[concat('wsstrg',variables('suffix'))]",
             "publicIpAddressName": "bastion-pip",
             "networkSecurityGroupName": "bastion-nsg",
             "publicIpAddressType": "Dynamic",
