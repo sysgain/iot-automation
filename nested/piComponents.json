@@ -520,7 +520,8 @@
             "location": "[parameters('PIDAServersettings').location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIDAServersettings').PIDAVMName)]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIDAServersettings').PIDAVMName)]",
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIAFSQLSettings').sqlservername,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -680,7 +681,8 @@
             "location": "[parameters('PIBAServerSettings').location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]",
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName,'/extensions/CustomScriptExtension2')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
