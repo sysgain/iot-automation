@@ -722,6 +722,14 @@
             "type": "string",
             "value": "[variables('MCSModules').chefAutomateIPAddress]"
         },
+         "chefAutomateLoginUsername": {
+            "type": "string",
+            "value": "[parameters('adminUserName')]"
+        },
+        "chefAutomateLoginPassword": {
+            "type": "string",
+            "value": "[parameters('adminPassword')]"
+        },
         "PIDAServerFQDN": {
             "type": "string",
             "value": "[reference('PIComponents').outputs.PIDAFQDN.value]"
