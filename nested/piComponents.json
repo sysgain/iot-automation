@@ -318,7 +318,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('PIAFSQLSettings').domainName,' ',parameters('PIAFSQLSettings').Username,' ',parameters('PIAFSQLSettings').Password)]"
+                   "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIAFSQLSettings').scriptFileName,' ',parameters('PIAFSQLSettings').domainName,' ',parameters('PIAFSQLSettings').Username,' ',parameters('PIAFSQLSettings').Password)]"
                 }
             }
         },
@@ -534,7 +534,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('PIDAServersettings').domainName,' ',parameters('PIDAServersettings').Username,' ',parameters('PIDAServersettings').Password)]"
+                     "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIDAServersettings').scriptFileName,' ',parameters('PIDAServersettings').domainName,' ',parameters('PIDAServersettings').Username,' ',parameters('PIDAServersettings').Password)]"
                 }
             }
         },
@@ -695,7 +695,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('PIBAServerSettings').domainName,' ',parameters('PIBAServerSettings').Username,' ',parameters('PIBAServerSettings').Password)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('PIBAServerSettings').scriptFileName,' ',parameters('PIBAServerSettings').domainName,' ',parameters('PIBAServerSettings').Username,' ',parameters('PIBAServerSettings').Password)]"
                 }
             }
         }
