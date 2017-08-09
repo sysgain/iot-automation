@@ -37,7 +37,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('powerBITemplatesUrl'),' ',parameters('powerBIDesktopUrl'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File powerbidesktop.ps1',' ',parameters('powerBITemplatesUrl'),' ',parameters('powerBIDesktopUrl'))]"
                 }
             }
         }
