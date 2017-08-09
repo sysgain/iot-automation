@@ -170,50 +170,6 @@
             ]
         },
         {
-            "type": "Microsoft.Resources/deployments",
-            "name": "ApplicationCreation",
-            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').adVMName,'/extensions/CreateADForest')]"
-            ],
-            "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[parameters('MCSModules').appCreationURL]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "adVMName": {
-                        "value": "[parameters('MCSModules').adVMName]"
-                    },
-                    "location": {
-                        "value": "[parameters('MCSModules').location]"
-                    },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
-                    },
-                    "azureAccountUsername": {
-                        "value": "[parameters('MCSModules').azureAccountUsername]"
-                    },
-                    "azureAccountPassword": {
-                        "value": "[parameters('MCSModules').azureAccountPassword]"
-                    },
-                    "tenantID": {
-                        "value": "[parameters('MCSModules').tenantID]"
-                    },
-                    "applicationName": {
-                        "value": "[parameters('MCSModules').applicationName]"
-                    },
-                    "uniqueString": {
-                        "value": "[parameters('MCSModules').uniqueString]"
-                    },
-                     "appScriptUrl": {
-                        "value": "[parameters('MCSModules').appScriptUrl]"
-                    }
-                }
-            }
-        },
-        {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('networkSettings').virtualNetworkName]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
