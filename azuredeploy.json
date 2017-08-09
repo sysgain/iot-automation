@@ -262,6 +262,7 @@
             "tenantID": "[parameters('tenantID')]",
             "applicationName": "[parameters('applicationName')]",
             "uniqueString": "[variables('uniqueString')]",
+             "orguser": "orguser",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
             "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
             "powerBIUrl": "[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
