@@ -675,5 +675,11 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "PIDAFQDN": {
+            "type": "string",
+            "value": "[reference(parameters('PIDAServersettings').PIDAPublicIpAddressName).dnsSettings.fqdn]"
+        }
+    }
 }

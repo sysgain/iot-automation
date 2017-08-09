@@ -442,8 +442,8 @@
                    "PIAFSQLIP": {
                         "value": "[parameters('PIAFSQLSettings').sqlPrivateIPAddress]"
                     },
-                    "PIDAIP": {
-                        "value": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
+                    "PIDAFQDN": {
+                        "value": "[concat(parameters('PIDAServersettings').PIDADnsLabelPrefix,'.',parameters('bastionServerSettings').location,'cloudapp.azure.com')]"
                     },
                     "PIBAIP": {
                         "value": "[parameters('PIBAServersettings').PIBAPrivateIPAddress]"

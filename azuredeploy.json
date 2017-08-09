@@ -691,9 +691,9 @@
             "type": "string",
             "value": "[variables('MCSModules').chefAutomateIPAddress]"
         },
-        "PIDAServerIP": {
+        "PIDAServerFQDN": {
             "type": "string",
-            "value": "[variables('PIDAServersettings').PIDAPrivateIPAddress]"
+            "value": "[reference('PIComponents').outputs.PIDAFQDN.value]"
         },
         "PIBAServerIP": {
             "type": "string",

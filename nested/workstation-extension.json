@@ -29,7 +29,7 @@
         "PIAFSQLIP":{
             "type": "string"
         },
-        "PIDAIP":{
+        "PIDAFQDN":{
             "type": "string"
         },
         "PIBAIP":{
@@ -60,7 +60,7 @@
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', parameters('chef-server-fqdn'), ' ', parameters('orguser'),' ',parameters('PIAFSQLIP'),' ',parameters('PIDAIP'),' ',parameters('PIBAIP'),' ',parameters('adIP'),' ',parameters('bastianIP'))]"
+                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', parameters('chef-server-fqdn'), ' ', parameters('orguser'),' ',parameters('PIAFSQLIP'),' ',parameters('PIDAFQDN'),' ',parameters('PIBAIP'),' ',parameters('adIP'),' ',parameters('bastianIP'))]"
                 }
             }
         }
