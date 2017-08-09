@@ -323,7 +323,6 @@
             "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
             "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
-            "newsqlServerName": "[tolower(concat('trend',uniquestring(resourceGroup().id),'-sql'))]",
             "azuresqlUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "commandToExecute": "[concat('bash node-setup.sh', ' -r ', variables('splunkServerRole'), ' -p ', parameters('adminPassword'))]",
@@ -370,10 +369,6 @@
             "sqlQueryUrl": "[concat(variables('baseUrl'),'scripts/SQLQuery2.sql')]",
             "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
             "databaseName": "iottestdb",
-            "TenantIdentifier": "NA",
-            "TenantActivationPassword": "NA",
-            "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
-            "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
             "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
@@ -399,11 +394,7 @@
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
-            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
-            "TenantIdentifier": "NA",
-            "TenantActivationPassword": "NA",
-            "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
-            "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "PIBAServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
@@ -486,7 +477,6 @@
         "WebAppDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/CSUWebApp.zip",
         "RestServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
         "SasToken": "?",
-        "heartbeatPortTrendDSM": "4120",
         "chefPublicIPDomainName": "[concat('publicdnschef',variables('suffix'))]",
         "DNSServerAddress": "10.0.2.4",
         "splunkServerRole": "splunk_server",
