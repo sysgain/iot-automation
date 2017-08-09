@@ -46,7 +46,7 @@
         },
         "applicationName": {
             "type": "string",
-            "defaultValue": "iotapp",
+            "defaultValue": "iottest9",
             "metadata": {
                 "decription": "Application name for Active Directory"
             }
@@ -144,14 +144,14 @@
         },
         "b2cClientId": {
             "type": "string",
-            "defaultValue": "ca10d7a5-71eb-4dd8-aaa2-b2c534c202a1",
+            "defaultValue": "f5e97d3c-aa1e-45a5-b1cf-770b4b43af7d",
             "metadata": {
                 "description": "Describes the client Id of the application registered in B2C Directory"
             }
         },
         "b2cClientSecret": {
             "type": "string",
-            "defaultValue": "{XIs91_*|g1XY4b8",
+            "defaultValue": "7L5k!]Ajv7Z^-23Q",
             "metadata": {
                 "description": "Describes the Client secret of the application registered in B2C Directory"
             }
@@ -316,7 +316,7 @@
             "azureAccountPassword": "[parameters('azureAccountPassword')]",
             "tenantID": "[parameters('tenantID')]",
             "applicationName": "[parameters('applicationName')]",
-            "uniqueString": ""
+            "uniqueString": "[variables('uniqueString')]",
             "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
             "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
@@ -468,7 +468,8 @@
             "notificationClickAction": "[variables('websiteFullAddress')]",
             "PowerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('AzureSQL').serverName,'.database.windows.net;initial catalog=',variables('AzureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
-        "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('suffix'),'.azurewebsites.net/')]",
+        "uniqueString": "aug",
+        "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
         "DeployStorageAccountName": "releasemtr",
         "DeployStorageAccountKey": "",
         "WebAppDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/CSUWebApp.zip",
