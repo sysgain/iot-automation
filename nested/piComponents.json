@@ -682,7 +682,7 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]",
-                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIDAVMName,'/extensions/CustomScriptExtension1')]"
+                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIDAServerSettings').PIDAVMName,'/extensions/CustomScriptExtension1')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
