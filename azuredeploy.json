@@ -453,7 +453,7 @@
             "apiServerName": "[concat(parameters('apiServerName'),variables('suffix'))]",
             "b2cClientId":"[parameters('b2cClientId')]",
             "b2cSignInPolicyId": "[parameters('b2cSignInPolicyId')]",
-            "signInSignUpPolicyName": "[parameters('b2cSignUpPolicyId')]",
+            "b2cSignUpPolicyId": "[parameters('b2cSignUpPolicyId')]",
             "editProfilePolicyName": "[parameters('b2cEditProfilePolicyId')]",
             "b2cTenant": "[parameters('b2cTenant')]",
             "b2cClientSecret": "[parameters('b2cClientSecret')]",
