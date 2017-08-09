@@ -454,7 +454,7 @@
             "b2cClientId":"[parameters('b2cClientId')]",
             "b2cSignInPolicyId": "[parameters('b2cSignInPolicyId')]",
             "b2cSignUpPolicyId": "[parameters('b2cSignUpPolicyId')]",
-            "editProfilePolicyName": "[parameters('b2cEditProfilePolicyId')]",
+            "b2cEditProfilePolicyId": "[parameters('b2cEditProfilePolicyId')]",
             "b2cTenant": "[parameters('b2cTenant')]",
             "b2cClientSecret": "[parameters('b2cClientSecret')]",
             "b2cChangePasswordPolicy": "[parameters('b2cChangePasswordPolicy')]",
