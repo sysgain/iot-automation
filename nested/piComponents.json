@@ -375,6 +375,18 @@
             "properties": {}
         },
         {
+            "name": "[parameters('PIDAServersettings').PIDAPublicIpAddressName]",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('PIDAServersettings').location]",
+            "properties": {
+                "publicIpAllocationMethod": "[parameters('PIDAServersettings').publicIpAddressType]",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('PIDAServersettings').PIDADnsLabelPrefix]"
+                }
+            }
+        },
+        {
             "name": "[parameters('PIDAServersettings').PIDANetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -413,8 +425,10 @@
                             "subnet": {
                                 "id": "[variables('subnetRef4')]"
                             },
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('PIDAServersettings').PIDAPrivateIPAddress]"
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('PIDAServersettings').PIDAPublicIpAddressName)]"
+                            }
                         }
                     }
                 ],

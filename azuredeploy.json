@@ -256,10 +256,10 @@
             "wsPublicIpName": "ws-publicip",
             "VMSize": "Standard_DS2_v2",
             "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
-            "powerBIUrl":"[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
-            "powerBIScriptUrl":"[concat(variables('baseUrl'),'scripts/powerbidesktop.ps1')]",
-            "powerBITemplatesUrl":"[concat(variables('dscScriptUrl'),'/powerBItemplates/PowerBI_Templates.zip')]",
-            "powerBIDesktopUrl":"https://projectiot.blob.core.windows.net/iotp2/PBIDesktop_x64.msi",
+            "powerBIUrl": "[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
+            "powerBIScriptUrl": "[concat(variables('baseUrl'),'scripts/powerbidesktop.ps1')]",
+            "powerBITemplatesUrl": "[concat(variables('dscScriptUrl'),'/powerBItemplates/PowerBI_Templates.zip')]",
+            "powerBIDesktopUrl": "https://projectiot.blob.core.windows.net/iotp2/PBIDesktop_x64.msi",
             "workstationSetup": "[concat(variables('baseUrl'),'scripts/workstationsetup1.ps1')]",
             "workstationextensionurl": "[concat(variables('baseUrl'),'nested/workstation-extension.json')]",
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
@@ -385,12 +385,14 @@
             "PIDAVMSize": "Standard_DS1_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "PIDAPrivateIPAddress": "10.0.3.4",
             "scriptFileName": "psscript.ps1",
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
+            "PIDAPublicIpAddressName": "pidapip",
+            "PIDADnsLabelPrefix": "[concat('pidadns',substring(variables('prefix') ,0 ,5))]",
+            "publicIpAddressType": "Dynamic",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "PIBAServersettings": {
@@ -617,17 +619,17 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     },
-                    "MCSModules":{
-                        "value":"[variables('MCSModules')]"
+                    "MCSModules": {
+                        "value": "[variables('MCSModules')]"
                     },
-                     "PIAFSQLSettings":{
-                        "value":"[variables('PIAFSQLSettings')]"
+                    "PIAFSQLSettings": {
+                        "value": "[variables('PIAFSQLSettings')]"
                     },
-                     "PIDAServersettings":{
-                        "value":"[variables('PIDAServersettings')]"
+                    "PIDAServersettings": {
+                        "value": "[variables('PIDAServersettings')]"
                     },
-                     "PIBAServersettings":{
-                        "value":"[variables('PIBAServersettings')]"
+                    "PIBAServersettings": {
+                        "value": "[variables('PIBAServersettings')]"
                     }
                 }
             }
@@ -636,9 +638,7 @@
             "type": "Microsoft.Resources/deployments",
             "name": "AppComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [
-                
-            ],
+            "dependsOn": [],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
