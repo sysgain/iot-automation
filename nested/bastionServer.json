@@ -322,7 +322,8 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionServerSettings').wsNic)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionServerSettings').wsNic)]",
+                 "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').bastionDiagStgAcnt)]"
             ],
             "properties": {
                 "osProfile": {
@@ -361,7 +362,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').adstorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').bastionDiagStgAcnt)).primaryEndpoints.blob]"
                     }
                 }
             }
