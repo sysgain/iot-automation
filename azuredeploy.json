@@ -452,7 +452,7 @@
             "BlobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('DeployStorageAccountName'),';AccountKey=',variables('DeployStorageAccountKey'))]",
             "apiServerName": "[concat(parameters('apiServerName'),variables('suffix'))]",
             "b2cClientId":"[parameters('b2cClientId')]",
-            "signInPolicyName": "[parameters('b2cSignInPolicyId')]",
+            "b2cSignInPolicyId": "[parameters('b2cSignInPolicyId')]",
             "signInSignUpPolicyName": "[parameters('b2cSignUpPolicyId')]",
             "editProfilePolicyName": "[parameters('b2cEditProfilePolicyId')]",
             "b2cTenant": "[parameters('b2cTenant')]",
