@@ -451,7 +451,7 @@
             "RestServerDeployPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
             "BlobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('DeployStorageAccountName'),';AccountKey=',variables('DeployStorageAccountKey'))]",
             "apiServerName": "[concat(parameters('apiServerName'),variables('suffix'))]",
-            "b2cApplicationId": "[parameters('b2cClientId')]",
+            "b2cClientId":"[parameters('b2cClientId')]",
             "signInPolicyName": "[parameters('b2cSignInPolicyId')]",
             "signInSignUpPolicyName": "[parameters('b2cSignUpPolicyId')]",
             "editProfilePolicyName": "[parameters('b2cEditProfilePolicyId')]",
@@ -467,10 +467,12 @@
             "notificationIcon": "./csu/Assets/logo.png",
             "anomalyThreshold": "0.6",
             "meterKWHCost": "0.04",
+            "databaseConnString": "[concat('data source=',variables('AzureSQL').serverName,'.database.windows.net;initial catalog=',variables('AzureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'))]",
             "notificationClickAction": "[variables('websiteFullAddress')]",
             "RESTServerPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
             "PowerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('AzureSQL').serverName,'.database.windows.net;initial catalog=',variables('AzureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
+        
         "uniqueString": "aug",
         "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
         "DeployStorageAccountName": "releasemtr",
