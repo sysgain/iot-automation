@@ -167,27 +167,276 @@
             }
         },
         {
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/Installation')]",
-            "location":  "[parameters('bastionServerSettings').location]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('bastionServerSettings').wsPublicIpName]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('bastionServerSettings').wsClientDns]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('bastionServerSettings').wsNsg]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName)]",
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
+            
             ],
             "properties": {
-                "publisher": "TrendMicro.DeepSecurity",
-                "type": "TrendMicroDSA",
-                "typeHandlerVersion": "9.6",
+                "securityRules": [
+                    {
+                        "name": "https",
+                        "properties": {
+                            "priority": 100,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "http",
+                        "properties": {
+                            "priority": 101,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "80",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "winrm",
+                        "properties": {
+                            "priority": 102,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5985",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "httpsout",
+                        "properties": {
+                            "priority": 1070,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "443",
+                            "access": "Allow",
+                            "direction": "Outbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('bastionServerSettings').wsNic]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/',parameters('bastionServerSettings').wsNsg)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                             "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('bastionServerSettings').chefPublicIPAddressName)]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionServerSettings').wsNsg)]"
+                }
+            }
+        },
+        {
+            "name": "[parameters('bastionServerSettings').wsVmName]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionServerSettings').wsNic)]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[parameters('bastionServerSettings').wsVmName]",
+                    "adminUsername": "[parameters('bastionServerSettings').Username]",
+                    "adminPassword": "[parameters('bastionServerSettings').Password]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": true
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('bastionServerSettings').VMSize]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('bastionServerSettings').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('bastionServerSettings').wsNic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('bastionServerSettings').wsVmName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('bastionServerSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').wsVmName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
-                    "DSMname": "[parameters('bastionServerSettings').ManagerAddress]",
-                    "DSMport": "[parameters('bastionServerSettings').ActivationPort]",
-                    "policyNameorID": ""
+                    "fileUris": [
+                        "[parameters('bastionServerSettings').workstationSetup]"
+                    ]
                 },
                 "protectedSettings": {
-                    "tenantID": "[parameters('bastionServerSettings').TenantIdentifier]",
-                    "tenantPassword": "[parameters('bastionServerSettings').TenantActivationPassword]"
+                    "commandToExecute": "[concat('powershell.exe -File workstationsetup1.ps1')]"
+                }
+            }
+        },
+       
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "workstation-extension",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                 "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').wsVmName,'/extensions/CustomScriptExtension')]"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('bastionServerSettings').workstationextensionurl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "wsVmName": {
+                        "value": "[parameters('bastionServerSettings').wsVmName]"
+                    },
+                    "location": {
+                        "value": "[parameters('bastionServerSettings').location]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('bastionServerSettings').Username]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('bastionServerSettings').Password]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    },
+                    "orguser": {
+                        "value": "[parameters('bastionServerSettings').orguser]"
+                    },
+                    "workstationSetupUrl2": {
+                        "value": "[parameters('bastionServerSettings').workstationSetupUrl2]"
+                    },
+                    "chef-server-fqdn": {
+                        "value": "[parameters('bastionServerSettings').chefAutomateIPAddress]"
+                    },
+                    "splunkIP": {
+                        "value": "[parameters('bastionServerSettings').splunkIPAddress]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "domainJoin",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                "workstation-extension"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('bastionServerSettings').domainJoinUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VmName": {
+                        "value": "[parameters('bastionServerSettings').wsVmName]"
+                    },
+                    "scriptFileName": {
+                        "value": "[parameters('bastionServerSettings').scriptFileName]"
+                    },
+                    "domainName": {
+                        "value": "[parameters('bastionServerSettings').domainName]"
+                    },
+                    "Username": {
+                        "value": "[parameters('bastionServerSettings').Username]"
+                    },
+                    "Password": {
+                        "value": "[parameters('bastionServerSettings').Password]"
+                    },
+                    "fileUris": {
+                        "value": "[parameters('bastionServerSettings').fileUris]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    }
                 }
             }
         }

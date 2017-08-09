@@ -250,10 +250,16 @@
             "domainName": "[parameters('domainName')]",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
-            "TenantIdentifier": "NA",
-            "TenantActivationPassword": "NA",
-            "ActivationPort": "[variables('heartbeatPortTrendDSM')]",
-            "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]"
+            "wsVmName": "chefworkstation",
+            "wsNsg": "ws-client-nsg",
+            "wsNic": "ws-client-nic",
+            "wsPublicIpName": "ws-publicip",
+            "VMSize": "Standard_DS2_v2",
+            "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
+            "workstationSetup": "[concat(variables('baseUrl'),'scripts/workstationsetup1.ps1')]",
+            "workstationextensionurl": "[concat(variables('baseUrl'),'nested/workstation-extension.json')]",
+            "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "MCSModules": {
             "location": "[resourceGroup().location]",
@@ -263,7 +269,6 @@
             "adNicIPAddress": "10.0.1.4",
             "splunkIPAddress": "10.0.1.5",
             "chefAutomateIPAddress": "10.0.1.6",
-            "wsIPAddress": "10.0.1.7",
             "sshFrom": "0.0.0.0/0",
             "forwardedDataFrom": "0.0.0.0/0",
             "adVMName": "adServer",
@@ -278,11 +283,8 @@
             "Password": "[parameters('adminPassword')]",
             "domainName": "[parameters('domainName')]",
             "adExtensionName": "CreateADForest",
-            "wsNsg": "ws-client-nsg",
             "chefAutoNsg": "chefauto-nsg",
-            "wsNic": "ws-client-nic",
             "chefAutoNic": "chefauto-nic",
-            "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
             "chefAutoDns": "[concat('chefauto',substring(variables('prefix') ,0 ,5))]",
             "scriptFileName": "psscript.ps1",
             "dnsPrefix": "[concat('adserver',variables('suffix'))]",
@@ -294,7 +296,6 @@
             "chefImageOffer": "chef-automate",
             "chefImageSKU": "byol",
             "chefImageVersion": "latest",
-            "wsVmName": "chefworkstation",
             "chefAutoVmName": "chefautomate",
             "firstname": "chefautomate",
             "lastname": "user",
@@ -308,28 +309,8 @@
             "adstorageAccountName": "[concat('adstrg',variables('suffix'))]",
             "diskCreateOption": "empty",
             "diskSizeGB": "1023",
-            "trendPublisher": "trendmicro",
-            "trendVMSize": "Standard_D2_v2",
-            "trendVMSku": "dxxn25d2v2",
-            "trendProduct": "deep-security-vm",
-            "vmNameTrendDSM": "trendMicroDSM",
-            "nicNameTrendDSM": "trendnic",
-            "securityGroupNameTrendDSM": "trendnsg",
-            "chefPublicIPDomainNameLabel": "[variables('chefPublicIPDomainName')]",
-            "managerPortTrendDSM": "443",
-            "heartbeatPortTrendDSM": "[variables('heartbeatPortTrendDSM')]",
-            "vmAdminNameTrendDSM": "trend",
-            "chefPublicIPAddressName": "publicIP",
-            "vmAdminPasswordTrendDSM": "[parameters('adminPassword')]",
-            "dbAdminName": "trend",
-            "dbAdminPassword": "[parameters('adminPassword')]",
-            "dsmAdminName": "trend",
-            "dsmAdminPassword": "[parameters('adminPassword')]",
-            "dbName": "dsm",
             "databaseOption": "new",
             "licenseMode": "10",
-            "TenantIdentifier": "NA",
-            "TenantActivationPassword": "NA",
             "azureAccountUsername": "[parameters('azureAccountUsername')]",
             "azureAccountPassword": "[parameters('azureAccountPassword')]",
             "tenantID": "[parameters('tenantID')]",
@@ -345,11 +326,7 @@
             "splunkScriptsUrl": "[concat(variables('baseUrl'),'scripts/node-setup.sh')]",
             "dscScriptUrl": "[variables('dscScriptUrl')]",
             "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]",
-            "chefAutoScriptUrl1": "[concat(variables('baseUrl'),'scripts/automate_setup.rb')]",
-            "workstationSetup": "[concat(variables('baseUrl'),'scripts/workstationsetup1.ps1')]",
-            "workstationextensionurl": "[concat(variables('baseUrl'),'nested/workstation-extension.json')]",
-            "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
-            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
+            "chefAutoScriptUrl1": "[concat(variables('baseUrl'),'scripts/automate_setup.rb')]"
         },
         "PIAFSQLSettings": {
             "location": "[resourceGroup().location]",
@@ -702,21 +679,9 @@
             "type": "string",
             "value": "[variables('PIAFSQLSettings').sqlPrivateIPAddress]"
         },
-        "workstationIPAddress": {
-            "type": "string",
-            "value": "[variables('MCSModules').wsIPAddress]"
-        },
-        "splunkIPAddress": {
-            "type": "string",
-            "value": "[variables('MCSModules').splunkIPAddress]"
-        },
         "chefAutomateIPAddress": {
             "type": "string",
             "value": "[variables('MCSModules').chefAutomateIPAddress]"
-        },
-        "trendFQDN": {
-            "type": "string",
-            "value": "[variables('bastionServerSettings').ManagerAddress]"
         },
         "PIDAServerIP": {
             "type": "string",
