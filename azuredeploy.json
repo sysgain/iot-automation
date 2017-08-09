@@ -588,18 +588,6 @@
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
-                    },
-                    "MCSModules": {
-                        "value": "[variables('MCSModules')]"
-                    },
-                    "PIAFSQLSettings": {
-                        "value": "[variables('PIAFSQLSettings')]"
-                    },
-                    "PIDAServersettings": {
-                        "value": "[variables('PIDAServersettings')]"
-                    },
-                    "PIBAServersettings": {
-                        "value": "[variables('PIBAServersettings')]"
                     }
                 }
             }

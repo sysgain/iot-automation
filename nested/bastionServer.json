@@ -10,18 +10,6 @@
         },
         "apiVersions": {
             "type": "object"
-        },
-        "MCSModules": {
-            "type": "object"
-        },
-        "PIAFSQLSettings": {
-            "type": "object"
-        },
-        "PIDAServersettings": {
-            "type": "object"
-        },
-        "PIBAServersettings": {
-            "type": "object"
         }
     },
     "variables": {
