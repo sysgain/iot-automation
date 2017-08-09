@@ -39,7 +39,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('fileUris')]"
+                        "https://projectiot.blob.core.windows.net/iotp2/psscript.ps1"
                     ]
                 },
                 "protectedSettings": {
