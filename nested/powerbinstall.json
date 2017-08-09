@@ -7,21 +7,6 @@
         },
         "scriptFileName": {
             "type": "string"
-        },
-        "domainName": {
-            "type": "string"
-        },
-        "Username": {
-            "type": "string"
-        },
-        "Password": {
-            "type": "string"
-        },
-        "fileUris": {
-            "type": "string"
-        },
-        "computeApiVersion": {
-            "type": "string"
         }
     },
     "variables": {},

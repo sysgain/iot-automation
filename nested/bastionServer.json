@@ -171,7 +171,7 @@
             "name": "PowerBIInstall",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "workstation-extension"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "incremental",
@@ -180,8 +180,11 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "VmName": {
-                        "value": "[parameters('bastionServerSettings').wsVmName]"
+                    "powerBITemplatesUrl": {
+                        "value": "[parameters('bastionServerSettings').powerBITemplatesUrl]"
+                    },
+                     "powerBIDesktopUrl": {
+                        "value": "[parameters('bastionServerSettings').powerBIDesktopUrl]"
                     }
                 }
             }
