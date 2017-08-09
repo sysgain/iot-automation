@@ -414,7 +414,7 @@
                             "protocol": "TCP",
                             "destinationPortRange": "443",
                             "access": "Allow",
-                            "direction": "Outbound",
+                            "direction": "Inbound",
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*"
                         }
@@ -427,7 +427,7 @@
                             "protocol": "TCP",
                             "destinationPortRange": "80",
                             "access": "Allow",
-                            "direction": "Outbound",
+                            "direction": "Inbound",
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*"
                         }
@@ -576,7 +576,7 @@
                             "protocol": "TCP",
                             "destinationPortRange": "443",
                             "access": "Allow",
-                            "direction": "Outbound",
+                            "direction": "Inbound",
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*"
                         }
@@ -589,7 +589,7 @@
                             "protocol": "TCP",
                             "destinationPortRange": "80",
                             "access": "Allow",
-                            "direction": "Outbound",
+                            "direction": "Inbound",
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*"
                         }
