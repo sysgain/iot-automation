@@ -446,7 +446,7 @@
             "hostingPlanName": "[parameters('hostingPlanName')]",
             "skuName": "[parameters('skuName')]",
             "skuCapacity": "[parameters('skuCapacity')]",
-            "webSiteName": "[concat(parameters('applicationName'),variables('suffix'))]",
+            "webSiteName": "[concat(parameters('applicationName'),variables('uniqueString'))]",
             "WebAppPackageURI": "[concat(variables('WebAppDeployPackageURI'), variables('SasToken'))]",
             "RestServerDeployPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
             "BlobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('DeployStorageAccountName'),';AccountKey=',variables('DeployStorageAccountKey'))]",
