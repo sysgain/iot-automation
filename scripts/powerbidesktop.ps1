@@ -1,3 +1,5 @@
+# https://github.com/sysgain/iot-automation/raw/main/powerBItemplates/PowerBI_Templates.zip
+# https://projectiot.blob.core.windows.net/iotp2/PBIDesktop_x64.msi
 param(
 [string] $powerBItemplates = "$1",
 [string] $powerbidesktop = "$2",

@@ -176,7 +176,7 @@
             "properties": {
                 "mode": "incremental",
                 "templateLink": {
-                    "uri": "[parameters('bastionServerSettings').domainJoinUrl]",
+                    "uri": "[parameters('bastionServerSettings').powerBIUrl]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
