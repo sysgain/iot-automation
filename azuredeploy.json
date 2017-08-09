@@ -637,7 +637,7 @@
             "name": "AppComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "PIComponents"
+                
             ],
             "properties": {
                 "mode": "Incremental",
@@ -674,6 +674,10 @@
         "bastionFQDN": {
             "type": "string",
             "value": "[reference('BastionHost').outputs.bastionFQDN.value]"
+        },
+        "workstationFQDN": {
+            "type": "string",
+            "value": "[reference('BastionHost').outputs.workstationFQDN.value]"
         },
         "adServerIP": {
             "type": "string",

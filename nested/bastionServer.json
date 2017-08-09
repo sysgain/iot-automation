@@ -508,6 +508,10 @@
         "bastionFQDN": {
             "type": "string",
             "value": "[reference(parameters('bastionServerSettings').publicIpAddressName).dnsSettings.fqdn]"
+        },
+         "workstationFQDN": {
+            "type": "string",
+            "value": "[reference(parameters('bastionServerSettings').wsPublicIpName).dnsSettings.fqdn]"
         }
     }
 }
