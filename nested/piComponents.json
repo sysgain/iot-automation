@@ -489,40 +489,25 @@
             }
         },
         {
-            "type": "Microsoft.Resources/deployments",
-            "name": "PIDADomainJoin",
-            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "name": "[concat(parameters('PIDAServersettings').PIDAVMName,'/CustomScriptExtension1')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('PIDAServersettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIDAServersettings').PIDAVMName)]"
             ],
             "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[parameters('PIDAServersettings').domainJoinUrl]",
-                    "contentVersion": "1.0.0.0"
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIDAServersettings').fileUris]"
+                    ]
                 },
-                "parameters": {
-                    "VmName": {
-                        "value": "[parameters('PIDAServersettings').PIDAVMName]"
-                    },
-                    "scriptFileName": {
-                        "value": "[parameters('PIDAServersettings').scriptFileName]"
-                    },
-                    "domainName": {
-                        "value": "[parameters('PIDAServersettings').domainName]"
-                    },
-                    "Username": {
-                        "value": "[parameters('PIDAServersettings').Username]"
-                    },
-                    "Password": {
-                        "value": "[parameters('PIDAServersettings').Password]"
-                    },
-                    "fileUris": {
-                        "value": "[parameters('PIDAServersettings').fileUris]"
-                    },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
-                    }
+                "protectedSettings": {
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('PIDAServersettings').domainName,' ',parameters('PIDAServersettings').Username,' ',parameters('PIDAServersettings').Password)]"
                 }
             }
         },
@@ -638,40 +623,25 @@
             }
         },
         {
-            "type": "Microsoft.Resources/deployments",
-            "name": "PIBADomainJoin",
-            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "name": "[concat(parameters('PIBAServerSettings').PIBAVMName,'/CustomScriptExtension2')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('PIBAServerSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/',parameters('PIBAServerSettings').PIBAVMName)]"
             ],
             "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[parameters('PIBAServerSettings').domainJoinUrl]",
-                    "contentVersion": "1.0.0.0"
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('PIBAServerSettings').fileUris]"
+                    ]
                 },
-                "parameters": {
-                    "VmName": {
-                        "value": "[parameters('PIBAServerSettings').PIBAVMName]"
-                    },
-                    "scriptFileName": {
-                        "value": "[parameters('PIBAServerSettings').scriptFileName]"
-                    },
-                    "domainName": {
-                        "value": "[parameters('PIBAServerSettings').domainName]"
-                    },
-                    "Username": {
-                        "value": "[parameters('PIBAServerSettings').Username]"
-                    },
-                    "Password": {
-                        "value": "[parameters('PIBAServerSettings').Password]"
-                    },
-                    "fileUris": {
-                        "value": "[parameters('PIBAServerSettings').fileUris]"
-                    },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
-                    }
+                "protectedSettings": {
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('PIBAServerSettings').domainName,' ',parameters('PIBAServerSettings').Username,' ',parameters('PIBAServerSettings').Password)]"
                 }
             }
         }
