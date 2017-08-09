@@ -23,8 +23,8 @@
             "location": "[parameters('AzureSQL').location]",
             "name": "[parameters('AzureSQL').serverName]",
             "properties": {
-                "administratorLogin": "[parameters('AzureSQL').AzureSqlLogin]",
-                "administratorLoginPassword": "[parameters('AzureSQL').AzureSqlPwd]",
+                "administratorLogin": "[parameters('AzureSQL').sqlAuthenticationLogin]",
+                "administratorLoginPassword": "[parameters('AzureSQL').sqlAuthenticationPassword]",
                 "version": "12.0"
             },
             "resources": [
@@ -54,8 +54,8 @@
                                 "storageKeyType": "[parameters('AzureSQL').storageKeyType]",
                                 "storageKey": "[parameters('AzureSQL').storageKey]",
                                 "storageUri": "[parameters('AzureSQL').storageUri]",
-                                "administratorLogin": "[parameters('AzureSQL').AzureSqlLogin]",
-                                "administratorLoginPassword": "[parameters('AzureSQL').AzureSqlPwd]",
+                                "administratorLogin": "[parameters('AzureSQL').sqlAuthenticationLogin]",
+                                "administratorLoginPassword": "[parameters('AzureSQL').sqlAuthenticationPassword]",
                                 "operationMode": "Import"
                             }
                         }
