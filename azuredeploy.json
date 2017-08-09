@@ -576,32 +576,6 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "BastionHost",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [
-                "MCSModules"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/bastionServer.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "bastionServerSettings": {
-                        "value": "[variables('bastionServerSettings')]"
-                    },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
-                    },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
             "name": "PIComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
@@ -622,6 +596,32 @@
                     },
                     "PIBAServersettings": {
                         "value": "[variables('PIBAServersettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "BastionHost",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "PIComponents"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/bastionServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "bastionServerSettings": {
+                        "value": "[variables('bastionServerSettings')]"
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
