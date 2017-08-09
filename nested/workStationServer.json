@@ -266,7 +266,7 @@
                         "value": "[parameters('bastionServerSettings').workstationSetupUrl2]"
                     },
                     "chef-server-fqdn": {
-                        "value": "[parameters('bastionServerSettings').chefAutomateIPAddress]"
+                        "value": "[parameters('MCSModules').chefAutomateIPAddress]"
                     },
                     "PIAFSQLIP": {
                         "value": "[parameters('PIAFSQLSettings').sqlPrivateIPAddress]"
