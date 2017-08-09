@@ -166,6 +166,7 @@
                 }
             }
         },
+        
         {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/publicIPAddresses",
