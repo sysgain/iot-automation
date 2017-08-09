@@ -2,17 +2,26 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "VmName": {
+        "powerBITemplatesUrl": {
             "type": "string"
         },
-        "scriptFileName": {
+        "powerBIDesktopUrl": {
+            "type": "string"
+        },
+        "powerBIScriptUrl":{
+            "type": "string"
+        },
+        "bastionVMName":{
+            "type": "string"
+        },
+        "computeApiVersion":{
             "type": "string"
         }
     },
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('VmName'),'/CustomScriptExtension')]",
+            "name": "[concat(parameters('bastionVMName'),'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[resourceGroup().location]",
             "apiVersion": "[parameters('computeApiVersion')]",
@@ -24,11 +33,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('fileUris')]"
+                        "[parameters('powerBIScriptUrl')]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('domainName'),' ',parameters('Username'),' ',parameters('Password'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('powerBITemplatesUrl'),' ',parameters('powerBIDesktopUrl'))]"
                 }
             }
         }

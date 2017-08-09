@@ -185,6 +185,15 @@
                     },
                      "powerBIDesktopUrl": {
                         "value": "[parameters('bastionServerSettings').powerBIDesktopUrl]"
+                    },
+                    "powerBIScriptUrl":{
+                        "value":"[parameters('bastionServerSettings').powerBIScriptUrl]"
+                    },
+                    "bastionVMName":{
+                        "value":"[parameters('bastionServerSettings').bastionVMName]"
+                    },
+                     "computeApiVersion":{
+                        "value":"[parameters('apiVersions').computeApiVersion]"
                     }
                 }
             }
