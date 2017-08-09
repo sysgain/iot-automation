@@ -481,7 +481,7 @@
         "RestServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
         "SasToken": "?",
         "chefPublicIPDomainName": "[concat('publicdnschef',variables('suffix'))]",
-        "DNSServerAddress": "10.0.2.4",
+        "DNSServerAddress": "10.0.1.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/main/",
