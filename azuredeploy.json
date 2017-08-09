@@ -729,6 +729,14 @@
         "PIBAServerIP": {
             "type": "string",
             "value": "[variables('PIBAServersettings').PIBAPrivateIPAddress]"
+        },
+        "azureSQLServer":{
+            "type": "string",
+            "value": "[reference('AppComponents').outputs.azureSqlServerName.value]"
+        },
+        "azureSQLDatabase":{
+            "type": "string",
+            "value": "[reference('AppComponents').outputs.azureDBName.value]"
         }
     }
 }
