@@ -698,10 +698,6 @@
             "type": "string",
             "value": "[parameters('adminUserName')]"
         },
-        "adminPassword": {
-            "type": "string",
-            "value": "[parameters('adminPassword')]"
-        },
         "bastionFQDN": {
             "type": "string",
             "value": "[reference('BastionHost').outputs.bastionFQDN.value]"
@@ -726,10 +722,6 @@
             "type": "string",
             "value": "[parameters('adminUserName')]"
         },
-        "chefAutomateLoginPassword": {
-            "type": "string",
-            "value": "[parameters('adminPassword')]"
-        },
         "PIDAServerFQDN": {
             "type": "string",
             "value": "[reference('PIComponents').outputs.PIDAFQDN.value]"
@@ -749,10 +741,6 @@
         "sqlServerAuthUsername":{
             "type": "string",
             "value": "[parameters('sqlAdministratorLogin')]"
-        },
-        "sqlServerAuthPassword":{
-            "type": "string",
-            "value": "[parameters('sqlAdministratorLoginPassword')]"
         }
     }
 }
