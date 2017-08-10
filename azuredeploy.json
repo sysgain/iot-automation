@@ -16,13 +16,6 @@
                 "description": "Password for all the Virtual Machines."
             }
         },
-        "adminSSHKey":{
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description":"admin ssh key for linux servers "
-            }
-        },
         "authTypeForLinuxServers":{
             "type": "string",
             "defaultValue": "password",
@@ -30,6 +23,13 @@
                 "password",
                 "sshPublicKey"
             ]
+        },
+        "adminSSHKey":{
+            "type": "string",
+            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEA0DnqP4H8skniRTCzvRbpHK8ZjsrHKwSnAtoUgpjQzNRaIZlBOe+TyVVt3vWwtybPnxEm5Tof9yWFrsKnX0uii4/QFtggMyhNH5qxLUXphAA2+yFdHnse22Rys/KrspystqkuNAq/DXZsVfSzpxtCjXNr6vCknERk3MC7vqk+SuCUFz+cBKTpziJvbFoiNHIy7u6jSDg5eIXTVIC+qxA0XgNrJco0azR7kUkrezQRjCthBoKzP/cLK7ZrbSDvygie6NdveVZeB8ytruR6B/7et1fa3QGyJhUmP0UOo3yL64UHBVjsL9ZpCbvqVIU17DrtnxEBbEMz1uAQWiw3PWKaVQ== rsa-key-20170810",
+            "metadata": {
+                "description":"admin ssh key for linux servers "
+            }
         },
         "domainName": {
             "type": "string",
