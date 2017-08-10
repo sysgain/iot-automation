@@ -88,32 +88,6 @@
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*"
                         }
-                    },
-                    {
-                        "name": "http",
-                        "properties": {
-                            "priority": 1001,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "TCP",
-                            "destinationPortRange": "80",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    },
-                    {
-                        "name": "https",
-                        "properties": {
-                            "priority": 1002,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "TCP",
-                            "destinationPortRange": "443",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
                     }
                 ]
             }
@@ -184,7 +158,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://projectiot.blob.core.windows.net/iotp2/psscript.ps1"
+                        "[parameters('bastionServerSettings').fileUris]"
                     ]
                 },
                 "protectedSettings": {
