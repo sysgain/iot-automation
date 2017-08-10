@@ -17,7 +17,30 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]",
+        "sshKeyPath": "[concat('/home/',parameters('MCSModules').Username,'/.ssh/authorized_keys')]",
+        "osProfilepassword": {
+            "computerName": "[parameters('MCSModules').chefAutoVmName]",
+            "adminUsername": "[parameters('MCSModules').Username]",
+            "adminPassword": "[parameters('MCSModules').Password]"
+        },
+        "osProfilesshPublicKey": {
+            "computerName": "[parameters('MCSModules').chefAutoVmName]",
+            "adminUsername": "[parameters('MCSModules').Username]",
+            "adminPassword": "[parameters('MCSModules').Password]",
+            "linuxConfiguration": {
+                "disablePasswordAuthentication": true,
+                "ssh": {
+                    "publicKeys": [
+                        {
+                            "path": "[variables('sshKeyPath')]",
+                            "keyData": "[parameters('MCSModules').sshKey]"
+                        }
+                    ]
+                }
+            }
+        },
+        "osProfileReference": "[variables(concat('osProfile', parameters('MCSModules').authenticationType))]"
     },
     "resources": [
         {
@@ -36,8 +59,7 @@
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('MCSModules').location]",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "properties": {
                 "securityRules": [
                     {
@@ -220,13 +242,12 @@
                 ]
             }
         },
-         {
+        {
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('MCSModules').chefAutoNsg]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('MCSModules').location]",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "properties": {
                 "securityRules": [
                     {
@@ -340,11 +361,7 @@
                 "hardwareProfile": {
                     "vmSize": "[parameters('MCSModules').VMSize]"
                 },
-                "osProfile": {
-                    "computerName": "[parameters('MCSModules').chefAutoVmName]",
-                    "adminUsername": "[parameters('MCSModules').Username]",
-                    "adminPassword": "[parameters('MCSModules').Password]"
-                },
+                "osProfile": "[variables('osProfileReference')]",
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[parameters('MCSModules').chefImagePublisher]",

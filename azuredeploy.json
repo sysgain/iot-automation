@@ -16,6 +16,21 @@
                 "description": "Password for all the Virtual Machines."
             }
         },
+        "adminSSHKey":{
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description":"admin ssh key for linux servers "
+            }
+        },
+        "authTypeForLinuxServers":{
+            "type": "string",
+            "defaultValue": "password",
+            "allowedValues": [
+                "password",
+                "sshPublicKey"
+            ]
+        },
         "domainName": {
             "type": "string",
             "defaultValue": "sysgainiot.com",
@@ -212,7 +227,7 @@
             "webApiVersion2": "2014-08-01-preview"
         },
         "networkSettings": {
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "networkApiVersion": "2016-03-30",
             "virtualNetworkName": "MyVNET",
             "addressPrefix": "10.0.0.0/16",
@@ -228,7 +243,7 @@
             "subnet5Prefix": "10.0.4.0/24"
         },
         "bastionServerSettings": {
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "bastionVMName": "bastionServer",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
@@ -275,7 +290,9 @@
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "MCSModules": {
-            "location": "[resourceGroup().location]",
+            "authenticationType":"[parameters('authTypeForLinuxServers')]",
+            "sshKey":"[parameters('adminSSHKey')]",
+            "location":"[variables('location')]",
             "adNicName": "adNic",
             "splunkNicName": "splunkNic",
             "splunkNsg": "splunkNsg",
@@ -331,7 +348,7 @@
             "chefAutoScriptUrl1": "[concat(variables('baseUrl'),'scripts/automate_setup.rb')]"
         },
         "PIAFSQLSettings": {
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "networkInterfaceName": "sqlNic",
@@ -375,7 +392,7 @@
         "PIDAServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "PIDAVMName": "PIDAVMServer",
             "PIDANic": "PIDAVMNic",
             "PIDANetworkSecurityGroupName": "PIDANsg",
@@ -401,7 +418,7 @@
         "PIBAServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "PIBAVMName": "PIBAVMServer",
             "PIBANic": "PIBAVMNic",
             "PIBANetworkSecurityGroupName": "PIBANsg",
@@ -422,7 +439,7 @@
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "AzureSQL": {
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "sqlAuthenticationLogin": "[parameters('sqlAdministratorLogin')]",
             "sqlAuthenticationPassword": "[parameters('sqlAdministratorLoginPassword')]",
             "collation": "SQL_Latin1_General_CP1_CI_AS",
@@ -442,7 +459,7 @@
             "MLStorageName": "[concat('mlstr', uniqueString(resourceGroup().id))]"
         },
         "webSiteSettings": {
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "jobCollectionName": "[concat('myjob', uniqueString(resourceGroup().id))]",
             "webjobStorageName": "[concat('webjobstr', uniqueString(resourceGroup().id))]",
             "webjobStorageType": "Standard_LRS",
@@ -475,6 +492,7 @@
             "RESTServerPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
             "PowerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('AzureSQL').serverName,'.database.windows.net;initial catalog=',variables('AzureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
+        "location":"[resourceGroup().location]",
         "uniqueString": "aug",
         "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
         "DeployStorageAccountName": "releasemtr",
