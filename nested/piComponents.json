@@ -425,7 +425,8 @@
                             "subnet": {
                                 "id": "[variables('subnetRef4')]"
                             },
-                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('PIDAServersettings').PIDAIP]",
                             "publicIpAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('PIDAServersettings').PIDAPublicIpAddressName)]"
                             }

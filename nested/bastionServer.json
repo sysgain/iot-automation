@@ -244,14 +244,6 @@
         }
     ],
     "outputs": {
-        "adminUsername": {
-            "type": "string",
-            "value": "[parameters('bastionServerSettings').adminUsername]"
-        },
-        "adminPassword": {
-            "type": "string",
-            "value": "[parameters('bastionServerSettings').adminPassword]"
-        },
         "bastionFQDN": {
             "type": "string",
             "value": "[reference(parameters('bastionServerSettings').publicIpAddressName).dnsSettings.fqdn]"

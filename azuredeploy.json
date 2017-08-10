@@ -384,6 +384,7 @@
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
             "version": "latest",
+            "PIDAIP":"10.0.3.4",
             "PIDAVMSize": "Standard_DS1_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
