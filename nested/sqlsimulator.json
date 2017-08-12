@@ -25,6 +25,12 @@
         },
         "piWebApiSimulatorUrl":{
             "type": "string"
+        },
+        "adminUsername":{
+           "type": "string"
+        },
+        "adminPassword":{
+            "type": "string"
         }
     },
     "variables": {},
@@ -45,7 +51,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('scriptFileName3'),' ',parameters('simulatorUrl'),' ',parameters('dataserviceUrl'),' ',parameters('piWebApiSimulatorUrl'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('scriptFileName3'),' ',parameters('simulatorUrl'),' ',parameters('dataserviceUrl'),' ',parameters('piWebApiSimulatorUrl'),' ',parameters('adminUsername'),' ',parameters('adminPassword'),' ',parameters('sqlservername'))]"
                 }
             }
         }

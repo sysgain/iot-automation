@@ -359,6 +359,12 @@
                     },
                     "piWebApiSimulatorUrl": {
                         "value": "[parameters('piafsqlSettings').piWebApiSimulatorUrl]"
+                    },
+                    "adminUsername":{
+                        "value": "[parameters('piafsqlSettings').adminUsername]"
+                    },
+                    "adminPassword":{
+                        "value": "[parameters('piafsqlSettings').adminPassword]"
                     }
                 }
             }
