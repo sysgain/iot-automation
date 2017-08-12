@@ -749,11 +749,11 @@
             "type": "string",
             "value": "[variables('pibaServersettings').pibaPrivateIPAddress]"
         },
-        "azureSQLServer":{
+        "azureSQLEndpoint":{
             "type": "string",
             "value": "[reference('AppComponents').outputs.azureSQLServerName.value]"
         },
-        "azureSQLDatabase":{
+        "azureSQLDBName":{
             "type": "string",
             "value": "[reference('AppComponents').outputs.azureDBName.value]"
         },
