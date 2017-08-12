@@ -633,7 +633,6 @@
             "name": "PIComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "BastionHost",
                 "mcsModules"
             ],
             "properties": {
