@@ -256,7 +256,7 @@
             "version": "latest",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "WSDiagStgAcnt":"[concat('wsstrg',variables('suffix'))]",
+            "wsDiagStgAcnt":"[concat('wsstrg',variables('suffix'))]",
             "publicIpAddressName": "bastion-pip",
             "networkSecurityGroupName": "bastion-nsg",
             "publicIpAddressType": "Dynamic",
@@ -270,7 +270,7 @@
             "wsNsg": "ws-client-nsg",
             "wsNic": "ws-client-nic",
             "wsPublicIpName": "ws-publicip",
-            "VMSize": "Standard_DS2_v2",
+            "vmSize": "Standard_DS2_v2",
             "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
             "azureAccountUsername": "[parameters('azureAccountUsername')]",
             "azureAccountPassword": "[parameters('azureAccountPassword')]",
@@ -289,7 +289,7 @@
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
-        "MCSModules": {
+        "mcsModules": {
             "authenticationType":"[parameters('authTypeForLinuxServers')]",
             "sshKey":"[parameters('adminSSHKey')]",
             "location":"[variables('location')]",
@@ -329,7 +329,7 @@
             "orguser": "orguser",
             "mailid": "orguser@gmail.com",
             "rubyPath": "/opt/chef-marketplace/embedded/bin/ruby",
-            "VMSize": "Standard_DS2_v2",
+            "vmSize": "Standard_DS2_v2",
             "automateLicenseUri": "",
             "storageAccountType": "Premium_LRS",
             "adNetworkSecurityGroupName": "adnsg",
@@ -339,7 +339,7 @@
             "databaseOption": "new",
             "licenseMode": "10",
             "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
-            "azuresqlUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
+            "azureSQLUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "commandToExecute": "[concat('bash node-setup.sh', ' -r ', variables('splunkServerRole'), ' -p ', parameters('adminPassword'))]",
             "splunkScriptsUrl": "[concat(variables('baseUrl'),'scripts/node-setup.sh')]",
@@ -347,7 +347,7 @@
             "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]",
             "chefAutoScriptUrl1": "[concat(variables('baseUrl'),'scripts/automate_setup.rb')]"
         },
-        "PIAFSQLSettings": {
+        "piafsqlSettings": {
             "location": "[variables('location')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
@@ -387,22 +387,22 @@
             "databaseName": "iottestdb",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
-            "PIWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
+            "piWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
         },
-        "PIDAServersettings": {
+        "pidaServerSettings": {
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "location": "[variables('location')]",
-            "PIDAVMName": "PIDAVMServer",
-            "PIDANic": "PIDAVMNic",
-            "PIDANetworkSecurityGroupName": "PIDANsg",
-            "PIDADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
+            "pidaVMName": "PIDAVMServer",
+            "pidaNic": "PIDAVMNic",
+            "pidaNetworkSecurityGroupName": "PIDANsg",
+            "pidaDiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
             "publisher": "MicrosoftWindowsServer",
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
             "version": "latest",
-            "PIDAIP":"10.0.3.4",
-            "PIDAVMSize": "Standard_DS1_v2",
+            "pidaIP":"10.0.3.4",
+            "pidaVMSize": "Standard_DS1_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
             "scriptFileName": "psscript.ps1",
@@ -410,27 +410,27 @@
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
-            "PIDAPublicIpAddressName": "pidapip",
-            "PIDADnsLabelPrefix": "[concat('pidadns',substring(variables('prefix') ,0 ,5))]",
+            "pidaPublicIpAddressName": "pidapip",
+            "pidaDnsLabelPrefix": "[concat('pidadns',substring(variables('prefix') ,0 ,5))]",
             "publicIpAddressType": "Dynamic",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
-        "PIBAServersettings": {
+        "pibaServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "location": "[variables('location')]",
-            "PIBAVMName": "PIBAVMServer",
-            "PIBANic": "PIBAVMNic",
-            "PIBANetworkSecurityGroupName": "PIBANsg",
-            "PIBADiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pibavm')]",
+            "pibaVMName": "PIBAVMServer",
+            "pibaNic": "PIBAVMNic",
+            "pibaNetworkSecurityGroupName": "PIBANsg",
+            "pibaDiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pibavm')]",
             "publisher": "MicrosoftWindowsServer",
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
             "version": "latest",
-            "PIBAVMSize": "Standard_DS4_v2",
+            "pibaVMSize": "Standard_DS4_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "PIBAPrivateIPAddress": "10.0.4.4",
+            "pibaPrivateIPAddress": "10.0.4.4",
             "scriptFileName": "psscript.ps1",
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -438,7 +438,7 @@
             "Password": "[parameters('adminPassword')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
-        "AzureSQL": {
+        "azureSQL": {
             "location": "[variables('location')]",
             "sqlAuthenticationLogin": "[parameters('sqlAdministratorLogin')]",
             "sqlAuthenticationPassword": "[parameters('sqlAdministratorLoginPassword')]",
@@ -452,11 +452,11 @@
             "storageKey": "?",
             "storageUri": "https://projectiot.blob.core.windows.net/iotp2/EnergyManagement.bacpac"
         },
-        "MLSettings": {
+        "mlSettings": {
             "location": "South Central US",
             "workspaceName": "workspace",
-            "MLskuName": "[parameters('MLskuName')]",
-            "MLStorageName": "[concat('mlstr', uniqueString(resourceGroup().id))]"
+            "mlSkuName": "[parameters('MLskuName')]",
+            "mlStorageName": "[concat('mlstr', uniqueString(resourceGroup().id))]"
         },
         "webSiteSettings": {
             "location": "[variables('location')]",
@@ -467,9 +467,9 @@
             "skuName": "[parameters('skuName')]",
             "skuCapacity": "[parameters('skuCapacity')]",
             "webSiteName": "[concat(parameters('applicationName'),variables('uniqueString'))]",
-            "WebAppPackageURI": "[concat(variables('WebAppDeployPackageURI'), variables('SasToken'))]",
-            "RestServerDeployPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
-            "BlobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('DeployStorageAccountName'),';AccountKey=',variables('DeployStorageAccountKey'))]",
+            "WebAppPackageURI": "[concat(variables('webAppDeployPackageURI'), variables('sasToken'))]",
+            "restServerDeployPackageURI": "[concat(variables('restServerDeployPackageURI'), variables('sasToken'))]",
+            "blobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('deployStorageAccountName'),';AccountKey=',variables('deployStorageAccountKey'))]",
             "apiServerName": "[concat(parameters('apiServerName'),variables('suffix'))]",
             "b2cClientId": "[parameters('b2cClientId')]",
             "b2cSignInPolicyId": "[parameters('b2cSignInPolicyId')]",
@@ -487,21 +487,21 @@
             "notificationIcon": "./csu/Assets/logo.png",
             "anomalyThreshold": "0.6",
             "meterKWHCost": "0.04",
-            "databaseConnString": "[concat('data source=',variables('AzureSQL').serverName,'.database.windows.net;initial catalog=',variables('AzureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'))]",
+            "databaseConnString": "[concat('data source=',variables('azureSQL').serverName,'.database.windows.net;initial catalog=',variables('azureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'))]",
             "notificationClickAction": "[variables('websiteFullAddress')]",
-            "RESTServerPackageURI": "[concat(variables('RestServerDeployPackageURI'), variables('SasToken'))]",
-            "PowerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('AzureSQL').serverName,'.database.windows.net;initial catalog=',variables('AzureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
+            "restServerPackageURI": "[concat(variables('restServerDeployPackageURI'), variables('sasToken'))]",
+            "powerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('azureSQL').serverName,'.database.windows.net;initial catalog=',variables('azureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
         "location":"[resourceGroup().location]",
         "uniqueString": "aug",
         "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
-        "DeployStorageAccountName": "releasemtr",
-        "DeployStorageAccountKey": "",
-        "WebAppDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/CSUWebApp.zip",
-        "RestServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
-        "SasToken": "?",
+        "deployStorageAccountName": "releasemtr",
+        "deployStorageAccountKey": "",
+        "webAppDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/CSUWebApp.zip",
+        "restServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
+        "sasToken": "?",
         "chefPublicIPDomainName": "[concat('publicdnschef',variables('suffix'))]",
-        "DNSServerAddress": "10.0.1.4",
+        "dnsServerAddress": "10.0.1.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/main/",
@@ -558,7 +558,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "MCSModules",
+            "name": "mcsModules",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
@@ -570,8 +570,8 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "MCSModules": {
-                        "value": "[variables('MCSModules')]"
+                    "mcsModules": {
+                        "value": "[variables('mcsModules')]"
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
@@ -579,9 +579,9 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     },
-                    "DNSServerAddress": {
+                    "dnsServerAddress": {
                         "value": [
-                            "[variables('DNSServerAddress')]"
+                            "[variables('dnsServerAddress')]"
                         ]
                     }
                 }
@@ -592,7 +592,7 @@
             "name": "BastionHost",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "MCSModules"
+                "mcsModules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -619,7 +619,7 @@
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "BastionHost",
-                "MCSModules"
+                "mcsModules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -628,14 +628,14 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "PIAFSQLSettings": {
-                        "value": "[variables('PIAFSQLSettings')]"
+                    "piafsqlSettings": {
+                        "value": "[variables('piafsqlSettings')]"
                     },
-                    "PIDAServersettings": {
-                        "value": "[variables('PIDAServersettings')]"
+                    "pidaServerSettings": {
+                        "value": "[variables('pidaServerSettings')]"
                     },
-                    "PIBAServersettings": {
-                        "value": "[variables('PIBAServersettings')]"
+                    "pibaServersettings": {
+                        "value": "[variables('pibaServersettings')]"
                     },
                     "networkSettings": {
                         "value": "[variables('networkSettings')]"
@@ -669,17 +669,17 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     },
-                    "MCSModules": {
-                        "value": "[variables('MCSModules')]"
+                    "mcsModules": {
+                        "value": "[variables('mcsModules')]"
                     },
-                    "PIAFSQLSettings": {
-                        "value": "[variables('PIAFSQLSettings')]"
+                    "piafsqlSettings": {
+                        "value": "[variables('piafsqlSettings')]"
                     },
-                    "PIDAServersettings": {
-                        "value": "[variables('PIDAServersettings')]"
+                    "pidaServerSettings": {
+                        "value": "[variables('pidaServerSettings')]"
                     },
-                    "PIBAServersettings": {
-                        "value": "[variables('PIBAServersettings')]"
+                    "pibaServersettings": {
+                        "value": "[variables('pibaServersettings')]"
                     }
                 }
             }
@@ -696,11 +696,11 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "AzureSQL": {
-                        "value": "[variables('AzureSQL')]"
+                    "azureSQL": {
+                        "value": "[variables('azureSQL')]"
                     },
-                    "MLSettings": {
-                        "value": "[variables('MLSettings')]"
+                    "mlSettings": {
+                        "value": "[variables('mlSettings')]"
                     },
                     "webSiteSettings": {
                         "value": "[variables('webSiteSettings')]"
@@ -727,31 +727,31 @@
         },
         "adServerIP": {
             "type": "string",
-            "value": "[variables('MCSModules').adNicIPAddress]"
+            "value": "[variables('mcsModules').adNicIPAddress]"
         },
-        "PIAFSQLServerIP": {
+        "piafSQLServerIP": {
             "type": "string",
-            "value": "[variables('PIAFSQLSettings').sqlPrivateIPAddress]"
+            "value": "[variables('piafsqlSettings').sqlPrivateIPAddress]"
         },
         "chefAutomateIPAddress": {
             "type": "string",
-            "value": "[variables('MCSModules').chefAutomateIPAddress]"
+            "value": "[variables('mcsModules').chefAutomateIPAddress]"
         },
          "chefAutomateLoginUsername": {
             "type": "string",
             "value": "[parameters('adminUserName')]"
         },
-        "PIDAServerFQDN": {
+        "pidaServerFQDN": {
             "type": "string",
             "value": "[reference('PIComponents').outputs.PIDAFQDN.value]"
         },
-        "PIBAServerIP": {
+        "pibaServerIP": {
             "type": "string",
-            "value": "[variables('PIBAServersettings').PIBAPrivateIPAddress]"
+            "value": "[variables('pibaServersettings').pibaPrivateIPAddress]"
         },
         "azureSQLServer":{
             "type": "string",
-            "value": "[reference('AppComponents').outputs.azureSqlServerName.value]"
+            "value": "[reference('AppComponents').outputs.azureSQLServerName.value]"
         },
         "azureSQLDatabase":{
             "type": "string",

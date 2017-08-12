@@ -30,7 +30,7 @@
     },
     "resources": [
         {
-            "name": "[parameters('bastionServerSettings').WSDiagStgAcnt]",
+            "name": "[parameters('bastionServerSettings').wsDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
@@ -163,7 +163,7 @@
             "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('bastionServerSettings').wsNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').WSDiagStgAcnt)]"
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').wsDiagStgAcnt)]"
             ],
             "properties": {
                 "osProfile": {
@@ -175,7 +175,7 @@
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('bastionServerSettings').VMSize]"
+                    "vmSize": "[parameters('bastionServerSettings').vmSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -202,7 +202,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').WSDiagStgAcnt)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('bastionServerSettings').wsDiagStgAcnt)).primaryEndpoints.blob]"
                     }
                 }
             }

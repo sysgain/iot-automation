@@ -23,7 +23,7 @@
         "dataserviceUrl": {
             "type": "string"
         },
-        "PIWebApiSimulatorUrl":{
+        "piWebApiSimulatorUrl":{
             "type": "string"
         }
     },
@@ -45,7 +45,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('scriptFileName3'),' ',parameters('simulatorUrl'),' ',parameters('dataserviceUrl'),' ',parameters('PIWebApiSimulatorUrl'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('scriptFileName3'),' ',parameters('simulatorUrl'),' ',parameters('dataserviceUrl'),' ',parameters('piWebApiSimulatorUrl'))]"
                 }
             }
         }

@@ -2,10 +2,10 @@
     "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "AzureSQL": {
+        "azureSQL": {
             "type": "object"
         },
-        "MLSettings":{
+        "mlSettings":{
             "type": "object"
         },
         "webSiteSettings":{
@@ -20,11 +20,11 @@
         {
             "apiVersion": "[parameters('apiVersions').sqlServerApiVersion]",
             "type": "Microsoft.Sql/servers",
-            "location": "[parameters('AzureSQL').location]",
-            "name": "[parameters('AzureSQL').serverName]",
+            "location": "[parameters('azureSQL').location]",
+            "name": "[parameters('azureSQL').serverName]",
             "properties": {
-                "administratorLogin": "[parameters('AzureSQL').sqlAuthenticationLogin]",
-                "administratorLoginPassword": "[parameters('AzureSQL').sqlAuthenticationPassword]",
+                "administratorLogin": "[parameters('azureSQL').sqlAuthenticationLogin]",
+                "administratorLoginPassword": "[parameters('azureSQL').sqlAuthenticationPassword]",
                 "version": "12.0"
             },
             "resources": [
@@ -32,15 +32,15 @@
                     "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
                     "type": "databases",
                     "dependsOn": [
-                        "[concat('Microsoft.Sql/servers/', parameters('AzureSQL').serverName)]"
+                        "[concat('Microsoft.Sql/servers/', parameters('azureSQL').serverName)]"
                     ],
                     "location": "[resourceGroup().location]",
-                    "name": "[parameters('AzureSQL').databaseName]",
+                    "name": "[parameters('azureSQL').databaseName]",
                     "properties": {
-                        "collation": "[parameters('AzureSQL').collation]",
-                        "edition": "[parameters('AzureSQL').edition]",
-                        "maxSizeBytes": "[parameters('AzureSQL').maxSizeBytes]",
-                        "requestedServiceObjectiveName": "[parameters('AzureSQL').requestedServiceObjectiveName]"
+                        "collation": "[parameters('azureSQL').collation]",
+                        "edition": "[parameters('azureSQL').edition]",
+                        "maxSizeBytes": "[parameters('azureSQL').maxSizeBytes]",
+                        "requestedServiceObjectiveName": "[parameters('azureSQL').requestedServiceObjectiveName]"
                     },
                     "resources": [
                         {
@@ -48,14 +48,14 @@
                             "type": "extensions",
                             "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
                             "dependsOn": [
-                                "[concat('Microsoft.Sql/servers/',parameters('AzureSQL').serverName, '/databases/', parameters('AzureSQL').databaseName)]"
+                                "[concat('Microsoft.Sql/servers/',parameters('azureSQL').serverName, '/databases/', parameters('azureSQL').databaseName)]"
                             ],
                             "properties": {
-                                "storageKeyType": "[parameters('AzureSQL').storageKeyType]",
-                                "storageKey": "[parameters('AzureSQL').storageKey]",
-                                "storageUri": "[parameters('AzureSQL').storageUri]",
-                                "administratorLogin": "[parameters('AzureSQL').sqlAuthenticationLogin]",
-                                "administratorLoginPassword": "[parameters('AzureSQL').sqlAuthenticationPassword]",
+                                "storageKeyType": "[parameters('azureSQL').storageKeyType]",
+                                "storageKey": "[parameters('azureSQL').storageKey]",
+                                "storageUri": "[parameters('azureSQL').storageUri]",
+                                "administratorLogin": "[parameters('azureSQL').sqlAuthenticationLogin]",
+                                "administratorLoginPassword": "[parameters('azureSQL').sqlAuthenticationPassword]",
                                 "operationMode": "Import"
                             }
                         }
@@ -63,11 +63,11 @@
                 },
                 {
                     "type": "firewallrules",
-                    "location": "[parameters('AzureSQL').location]",
+                    "location": "[parameters('azureSQL').location]",
                     "name": "AllowAllWindowsAzureIps",
                     "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
                     "dependsOn": [
-                        "[concat('Microsoft.Sql/servers/', parameters('AzureSQL').serverName)]"
+                        "[concat('Microsoft.Sql/servers/', parameters('azureSQL').serverName)]"
                     ],
                     "properties": {
                         "endIpAddress": "0.0.0.0",
@@ -82,15 +82,15 @@
             "location": "[parameters('mlSettings').location]",
             "type": "Microsoft.MachineLearning/workspaces",
             "properties": {
-                "userStorageAccountId": "[resourceId('Microsoft.Storage/storageAccounts',toLower(parameters('mlSettings').MLStorageName))]"
+                "userStorageAccountId": "[resourceId('Microsoft.Storage/storageAccounts',toLower(parameters('mlSettings').mlStorageName))]"
             },
             "dependsOn": [
-                "[toLower(parameters('mlSettings').MLStorageName)]"
+                "[toLower(parameters('mlSettings').mlStorageName)]"
             ]
         },
         {
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "name": "[toLower(parameters('mlSettings').MLStorageName)]",
+            "name": "[toLower(parameters('mlSettings').mlStorageName)]",
             "location": "[parameters('mlSettings').location]",
             "type": "Microsoft.Storage/storageAccounts",
             "sku": {
@@ -104,7 +104,7 @@
             "type": "Microsoft.MachineLearning/commitmentPlans",
             "location": "[parameters('mlSettings').location]",
             "sku": {
-                "name": "[parameters('mlSettings').MLskuName]",
+                "name": "[parameters('mlSettings').mlSkuName]",
                 "tier": "Standard",
                 "capacity": "1"
             },
@@ -338,7 +338,7 @@
                         "displayName": "WebAppMSDeploy"
                     },
                     "properties": {
-                        "packageUri": "[parameters('webSiteSettings').RESTServerPackageURI]"
+                        "packageUri": "[parameters('webSiteSettings').restServerPackageURI]"
                     }
                 },
                 {
@@ -354,11 +354,11 @@
                     },
                     "properties": {
                         "BlobConnection": {
-                            "value": "[parameters('webSiteSettings').BlobconnectionString]",
+                            "value": "[parameters('webSiteSettings').blobconnectionString]",
                             "type": "Custom"
                         },
                         "PowerGridEntities": {
-                            "value": "[parameters('webSiteSettings').PowerGridEntities]",
+                            "value": "[parameters('webSiteSettings').powerGridEntities]",
                             "type": "Custom"
                         },
                         "AzureWebJobsDashboard": {
@@ -388,7 +388,7 @@
                         "DbConnectionString": "[parameters('webSiteSettings').databaseConnString]",
                         "NotificationIcon": "[parameters('webSiteSettings').notificationIcon]",
                         "NotificationClickAction": "[parameters('webSiteSettings').notificationClickAction]",
-                        "PowerGridEntities": "[parameters('webSiteSettings').PowerGridEntities]",
+                        "PowerGridEntities": "[parameters('webSiteSettings').powerGridEntities]",
                         "b2c:AadInstance": "[parameters('webSiteSettings').b2cAadInstance]",
                         "b2c:Tenant": "[parameters('webSiteSettings').b2cTenant]",
                         "b2c:ClientId": "parameters('webSiteSettings').b2cClientId]",
@@ -407,13 +407,13 @@
         }
     ],
     "outputs": {
-        "azureSqlServerName":{
+        "azureSQLServerName":{
             "type": "string",
-            "value": "[concat(parameters('AzureSQL').serverName,'.database.windows.net')]"
+            "value": "[concat(parameters('azureSQL').serverName,'.database.windows.net')]"
         },
         "azureDBName":{
             "type": "string",
-            "value": "[parameters('AzureSQL').databaseName]"
+            "value": "[parameters('azureSQL').databaseName]"
         }
     }
 }

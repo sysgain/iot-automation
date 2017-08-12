@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "MCSModules": {
+        "mcsModules": {
             "type": "object"
         },
         "networkSettings": {
@@ -11,43 +11,43 @@
         "apiVersions": {
             "type": "object"
         },
-        "DNSServerAddress": {
+        "dnsServerAddress": {
             "type": "array"
         }
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]",
-        "sshKeyPath": "[concat('/home/',parameters('MCSModules').Username,'/.ssh/authorized_keys')]",
+        "sshKeyPath": "[concat('/home/',parameters('mcsModules').Username,'/.ssh/authorized_keys')]",
         "osProfilepassword": {
-            "computerName": "[parameters('MCSModules').chefAutoVmName]",
-            "adminUsername": "[parameters('MCSModules').Username]",
-            "adminPassword": "[parameters('MCSModules').Password]"
+            "computerName": "[parameters('mcsModules').chefAutoVmName]",
+            "adminUsername": "[parameters('mcsModules').Username]",
+            "adminPassword": "[parameters('mcsModules').Password]"
         },
         "osProfilesshPublicKey": {
-            "computerName": "[parameters('MCSModules').chefAutoVmName]",
-            "adminUsername": "[parameters('MCSModules').Username]",
-            "adminPassword": "[parameters('MCSModules').Password]",
+            "computerName": "[parameters('mcsModules').chefAutoVmName]",
+            "adminUsername": "[parameters('mcsModules').Username]",
+            "adminPassword": "[parameters('mcsModules').Password]",
             "linuxConfiguration": {
                 "disablePasswordAuthentication": true,
                 "ssh": {
                     "publicKeys": [
                         {
                             "path": "[variables('sshKeyPath')]",
-                            "keyData": "[parameters('MCSModules').sshKey]"
+                            "keyData": "[parameters('mcsModules').sshKey]"
                         }
                     ]
                 }
             }
         },
-        "osProfileReference": "[variables(concat('osProfile', parameters('MCSModules').authenticationType))]"
+        "osProfileReference": "[variables(concat('osProfile', parameters('mcsModules').authenticationType))]"
     },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('MCSModules').adstorageAccountName]",
+            "name": "[parameters('mcsModules').adstorageAccountName]",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "sku": {
                 "name": "Standard_LRS"
             },
@@ -55,10 +55,10 @@
             "properties": {}
         },
         {
-            "name": "[parameters('MCSModules').adNetworkSecurityGroupName]",
+            "name": "[parameters('mcsModules').adNetworkSecurityGroupName]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "dependsOn": [],
             "properties": {
                 "securityRules": [
@@ -80,11 +80,11 @@
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('MCSModules').adNicName]",
+            "name": "[parameters('mcsModules').adNicName]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').adNetworkSecurityGroupName)]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('mcsModules').adNetworkSecurityGroupName)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -92,7 +92,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('MCSModules').adNicIPAddress]",
+                            "privateIPAddress": "[parameters('mcsModules').adNicIPAddress]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             }
@@ -100,39 +100,39 @@
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('MCSModules').adNetworkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('mcsModules').adNetworkSecurityGroupName)]"
                 }
             }
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('MCSModules').adVMName]",
+            "name": "[parameters('mcsModules').adVMName]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').adNicName)]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('MCSModules').adstorageAccountName)]"
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('mcsModules').adstorageAccountName)]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('MCSModules').VMSize]"
+                    "vmSize": "[parameters('mcsModules').vmSize]"
                 },
                 "osProfile": {
-                    "computerName": "[parameters('MCSModules').adVMName]",
-                    "adminUsername": "[parameters('MCSModules').Username]",
-                    "adminPassword": "[parameters('MCSModules').Password]"
+                    "computerName": "[parameters('mcsModules').adVMName]",
+                    "adminUsername": "[parameters('mcsModules').Username]",
+                    "adminPassword": "[parameters('mcsModules').Password]"
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[parameters('MCSModules').publisher]",
-                        "offer": "[parameters('MCSModules').offer]",
-                        "sku": "[parameters('MCSModules').sku]",
-                        "version": "[parameters('MCSModules').version]"
+                        "publisher": "[parameters('mcsModules').publisher]",
+                        "offer": "[parameters('mcsModules').offer]",
+                        "sku": "[parameters('mcsModules').sku]",
+                        "version": "[parameters('mcsModules').version]"
                     },
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                            "storageAccountType": "[parameters('mcsModules').storageAccountType]"
                         }
                     },
                     "dataDisks": [
@@ -146,14 +146,14 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').adNicName)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]"
                         }
                     ]
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             },
@@ -162,9 +162,9 @@
                     "type": "extensions",
                     "name": "CreateADForest",
                     "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-                    "location": "[parameters('MCSModules').location]",
+                    "location": "[parameters('mcsModules').location]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('MCSModules').adVMName)]"
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('mcsModules').adVMName)]"
                     ],
                     "properties": {
                         "publisher": "Microsoft.Powershell",
@@ -172,19 +172,19 @@
                         "typeHandlerVersion": "2.19",
                         "autoUpgradeMinorVersion": true,
                         "settings": {
-                            "ModulesUrl": "[concat(parameters('MCSModules').dscScriptUrl, '/DSC/CreateADPDC.zip')]",
+                            "ModulesUrl": "[concat(parameters('mcsModules').dscScriptUrl, '/DSC/CreateADPDC.zip')]",
                             "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
                             "Properties": {
-                                "DomainName": "[parameters('MCSModules').domainName]",
+                                "DomainName": "[parameters('mcsModules').domainName]",
                                 "AdminCreds": {
-                                    "UserName": "[parameters('MCSModules').Username]",
+                                    "UserName": "[parameters('mcsModules').Username]",
                                     "Password": "PrivateSettingsRef:AdminPassword"
                                 }
                             }
                         },
                         "protectedSettings": {
                             "Items": {
-                                "AdminPassword": "[parameters('MCSModules').Password]"
+                                "AdminPassword": "[parameters('mcsModules').Password]"
                             }
                         }
                     }
@@ -197,7 +197,7 @@
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('networkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').adVMName,'/extensions/CreateADForest')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
             ],
             "properties": {
                 "addressSpace": {
@@ -206,7 +206,7 @@
                     ]
                 },
                 "dhcpOptions": {
-                    "dnsServers": "[parameters('DNSServerAddress')]"
+                    "dnsServers": "[parameters('dnsServerAddress')]"
                 },
                 "subnets": [
                     {
@@ -244,9 +244,9 @@
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('MCSModules').chefAutoNsg]",
+            "name": "[parameters('mcsModules').chefAutoNsg]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "dependsOn": [],
             "properties": {
                 "securityRules": [
@@ -332,12 +332,12 @@
             }
         },
         {
-            "name": "[parameters('MCSModules').chefAutoNic]",
+            "name": "[parameters('mcsModules').chefAutoNic]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/',parameters('MCSModules').chefAutoNsg)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/',parameters('mcsModules').chefAutoNsg)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -348,67 +348,67 @@
                                 "id": "[variables('subnetRef')]"
                             },
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('MCSModules').chefAutomateIPAddress]"
+                            "privateIPAddress": "[parameters('mcsModules').chefAutomateIPAddress]"
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('MCSModules').chefAutoNsg)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('mcsModules').chefAutoNsg)]"
                 }
             }
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('MCSModules').chefAutoVmName]",
+            "name": "[parameters('mcsModules').chefAutoVmName]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('MCSModules').chefAutoNic)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('mcsModules').chefAutoNic)]"
             ],
             "plan": {
-                "name": "[parameters('MCSModules').chefImageSKU]",
-                "product": "[parameters('MCSModules').chefImageOffer]",
-                "publisher": "[parameters('MCSModules').chefImagePublisher]"
+                "name": "[parameters('mcsModules').chefImageSKU]",
+                "product": "[parameters('mcsModules').chefImageOffer]",
+                "publisher": "[parameters('mcsModules').chefImagePublisher]"
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('MCSModules').VMSize]"
+                    "vmSize": "[parameters('mcsModules').vmSize]"
                 },
                 "osProfile": "[variables('osProfileReference')]",
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[parameters('MCSModules').chefImagePublisher]",
-                        "offer": "[parameters('MCSModules').chefImageOffer]",
-                        "sku": "[parameters('MCSModules').chefImageSKU]",
-                        "version": "[parameters('MCSModules').chefImageVersion]"
+                        "publisher": "[parameters('mcsModules').chefImagePublisher]",
+                        "offer": "[parameters('mcsModules').chefImageOffer]",
+                        "sku": "[parameters('mcsModules').chefImageSKU]",
+                        "version": "[parameters('mcsModules').chefImageVersion]"
                     },
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('MCSModules').storageAccountType]"
+                            "storageAccountType": "[parameters('mcsModules').storageAccountType]"
                         }
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('MCSModules').chefAutoNic)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').chefAutoNic)]"
                         }
                     ]
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('MCSModules').adstorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             }
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('MCSModules').chefAutoVmName,'/automate_setup')]",
+            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/automate_setup')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('MCSModules').location]",
+            "location": "[parameters('mcsModules').location]",
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
                 "type": "CustomScript",
@@ -416,13 +416,13 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('MCSModules').chefAutoScriptUrl1]"
+                        "[parameters('mcsModules').chefAutoScriptUrl1]"
                     ],
-                    "commandToExecute": "[concat(parameters('MCSModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('MCSModules').chefAutomateIPAddress, '\" --license \"',parameters('MCSModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('MCSModules').Username,'\"',' --firstname ','\"',parameters('MCSModules').firstname,'\"',' --lastname ','\"',parameters('MCSModules').lastname,'\"',' --mailid ','\"',parameters('MCSModules').mailid,'\"',' --adminpassword ','\"',parameters('MCSModules').Password,'\"',' --orguser ','\"',parameters('MCSModules').orguser,'\"')]"
+                    "commandToExecute": "[concat(parameters('mcsModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('mcsModules').chefAutomateIPAddress, '\" --license \"',parameters('mcsModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('mcsModules').Username,'\"',' --firstname ','\"',parameters('mcsModules').firstname,'\"',' --lastname ','\"',parameters('mcsModules').lastname,'\"',' --mailid ','\"',parameters('mcsModules').mailid,'\"',' --adminpassword ','\"',parameters('mcsModules').Password,'\"',' --orguser ','\"',parameters('mcsModules').orguser,'\"')]"
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('MCSModules').chefAutoVmName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName)]"
             ]
         }
     ]
