@@ -380,7 +380,7 @@
                 },
                 {
                     "type": "firewallrules",
-                    "apiVersion": "[parameters('mcsModules').sqlDBName]",
+                    "apiVersion": "[parameters('mcsModules').sqlDBApiVersion]",
                     "dependsOn": [
                         "[concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)]"
                     ],
