@@ -725,11 +725,11 @@
             "type": "string",
             "value": "[reference('WorkStation').outputs.workstationFQDN.value]"
         },
-        "adServerIP": {
+        "adServerIPAddress": {
             "type": "string",
             "value": "[variables('mcsModules').adNicIPAddress]"
         },
-        "piafSQLServerIP": {
+        "piafSQLServerIPAddress": {
             "type": "string",
             "value": "[variables('piafsqlSettings').sqlPrivateIPAddress]"
         },
@@ -745,7 +745,7 @@
             "type": "string",
             "value": "[reference('PIComponents').outputs.PIDAFQDN.value]"
         },
-        "pibaServerIP": {
+        "pibaServerIPAddress": {
             "type": "string",
             "value": "[variables('pibaServersettings').pibaPrivateIPAddress]"
         },
