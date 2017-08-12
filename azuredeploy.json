@@ -597,7 +597,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/bastionserver.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/bastionServer.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -624,7 +624,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/picomponents.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/piComponents.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -656,7 +656,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/workstationserver.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/workStationServer.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -692,7 +692,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/appcomponents.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/appComponents.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
