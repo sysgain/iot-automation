@@ -215,6 +215,7 @@
             "name": "PowerBIInstall",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
+                "ApplicationCreation",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
