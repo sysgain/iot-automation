@@ -1,7 +1,7 @@
 param(
 [string] $simulatorUrl = "$1",
 [string] $dataserviceUrl = "$2",
-[string] $PIWebApisimulatorUrl = "$3"
+[string] $PIWebApisimulatorUrl = "$3",
 [string] $adminuser = "$4",
 [string] $adminPassword = "$5",
 [string] $sqlservername = "$6"
