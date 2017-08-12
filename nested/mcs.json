@@ -40,7 +40,29 @@
                 }
             }
         },
-        "osProfileReference": "[variables(concat('osProfile', parameters('mcsModules').authenticationType))]"
+        "osProfile1password": {
+            "computerName": "[parameters('mcsModules').trendVMName]",
+            "adminUsername": "[parameters('mcsModules').Username]",
+            "adminPassword": "[parameters('mcsModules').Password]"
+        },
+        "osProfile1sshPublicKey": {
+            "computerName": "[parameters('mcsModules').trendVMName]",
+            "adminUsername": "[parameters('mcsModules').Username]",
+            "adminPassword": "[parameters('mcsModules').Password]",
+            "linuxConfiguration": {
+                "disablePasswordAuthentication": true,
+                "ssh": {
+                    "publicKeys": [
+                        {
+                            "path": "[variables('sshKeyPath')]",
+                            "keyData": "[parameters('mcsModules').sshKey]"
+                        }
+                    ]
+                }
+            }
+        },
+        "osProfileReference": "[variables(concat('osProfile', parameters('mcsModules').authenticationType))]",
+        "osProfileReference1": "[variables(concat('osProfile1', parameters('mcsModules').authenticationType))]"
     },
     "resources": [
         {
@@ -240,6 +262,248 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('mcsModules').trendNSG]",
+            "location": "[parameters('mcsModules').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "allow-inbound-ssh",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmportal",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "[parameters('mcsModules').managerPort]",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmagent",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "4118",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1200,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmheartbeat",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "[parameters('mcsModules').heartbeatPort]",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1300,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmdownload",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "4122",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1400,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow-inbound-dsmwebinstaller",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1500,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[parameters('mcsModules').trendsqlServerName]",
+            "type": "Microsoft.Sql/servers",
+            "location": "[parameters('mcsModules').location]",
+            "apiVersion":"[parameters('apiVersions').sqlServerApiVersion]",
+            "properties": {
+              "administratorLogin": "[parameters('mcsModules').dbAdminName]",
+              "administratorLoginPassword": "[parameters('mcsModules').dbAdminPassword]",
+              "version": "12.0"
+            },
+            "resources": [
+                {
+                    "name": "[parameters('mcsModules').sqlDBName]",
+                    "type": "databases",
+                    "location": "[parameters('mcsModules').location]",
+                    "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)]"
+                        ],
+                    "properties": {
+                        "edition": "Standard",
+                        "collation": "SQL_Latin1_General_CP1_CI_AS",
+                        "maxSizeBytes": "21474836480",
+                        "requestedServiceObjectiveName": "S3"
+                    }
+                },
+                {
+                    "type": "firewallrules",
+                    "apiVersion": "[parameters('mcsModules').sqlDBName]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)]"
+                    ],
+                    "location": "[parameters('mcsModules').location]",
+                    "name": "AllowAllAzureIps",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion":  "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('mcsModules').trendNic]",
+            "location": "[parameters('mcsModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('mcsModules').trendNSG)]"
+            ],
+            "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('mcsModules').trendNSG)]"
+                },
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('mcsModules').trendNicIPAddress]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('mcsModules').trendVMName]",
+            "location": "[parameters('mcsModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)]",
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('mcsModules').trendNic)]",
+                "[concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)]"
+            ],
+            "plan": {
+                "publisher": "[parameters('mcsModules').trendPublisher]",
+                "product": "[parameters('mcsModules').trendProduct]",
+                "name": "[parameters('mcsModules').trendVMSku]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('mcsModules').vmSize]"
+                },
+                "osProfile": "[variables('osProfileReference1')]",
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('mcsModules').trendPublisher]",
+                        "offer": "[parameters('mcsModules').trendProduct]",
+                        "sku": "[parameters('mcsModules').trendVMSku]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('mcsModules').storageAccountType]"
+                        }
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('mcsModules').trendNic)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('mcsModules').trendVMName,'/installDSM')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.OSTCExtensions",
+                "type": "CustomScriptForLinux",
+                "typeHandlerVersion": "1.5",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "commandToExecute": "cp ../../config/0.settings /opt/trend/packages/dsm/default/"
+                },
+                "protectedSettings": {
+                    "subscriptionId": "[subscription().subscriptionId]",
+                    "vmName": "[parameters('mcsModules').trendVMName]",
+                    "databaseName": "[parameters('mcsModules').sqlDBName]",
+                    "adminUserName": "[parameters('mcsModules').dsmAdminName]",
+                    "adminPassword": "[parameters('mcsModules').dsmAdminPassword]",
+                    "databaseUserName": "[parameters('mcsModules').dbAdminName]",
+                    "databaseUserPassword": "[parameters('mcsModules').dbAdminPassword]",
+                    "licenseMode": "[parameters('mcsModules').licenseMode]",
+                    "databaseServer": "[reference(concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)).fullyQualifiedDomainName]",
+                    "location": "[parameters('mcsModules').location]",
+                    "managerPort": "[parameters('mcsModules').managerPort]",
+                    "heartbeatPort": "[parameters('mcsModules').heartbeatPort]",
+                    "vmFQDN": "[parameters('mcsModules').trendNicIPAddress]",
+                    "databaseOption": "[parameters('mcsModules').databaseOption]",
+                    "vmSize": "[parameters('mcsModules').vmSize]",
+                    "resourceGroup": "[parameters('mcsModules').location]",
+                    "securityGroupName": "parameters('mcsModules').trendNSG]"
+                }
             }
         },
         {

@@ -16,7 +16,7 @@
                 "description": "Password for all the Virtual Machines."
             }
         },
-        "authTypeForLinuxServers":{
+        "authTypeForLinuxServers": {
             "type": "string",
             "defaultValue": "password",
             "allowedValues": [
@@ -24,11 +24,11 @@
                 "sshPublicKey"
             ]
         },
-        "adminSSHKey":{
+        "adminSSHKey": {
             "type": "string",
             "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEA0DnqP4H8skniRTCzvRbpHK8ZjsrHKwSnAtoUgpjQzNRaIZlBOe+TyVVt3vWwtybPnxEm5Tof9yWFrsKnX0uii4/QFtggMyhNH5qxLUXphAA2+yFdHnse22Rys/KrspystqkuNAq/DXZsVfSzpxtCjXNr6vCknERk3MC7vqk+SuCUFz+cBKTpziJvbFoiNHIy7u6jSDg5eIXTVIC+qxA0XgNrJco0azR7kUkrezQRjCthBoKzP/cLK7ZrbSDvygie6NdveVZeB8ytruR6B/7et1fa3QGyJhUmP0UOo3yL64UHBVjsL9ZpCbvqVIU17DrtnxEBbEMz1uAQWiw3PWKaVQ== rsa-key-20170810",
             "metadata": {
-                "description":"admin ssh key for linux servers "
+                "description": "admin ssh key for linux servers "
             }
         },
         "domainName": {
@@ -256,7 +256,7 @@
             "version": "latest",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "wsDiagStgAcnt":"[concat('wsstrg',variables('suffix'))]",
+            "wsDiagStgAcnt": "[concat('wsstrg',variables('suffix'))]",
             "publicIpAddressName": "bastion-pip",
             "networkSecurityGroupName": "bastion-nsg",
             "publicIpAddressType": "Dynamic",
@@ -277,7 +277,7 @@
             "tenantID": "[parameters('tenantID')]",
             "applicationName": "[parameters('applicationName')]",
             "uniqueString": "[variables('uniqueString')]",
-             "orguser": "orguser",
+            "orguser": "orguser",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
             "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
             "powerBIUrl": "[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
@@ -290,9 +290,9 @@
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
         },
         "mcsModules": {
-            "authenticationType":"[parameters('authTypeForLinuxServers')]",
-            "sshKey":"[parameters('adminSSHKey')]",
-            "location":"[variables('location')]",
+            "authenticationType": "[parameters('authTypeForLinuxServers')]",
+            "sshKey": "[parameters('adminSSHKey')]",
+            "location": "[variables('location')]",
             "adNicName": "adNic",
             "splunkNicName": "splunkNic",
             "splunkNsg": "splunkNsg",
@@ -336,8 +336,23 @@
             "adstorageAccountName": "[concat('adstrg',variables('suffix'))]",
             "diskCreateOption": "empty",
             "diskSizeGB": "1023",
+            "trendNSG": "trend-nsg",
+            "trendNic": "trend-nic",
+            "trendVMName": "trendServer",
+            "trendPublisher": "trendmicro",
+            "trendVMSku": "dxxnbyol",
+            "trendProduct": "deep-security-vm-byol",
+            "trendsqlServerName": "[concat('trendsql',variables('suffix'))]",
+            "sqlDBName": "dsm",
+            "dbAdminName": "[parameters('adminUsername')]",
+            "dbAdminPassword": "[parameters('adminPassword')]",
+            "dsmAdminName": "[parameters('adminUsername')]",
+            "dsmAdminPassword": "[parameters('adminPassword')]",
+            "trendNicIPAddress": "10.0.1.5",
             "databaseOption": "new",
-            "licenseMode": "10",
+            "licenseMode": "20",
+            "managerPort": "443",
+            "heartbeatPort": "4120",
             "ManagerAddress": "[concat(variables('chefPublicIPDomainName'),'.',resourceGroup().location,'.cloudapp.azure.com')]",
             "azureSQLUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -401,7 +416,7 @@
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
             "version": "latest",
-            "pidaIP":"10.0.3.4",
+            "pidaIP": "10.0.3.4",
             "pidaVMSize": "Standard_DS1_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
@@ -492,7 +507,7 @@
             "restServerPackageURI": "[concat(variables('restServerDeployPackageURI'), variables('sasToken'))]",
             "powerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('azureSQL').serverName,'.database.windows.net;initial catalog=',variables('azureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
-        "location":"[resourceGroup().location]",
+        "location": "[resourceGroup().location]",
         "uniqueString": "aug",
         "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
         "deployStorageAccountName": "releasemtr",
@@ -737,7 +752,7 @@
             "type": "string",
             "value": "[variables('mcsModules').chefAutomateIPAddress]"
         },
-         "chefAutomateLoginUsername": {
+        "chefAutomateLoginUsername": {
             "type": "string",
             "value": "[parameters('adminUserName')]"
         },
@@ -749,19 +764,19 @@
             "type": "string",
             "value": "[variables('pibaServersettings').pibaPrivateIPAddress]"
         },
-        "azureSQLEndpoint":{
+        "azureSQLEndpoint": {
             "type": "string",
             "value": "[reference('AppComponents').outputs.azureSQLServerName.value]"
         },
-        "azureSQLDBName":{
+        "azureSQLDBName": {
             "type": "string",
             "value": "[reference('AppComponents').outputs.azureDBName.value]"
         },
-        "azureSQLUsername":{
+        "azureSQLUsername": {
             "type": "string",
             "value": "[parameters('sqlAdministratorLogin')]"
         },
-        "windowsSQLUsername":{
+        "windowsSQLUsername": {
             "type": "string",
             "value": "[parameters('sqlAdministratorLogin')]"
         }
