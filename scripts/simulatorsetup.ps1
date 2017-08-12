@@ -15,4 +15,4 @@ Start-Sleep -s 12
 $client.DownloadFile($dataserviceUrl,"C:\DataServiceAppSetup.msi")
 Start-Sleep -s 12
 $client.DownloadFile($PIWebApisimulatorUrl,"C:\PIWebApiSimulatorSetup.msi")
-C:\PI-AF-Services_2017-SP1a_.exe ADDLOCAL=ALL AFSERVICEACCOUNT=$adminuser AFSERVICEPASSWORD=$adminPassword FDSQLDBSERVER=$sqlservername /quiet
+C:\PI-AF-Services_2017-SP1a_.exe ADDLOCAL=ALL AFSERVICEACCOUNT=adminuser AFSERVICEPASSWORD=Password@1234 FDSQLDBSERVER=PIAFSQLSERVER /quiet
