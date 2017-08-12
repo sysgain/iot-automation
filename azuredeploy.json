@@ -271,7 +271,7 @@
             "wsNic": "ws-client-nic",
             "wsPublicIpName": "ws-publicip",
             "vmSize": "Standard_DS2_v2",
-            "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
+            "appCreationURL": "[concat(variables('baseUrl'),'nested/appcreation.json')]",
             "azureAccountUsername": "[parameters('azureAccountUsername')]",
             "azureAccountPassword": "[parameters('azureAccountPassword')]",
             "tenantID": "[parameters('tenantID')]",
