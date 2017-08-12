@@ -757,7 +757,11 @@
             "type": "string",
             "value": "[reference('AppComponents').outputs.azureDBName.value]"
         },
-        "sqlServerAuthUsername":{
+        "azureSQLUsername":{
+            "type": "string",
+            "value": "[parameters('sqlAdministratorLogin')]"
+        },
+        "windowsSQLUsername":{
             "type": "string",
             "value": "[parameters('sqlAdministratorLogin')]"
         }
