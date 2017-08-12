@@ -504,8 +504,8 @@
         "dnsServerAddress": "10.0.1.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
-        "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/main/",
-        "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/main",
+        "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/iot/",
+        "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/iot",
         "prefix": "[uniqueString(resourceGroup().id)]",
         "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
