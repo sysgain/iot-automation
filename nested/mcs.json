@@ -77,194 +77,6 @@
             "properties": {}
         },
         {
-            "name": "[parameters('mcsModules').adNetworkSecurityGroupName]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('mcsModules').location]",
-            "dependsOn": [],
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "default-allow-rdp",
-                        "properties": {
-                            "priority": 1000,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "TCP",
-                            "destinationPortRange": "3389",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('mcsModules').adNicName]",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('mcsModules').location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('mcsModules').adNetworkSecurityGroupName)]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('mcsModules').adNicIPAddress]",
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            }
-                        }
-                    }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('mcsModules').adNetworkSecurityGroupName)]"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('mcsModules').adVMName]",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('mcsModules').location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('mcsModules').adstorageAccountName)]"
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "[parameters('mcsModules').vmSize]"
-                },
-                "osProfile": {
-                    "computerName": "[parameters('mcsModules').adVMName]",
-                    "adminUsername": "[parameters('mcsModules').Username]",
-                    "adminPassword": "[parameters('mcsModules').Password]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[parameters('mcsModules').publisher]",
-                        "offer": "[parameters('mcsModules').offer]",
-                        "sku": "[parameters('mcsModules').sku]",
-                        "version": "[parameters('mcsModules').version]"
-                    },
-                    "osDisk": {
-                        "createOption": "FromImage",
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('mcsModules').storageAccountType]"
-                        }
-                    },
-                    "dataDisks": [
-                        {
-                            "diskSizeGB": "1023",
-                            "lun": 0,
-                            "createOption": "Empty"
-                        }
-                    ]
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
-                    }
-                }
-            },
-            "resources": [
-                {
-                    "type": "extensions",
-                    "name": "CreateADForest",
-                    "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-                    "location": "[parameters('mcsModules').location]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('mcsModules').adVMName)]"
-                    ],
-                    "properties": {
-                        "publisher": "Microsoft.Powershell",
-                        "type": "DSC",
-                        "typeHandlerVersion": "2.19",
-                        "autoUpgradeMinorVersion": true,
-                        "settings": {
-                            "ModulesUrl": "[concat(parameters('mcsModules').dscScriptUrl, '/DSC/CreateADPDC.zip')]",
-                            "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-                            "Properties": {
-                                "DomainName": "[parameters('mcsModules').domainName]",
-                                "AdminCreds": {
-                                    "UserName": "[parameters('mcsModules').Username]",
-                                    "Password": "PrivateSettingsRef:AdminPassword"
-                                }
-                            }
-                        },
-                        "protectedSettings": {
-                            "Items": {
-                                "AdminPassword": "[parameters('mcsModules').Password]"
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('networkSettings').virtualNetworkName]",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('networkSettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
-            ],
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[parameters('networkSettings').addressPrefix]"
-                    ]
-                },
-                "dhcpOptions": {
-                    "dnsServers": "[parameters('dnsServerAddress')]"
-                },
-                "subnets": [
-                    {
-                        "name": "[parameters('networkSettings').subnet1Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('networkSettings').subnet2Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('networkSettings').subnet3Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet3Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('networkSettings').subnet4Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('networkSettings').subnet5Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet5Prefix]"
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('mcsModules').trendNSG]",
@@ -504,6 +316,221 @@
                     "resourceGroup": "[parameters('mcsModules').location]",
                     "securityGroupName": "parameters('mcsModules').trendNSG]"
                 }
+            }
+        },
+        {
+            "name": "[parameters('mcsModules').adNetworkSecurityGroupName]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]"
+            ],
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('mcsModules').adNicName]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('mcsModules').adNetworkSecurityGroupName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('mcsModules').adNicIPAddress]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('mcsModules').adNetworkSecurityGroupName)]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('mcsModules').adVMName]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('mcsModules').adstorageAccountName)]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('mcsModules').vmSize]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('mcsModules').adVMName]",
+                    "adminUsername": "[parameters('mcsModules').Username]",
+                    "adminPassword": "[parameters('mcsModules').Password]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('mcsModules').publisher]",
+                        "offer": "[parameters('mcsModules').offer]",
+                        "sku": "[parameters('mcsModules').sku]",
+                        "version": "[parameters('mcsModules').version]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('mcsModules').storageAccountType]"
+                        }
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            },
+            "resources": [
+                {
+                    "type": "extensions",
+                    "name": "CreateADForest",
+                    "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+                    "location": "[parameters('mcsModules').location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('mcsModules').adVMName)]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Powershell",
+                        "type": "DSC",
+                        "typeHandlerVersion": "2.19",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "ModulesUrl": "[concat(parameters('mcsModules').dscScriptUrl, '/DSC/CreateADPDC.zip')]",
+                            "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
+                            "Properties": {
+                                "DomainName": "[parameters('mcsModules').domainName]",
+                                "AdminCreds": {
+                                    "UserName": "[parameters('mcsModules').Username]",
+                                    "Password": "PrivateSettingsRef:AdminPassword"
+                                }
+                            }
+                        },
+                        "protectedSettings": {
+                            "Items": {
+                                "AdminPassword": "[parameters('mcsModules').Password]"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('mcsModules').adVMName,'/InstallationDSA')]",
+            "apiVersion": "2016-04-30-preview",
+            "location": "southcentralus",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('mcsModules').ManagerAddress]",
+                    "DSMport": "[parameters('mcsModules').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('mcsModules').TenantIdentifier]",
+                    "tenantPassword": "[parameters('mcsModules').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('networkSettings').virtualNetworkName]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "location": "[parameters('networkSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/InstallationDSA')]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('networkSettings').addressPrefix]"
+                    ]
+                },
+                "dhcpOptions": {
+                    "dnsServers": "[parameters('dnsServerAddress')]"
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('networkSettings').subnet1Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet2Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet3Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet3Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet4Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('networkSettings').subnet5Name]",
+                        "properties": {
+                            "addressPrefix": "[parameters('networkSettings').subnet5Prefix]"
+                        }
+                    }
+                ]
             }
         },
         {
