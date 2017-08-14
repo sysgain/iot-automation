@@ -370,6 +370,31 @@
             }
         },
         {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('piafsqlSettings').sqlservername,'/InstallationDSA')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('piafsqlSettings').location]",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('piafsqlSettings').ManagerAddress]",
+                    "DSMport": "[parameters('piafsqlSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('piafsqlSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('piafsqlSettings').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "sqlSimulatorSetup"
+            ]
+        },
+        {
             "name": "[parameters('pidaServerSettings').pidaDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
@@ -532,6 +557,31 @@
             }
         },
         {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('pidaServerSettings').pidaVMName,'/InstallationDSA')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('pidaServerSettings').location]",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('pidaServerSettings').ManagerAddress]",
+                    "DSMport": "[parameters('pidaServerSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('pidaServerSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('pidaServerSettings').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('pidaServerSettings').pidaVMName,'/extensions/CustomScriptExtension1')]"
+            ]
+        },
+        {
             "name": "[parameters('pibaServersettings').pibaDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
@@ -677,6 +727,31 @@
                     "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('pibaServersettings').scriptFileName,' ',parameters('pibaServersettings').domainName,' ',parameters('pibaServersettings').Username,' ',parameters('pibaServersettings').Password)]"
                 }
             }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('pibaServersettings').pibaVMName,'/InstallationDSA')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('pibaServersettings').location]",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('pibaServersettings').ManagerAddress]",
+                    "DSMport": "[parameters('pibaServersettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('pibaServersettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('pibaServersettings').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('pibaServersettings').pibaVMName,'/extensions/CustomScriptExtension1')]"
+            ]
         }
     ],
     "outputs": {

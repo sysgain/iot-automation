@@ -287,7 +287,11 @@
             "workstationSetup": "[concat(variables('baseUrl'),'scripts/workstationsetup1.ps1')]",
             "workstationextensionurl": "[concat(variables('baseUrl'),'nested/workstation-extension.json')]",
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
-            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
+            "ManagerAddress": "[variables('ManagerAddress')]",
+            "ActivationPort":"[variables('ActivationPort')]",
+            "TenantIdentifier":"[variables('TenantIdentifier')]",
+            "TenantActivationPassword":"[variables('TenantActivationPassword')]"
         },
         "mcsModules": {
             "authenticationType": "[parameters('authTypeForLinuxServers')]",
@@ -403,6 +407,10 @@
             "sqlQueryUrl": "[concat(variables('baseUrl'),'scripts/SQLQuery2.sql')]",
             "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
             "databaseName": "iottestdb",
+            "ManagerAddress": "[variables('ManagerAddress')]",
+            "ActivationPort":"[variables('ActivationPort')]",
+            "TenantIdentifier":"[variables('TenantIdentifier')]",
+            "TenantActivationPassword":"[variables('TenantActivationPassword')]",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
             "piWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
@@ -431,7 +439,11 @@
             "pidaPublicIpAddressName": "pidapip",
             "pidaDnsLabelPrefix": "[concat('pidadns',substring(variables('prefix') ,0 ,5))]",
             "publicIpAddressType": "Dynamic",
-            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
+            "ManagerAddress": "[variables('ManagerAddress')]",
+            "ActivationPort":"[variables('ActivationPort')]",
+            "TenantIdentifier":"[variables('TenantIdentifier')]",
+            "TenantActivationPassword":"[variables('TenantActivationPassword')]"
         },
         "pibaServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
@@ -454,7 +466,11 @@
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
-            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]"
+            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
+            "ManagerAddress": "[variables('ManagerAddress')]",
+            "ActivationPort":"[variables('ActivationPort')]",
+            "TenantIdentifier":"[variables('TenantIdentifier')]",
+            "TenantActivationPassword":"[variables('TenantActivationPassword')]"
         },
         "azureSQL": {
             "location": "[variables('location')]",

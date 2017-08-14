@@ -242,6 +242,31 @@
                     }
                 }
             }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/InstallationDSA')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('bastionServerSettings').ManagerAddress]",
+                    "DSMport": "[parameters('bastionServerSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('bastionServerSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('bastionServerSettings').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "PowerBIInstall"
+            ]
         }
     ],
     "outputs": {
