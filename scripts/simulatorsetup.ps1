@@ -15,7 +15,7 @@ $client.DownloadFile($PIAFservicesUrl,"C:\PI-AF-Services_2017-SP1a_.exe")
 $client.DownloadFile($simulatorUrl,"C:\SimulatorSetup.msi")
 Start-Sleep -s 12
 $client.DownloadFile($dataserviceUrl,"C:\DataServiceAppSetup.msi")
-C:\DataServiceAppSetup.msi /qn
+C:\PIWebApiSimulatorSetup.msi /qn
 Start-Sleep -s 12
 $client.DownloadFile($PIWebApisimulatorUrl,"C:\PIWebApiSimulatorSetup.msi")
 C:\PIWebApiSimulatorSetup.msi /qn

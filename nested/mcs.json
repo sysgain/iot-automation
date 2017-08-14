@@ -738,6 +738,7 @@
                 }
             },
             "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName,'/extensions/automate_setup')]"
             ]
         }

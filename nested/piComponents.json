@@ -16,6 +16,9 @@
         },
         "apiVersions": {
             "type": "object"
+        },
+        "azureSQL":{
+           "type": "object"
         }
     },
     "variables": {
