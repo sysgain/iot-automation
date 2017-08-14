@@ -67,7 +67,7 @@
         },
         "applicationName": {
             "type": "string",
-            "defaultValue": "iottest9",
+            "defaultValue": "",
             "metadata": {
                 "decription": "Application name for Active Directory"
             }
@@ -164,7 +164,7 @@
             }
         },
         "b2cClientId": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "",
             "metadata": {
                 "description": "Describes the client Id of the application registered in B2C Directory"
