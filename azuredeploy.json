@@ -46,7 +46,7 @@
         },
         "azureAccountUsername": {
             "type": "string",
-            "defaultValue": "nvtuluva@sysgaincloud.onmicrosoft.com",
+            "defaultValue": "",
             "metadata": {
                 "description": "Username for Azure Account"
             }
@@ -60,7 +60,7 @@
         },
         "tenantID": {
             "type": "string",
-            "defaultValue": "ac12acb5-a79a-4ca7-87eb-c5e6ebbbcd38",
+            "defaultValue": "",
             "metadata": {
                 "description": "tenantID for Azure Account "
             }
