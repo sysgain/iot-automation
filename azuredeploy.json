@@ -18,7 +18,6 @@
         },
         "authTypeForLinuxServers": {
             "type": "string",
-            "defaultValue": "password",
             "allowedValues": [
                 "password",
                 "sshPublicKey"
