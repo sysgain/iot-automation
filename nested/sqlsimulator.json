@@ -2,44 +2,23 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sqlservername": {
-            "type": "string"
+        "piafsqlSettings": {
+            "type": "object"
         },
-        "computeApiVersion": {
-            "type": "string"
+        "apiVersions": {
+            "type": "object"
         },
-        "location": {
-            "type": "string"
-        },
-        "fileUris3": {
-            "type": "string"
-        },
-        "scriptFileName3": {
-            "type": "string"
-        },
-        "simulatorUrl": {
-            "type": "string"
-        },
-        "dataserviceUrl": {
-            "type": "string"
-        },
-        "piWebApiSimulatorUrl":{
-            "type": "string"
-        },
-        "adminUsername":{
-           "type": "string"
-        },
-        "adminPassword":{
-            "type": "string"
+        "azureSQL":{
+            "type": "object"
         }
     },
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('sqlservername'),'/CustomScriptExtension')]",
+            "name": "[concat(parameters('piafsqlSettings').sqlservername,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('location')]",
-            "apiVersion": "[parameters('computeApiVersion')]",
+            "location": "[parameters('piafsqlSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
@@ -47,11 +26,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('fileUris3')]"
+                        "[parameters('piafsqlSettings').fileUris3]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('scriptFileName3'),' ',parameters('simulatorUrl'),' ',parameters('dataserviceUrl'),' ',parameters('piWebApiSimulatorUrl'),' ',parameters('adminUsername'),' ',parameters('adminPassword'),' ',parameters('sqlservername'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('piafsqlSettings').scriptFileName3,' ',parameters('piafsqlSettings').simulatorUrl,' ',parameters('piafsqlSettings').dataserviceUrl,' ',parameters('piafsqlSettings').piWebApiSimulatorUrl,' ',parameters('piafsqlSettings').adminUsername,' ',parameters('piafsqlSettings').adminPassword,' ',parameters('piafsqlSettings').sqlservername,' ',parameters('azureSQL').serverName,' ',parameters('azureSQL').databaseName,' ',parameters('piafsqlSettings').sqlAuthenticationLogin,' ',parameters('piafsqlSettings').sqlAuthenticationPassword,' ',parameters('piafsqlSettings').sqlStorageAccountName,' ',parameters('piafsqlSettings').sqlStorageAccountName)]"
                 }
             }
         }

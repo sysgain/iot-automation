@@ -339,36 +339,16 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "sqlservername": {
-                        "value": "[parameters('piafsqlSettings').sqlservername]"
+                    "piafsqlSettings": {
+                        "value": "[parameters('piafsqlSettings')]"
                     },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    "apiVersions": {
+                        "value": "[parameters('apiVersions')]"
                     },
-                    "location": {
-                        "value": "[parameters('piafsqlSettings').location]"
+                    "azureSQL":{
+                        "value": "[parameters('azureSQL')]"
                     },
-                    "fileUris3": {
-                        "value": "[parameters('piafsqlSettings').fileUris3]"
-                    },
-                    "scriptFileName3": {
-                        "value": "[parameters('piafsqlSettings').scriptFileName3]"
-                    },
-                    "simulatorUrl": {
-                        "value": "[parameters('piafsqlSettings').simulatorUrl]"
-                    },
-                    "dataserviceUrl": {
-                        "value": "[parameters('piafsqlSettings').dataserviceUrl]"
-                    },
-                    "piWebApiSimulatorUrl": {
-                        "value": "[parameters('piafsqlSettings').piWebApiSimulatorUrl]"
-                    },
-                    "adminUsername":{
-                        "value": "[parameters('piafsqlSettings').adminUsername]"
-                    },
-                    "adminPassword":{
-                        "value": "[parameters('piafsqlSettings').adminPassword]"
-                    }
+                    ""
                 }
             }
         },
