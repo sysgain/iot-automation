@@ -303,6 +303,7 @@
         },
         "fortigateFirewallSettings": {
             "authenticationType": "[parameters('authTypeForLinuxServers')]",
+            "sshKey": "[parameters('adminSSHKey')]",
             "location": "[variables('location')]",
             "fortiAvailName": "forti-avset",
             "FGPubFacingAddress": "10.0.0.4",
