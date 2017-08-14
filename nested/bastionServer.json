@@ -245,7 +245,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/InstallationDSA')]",
+            "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/InstallationDSA3')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
             "scale": null,

@@ -459,7 +459,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('mcsModules').adVMName,'/InstallationDSA')]",
+            "name": "[concat(parameters('mcsModules').adVMName,'/InstallationDSA1')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('mcsModules').location]",
             "scale": null,
@@ -718,7 +718,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/InstallationDSA1')]",
+            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/InstallationDSA2')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('mcsModules').location]",
             "scale": null,
