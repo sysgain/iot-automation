@@ -144,14 +144,14 @@
         },
         "senderEmail": {
             "type": "string",
-            "defaultValue": "ermhost@ermdeploy.com",
+            "defaultValue": "ermhost@noone.com",
             "metadata": {
                 "description": "Describes the email ID of the sender for email notifications"
             }
         },
         "senderEmailPassword": {
             "type": "string",
-            "defaultValue": "Password@1234",
+            "defaultValue": "",
             "metadata": {
                 "descrition": "Describes the password for sender email ID for email notifications"
             }
@@ -233,7 +233,7 @@
         },
         "chefUserEmail": {
             "type": "string",
-            "defaultValue": "orguser@gmail.com",
+            "defaultValue": "orguser@noone.com",
             "metadata": {
                 "description": "Chef user email"
             }
