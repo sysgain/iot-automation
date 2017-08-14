@@ -17,10 +17,11 @@ $PIAFInstallationFile = "https://projectiot.blob.core.windows.net/iotp2/piafinst
 $PITemplates = "https://projectiot.blob.core.windows.net/iotp2/PITemplates.zip"
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
 $client = new-object System.Net.WebClient
-$client.DownloadFile($PIAFservicesUrl,"C:\PI-AF-Services_2017-SP1a_.exe")
-$client.DownloadFile($simulatorUrl,"C:\SimulatorSetup.msi")
+New-Item C:\Deploy -type directory
+$client.DownloadFile($PIAFservicesUrl,"C:\Deploy\PI-AF-Services_2017-SP1a_.exe")
+$client.DownloadFile($simulatorUrl,"C:\Deploy\SimulatorSetup.msi")
 Start-Sleep -s 12
-$client.DownloadFile($dataserviceUrl,"C:\DataServiceAppSetup.msi")
+$client.DownloadFile($dataserviceUrl,"C:\Deploy\DataServiceAppSetup.msi")
 C:\DataServiceAppSetup.msi /qn
 $dataserviceconfig = "C:\Program Files (x86)\Default Company Name\DataServiceSetup\DataService.exe.config"
 $doc = (Get-Content $dataserviceconfig) -as [Xml]
@@ -33,10 +34,10 @@ $obj.value = data source=$sqlservername;initial catalog=PIFD;persist security in
 $doc.Save($dataserviceconfig)
 Start-Service -SERVICENAME DataServiceEM
 Start-Sleep -s 30
-$client.DownloadFile($PIWebApisimulatorUrl,"C:\PIWebApiSimulatorSetup.msi")
+$client.DownloadFile($PIWebApisimulatorUrl,"C:\Deploy\PIWebApiSimulatorSetup.msi")
 C:\PIWebApiSimulatorSetup.msi /qn
 Start-Sleep -s 12 
-$client.DownloadFile($PIAFInstallationFile,"C:\piafinstallation.ps1")
+$client.DownloadFile($PIAFInstallationFile,"C:\Deploy\piafinstallation.ps1")
 Start-Sleep -s 12
-$client.DownloadFile($PITemplates,"C:\PITemplates.zip") 
+$client.DownloadFile($PITemplates,"C:\Deploy\PITemplates.zip") 
 #C:\PI-AF-Services_2017-SP1a_.exe ADDLOCAL=ALL AFSERVICEACCOUNT=PIAFSQLSERVER\adminuser AFSERVICEPASSWORD=Password@1234 FDSQLDBSERVER=PIAFSQLSERVER /quiet
