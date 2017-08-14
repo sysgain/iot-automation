@@ -356,7 +356,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('piafsqlSettings').sqlservername,'/InstallationDSA4')]",
+            "name": "[concat(parameters('piafsqlSettings').sqlservername,'/InstallationDSA3')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('piafsqlSettings').location]",
             "scale": null,
@@ -543,7 +543,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('pidaServerSettings').pidaVMName,'/InstallationDSA5')]",
+            "name": "[concat(parameters('pidaServerSettings').pidaVMName,'/InstallationDSA4')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('pidaServerSettings').location]",
             "scale": null,
@@ -715,7 +715,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('pibaServersettings').pibaVMName,'/InstallationDSA6')]",
+            "name": "[concat(parameters('pibaServersettings').pibaVMName,'/InstallationDSA5')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('pibaServersettings').location]",
             "scale": null,
