@@ -38,6 +38,13 @@
                 "description": "The FQDN of the Active Directory Domain to be created on VM"
             }
         },
+        "FortiGateName": {
+            "type": "string",
+            "defaultValue": "fortigate",
+            "metadata": {
+                "description": "Name for FortiGate virtual appliance."
+            }
+        },
         "azureAccountUsername": {
             "type": "string",
             "defaultValue": "nvtuluva@sysgaincloud.onmicrosoft.com",
@@ -224,7 +231,8 @@
             "planApiVersion": "2016-05-01-preview",
             "webApiVersion": "2016-03-01",
             "webApiVersion1": "2015-08-01",
-            "webApiVersion2": "2014-08-01-preview"
+            "webApiVersion2": "2014-08-01-preview",
+            "routtableApiVersion": "2015-06-15"
         },
         "networkSettings": {
             "location": "[variables('location')]",
@@ -289,9 +297,28 @@
             "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
             "ManagerAddress": "[variables('ManagerAddress')]",
-            "ActivationPort":"[variables('ActivationPort')]",
-            "TenantIdentifier":"[variables('TenantIdentifier')]",
-            "TenantActivationPassword":"[variables('TenantActivationPassword')]"
+            "ActivationPort": "[variables('ActivationPort')]",
+            "TenantIdentifier": "[variables('TenantIdentifier')]",
+            "TenantActivationPassword": "[variables('TenantActivationPassword')]"
+        },
+        "fortigateFirewallSettings": {
+            "location": "[variables('location')]",
+            "fortiAvailName": "forti-avset",
+            "FGPubFacingAddress": "10.0.0.4",
+            "FGDMZAddress": "10.0.1.7",
+            "fortiPublicIPAddressName": "forti-pip",
+            "publicIPAddressType": "Dynamic",
+            "FortiGateName":"[parameters('FortiGateName')]",
+            "fortiNicName1": "forti-nic1",
+            "fortiNicName2": "forti-nic2",
+            "name": "fortinet_fg-vm",
+            "product": "fortinet_fortigate-vm_v5",
+            "publisher": "fortinet",
+            "vmSize":"Standard_D1_v2",
+            "adminUsername":"[parameters('adminUsername')]",
+            "adminPassword":"[parameters('adminPassword')]",
+            "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet1Name,'-routes')]",
+            "routeTable2Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]"
         },
         "mcsModules": {
             "authenticationType": "[parameters('authTypeForLinuxServers')]",
@@ -356,11 +383,11 @@
             "databaseOption": "new",
             "licenseMode": "20",
             "managerPort": "443",
-            "heartbeatPort":"[variables('heartbeatPort')]",
+            "heartbeatPort": "[variables('heartbeatPort')]",
             "ManagerAddress": "[variables('ManagerAddress')]",
-            "ActivationPort":"[variables('ActivationPort')]",
-            "TenantIdentifier":"[variables('TenantIdentifier')]",
-            "TenantActivationPassword":"[variables('TenantActivationPassword')]",
+            "ActivationPort": "[variables('ActivationPort')]",
+            "TenantIdentifier": "[variables('TenantIdentifier')]",
+            "TenantActivationPassword": "[variables('TenantActivationPassword')]",
             "azureSQLUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "commandToExecute": "[concat('bash node-setup.sh', ' -r ', variables('splunkServerRole'), ' -p ', parameters('adminPassword'))]",
@@ -385,7 +412,7 @@
             "offer": "SQL2016SP1-WS2016",
             "sku": "Express",
             "version": "latest",
-            "vmSize": "Standard_DS1_v2",
+            "vmSize": "Standard_D2_v2",
             "sqlConnectivityType": "Private",
             "sqlPrivateIPAddress": "10.0.2.4",
             "sqlStorageDisksCount": "1",
@@ -408,9 +435,9 @@
             "piserverscript": "[concat(variables('baseUrl'),'scripts/PiServerSQLscript.sql')]",
             "databaseName": "iottestdb",
             "ManagerAddress": "[variables('ManagerAddress')]",
-            "ActivationPort":"[variables('ActivationPort')]",
-            "TenantIdentifier":"[variables('TenantIdentifier')]",
-            "TenantActivationPassword":"[variables('TenantActivationPassword')]",
+            "ActivationPort": "[variables('ActivationPort')]",
+            "TenantIdentifier": "[variables('TenantIdentifier')]",
+            "TenantActivationPassword": "[variables('TenantActivationPassword')]",
             "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
             "piWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
@@ -441,9 +468,9 @@
             "publicIpAddressType": "Dynamic",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
             "ManagerAddress": "[variables('ManagerAddress')]",
-            "ActivationPort":"[variables('ActivationPort')]",
-            "TenantIdentifier":"[variables('TenantIdentifier')]",
-            "TenantActivationPassword":"[variables('TenantActivationPassword')]"
+            "ActivationPort": "[variables('ActivationPort')]",
+            "TenantIdentifier": "[variables('TenantIdentifier')]",
+            "TenantActivationPassword": "[variables('TenantActivationPassword')]"
         },
         "pibaServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
@@ -468,9 +495,9 @@
             "Password": "[parameters('adminPassword')]",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
             "ManagerAddress": "[variables('ManagerAddress')]",
-            "ActivationPort":"[variables('ActivationPort')]",
-            "TenantIdentifier":"[variables('TenantIdentifier')]",
-            "TenantActivationPassword":"[variables('TenantActivationPassword')]"
+            "ActivationPort": "[variables('ActivationPort')]",
+            "TenantIdentifier": "[variables('TenantIdentifier')]",
+            "TenantActivationPassword": "[variables('TenantActivationPassword')]"
         },
         "azureSQL": {
             "location": "[variables('location')]",
@@ -526,12 +553,12 @@
             "restServerPackageURI": "[concat(variables('restServerDeployPackageURI'), variables('sasToken'))]",
             "powerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('azureSQL').serverName,'.database.windows.net;initial catalog=',variables('azureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
-        "trendNicIPAddress":"10.0.1.5",
+        "trendNicIPAddress": "10.0.1.5",
         "heartbeatPort": "4120",
-        "ManagerAddress":"[variables('trendNicIPAddress')]",
-        "ActivationPort":"[variables('heartbeatPort')]",
-        "TenantIdentifier":"NA",
-        "TenantActivationPassword":"NA",
+        "ManagerAddress": "[variables('trendNicIPAddress')]",
+        "ActivationPort": "[variables('heartbeatPort')]",
+        "TenantIdentifier": "NA",
+        "TenantActivationPassword": "NA",
         "location": "[resourceGroup().location]",
         "uniqueString": "aug",
         "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
@@ -552,10 +579,58 @@
     },
     "resources": [
         {
+            "type": "Microsoft.Network/routeTables",
+            "name": "[variables('fortigateFirewallSettings').routeTable1Name]",
+            "apiVersion": "[variables('apiVersions').routtableApiVersion]",
+            "location": "[variables('fortigateFirewallSettings').location]",
+            "properties": {
+                "routes": [
+                    {
+                        "name": "[concat('to', '-', variables('networkSettings').subnet1Name)]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "[variables('fortigateFirewallSettings').FGPubFacingAddress]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/routeTables",
+            "name": "[variables('fortigateFirewallSettings').routeTable2Name]",
+            "apiVersion": "[variables('apiVersions').routtableApiVersion]",
+            "location": "[variables('fortigateFirewallSettings').location]",
+            "properties": {
+                "routes": [
+                    {
+                        "name": "[concat('to', '-', variables('networkSettings').subnet2Name)]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "[variables('fortigateFirewallSettings').FGDMZAddress]"
+                        }
+                    },
+                    {
+                        "name": "to-Internet",
+                        "properties": {
+                            "AddressPrefix": "0.0.0.0/0",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIPAddress": "[variables('fortigateFirewallSettings').FGDMZAddress]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('networkSettings').virtualNetworkName]",
             "apiVersion": "[variables('apiVersions').networkApiVersion]",
             "location": "[variables('networkSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/routeTables/', variables('fortigateFirewallSettings').routeTable1Name)]",
+                "[concat('Microsoft.Network/routeTables/', variables('fortigateFirewallSettings').routeTable2Name)]"
+            ],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -649,6 +724,9 @@
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
+                    },
+                    "fortigateFirewallSettings":{
+                        "value": "[variables('fortigateFirewallSettings')]"
                     }
                 }
             }
@@ -682,8 +760,8 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     },
-                    "azureSQL":{
-                        "value":"[variables('azureSQL')]"
+                    "azureSQL": {
+                        "value": "[variables('azureSQL')]"
                     }
                 }
             }
