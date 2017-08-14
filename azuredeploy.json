@@ -56,7 +56,7 @@
             "type": "string",
             "defaultValue": "ac12acb5-a79a-4ca7-87eb-c5e6ebbbcd38",
             "metadata": {
-                "description": "tenantID for Azure Account"
+                "description": "tenantID for Azure Account "
             }
         },
         "applicationName": {
