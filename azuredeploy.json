@@ -26,7 +26,7 @@
         },
         "adminSSHKey": {
             "type": "string",
-            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEA0DnqP4H8skniRTCzvRbpHK8ZjsrHKwSnAtoUgpjQzNRaIZlBOe+TyVVt3vWwtybPnxEm5Tof9yWFrsKnX0uii4/QFtggMyhNH5qxLUXphAA2+yFdHnse22Rys/KrspystqkuNAq/DXZsVfSzpxtCjXNr6vCknERk3MC7vqk+SuCUFz+cBKTpziJvbFoiNHIy7u6jSDg5eIXTVIC+qxA0XgNrJco0azR7kUkrezQRjCthBoKzP/cLK7ZrbSDvygie6NdveVZeB8ytruR6B/7et1fa3QGyJhUmP0UOo3yL64UHBVjsL9ZpCbvqVIU17DrtnxEBbEMz1uAQWiw3PWKaVQ== rsa-key-20170810",
+            "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEArC+q1gGbzrUd0jAFScbjEui+OBRdIIq+tF6DDPeO1qP7y4v3u7tdttxOdS7QC8OmXe6X8Y8LTp+SHJeYBl8n3KsE1Iy06+u0S1Cu2CLu90cQmIcpY5I/4BT+4ylPqMtYox3CQPgujzknKlC1vT+j5aoZMKoRvInZKeapLhbOi+lgq51LJNtbM+TPudtOcODdi5DWtTI66vDMAK3V7gQptUC+kbBgjPzUgT3srYsppbDBbzxXnHryGxU/otphKDOOibX2bFCU25Tch7izCJZ2ACa39JoahRoC28Ed0Q0537Su2YVcgPMm8deeA+v2ccF9PT3UsWwfwVkV7FS2RWj8Lw== rsa-key-20170814",
             "metadata": {
                 "description": "admin ssh key for linux servers "
             }
