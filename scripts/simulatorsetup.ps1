@@ -22,7 +22,7 @@ $client.DownloadFile($PIAFservicesUrl,"C:\Deploy\PI-AF-Services_2017-SP1a_.exe")
 $client.DownloadFile($simulatorUrl,"C:\Deploy\SimulatorSetup.msi")
 Start-Sleep -s 12
 $client.DownloadFile($dataserviceUrl,"C:\Deploy\DataServiceAppSetup.msi")
-C:\DataServiceAppSetup.msi /qn
+C:\Deploy\DataServiceAppSetup.msi /qn
 $dataserviceconfig = "C:\Program Files (x86)\Default Company Name\DataServiceSetup\DataService.exe.config"
 $doc = (Get-Content $dataserviceconfig) -as [Xml]
 $obj = $doc.configuration.appSettings.add | where {$_.Key -eq 'AzureConnectionString'}
@@ -35,7 +35,7 @@ $doc.Save($dataserviceconfig)
 Start-Service -SERVICENAME DataServiceEM
 Start-Sleep -s 30
 $client.DownloadFile($PIWebApisimulatorUrl,"C:\Deploy\PIWebApiSimulatorSetup.msi")
-C:\PIWebApiSimulatorSetup.msi /qn
+C:\Deploy\PIWebApiSimulatorSetup.msi /qn
 Start-Sleep -s 12 
 $client.DownloadFile($PIAFInstallationFile,"C:\Deploy\piafinstallation.ps1")
 Start-Sleep -s 12
