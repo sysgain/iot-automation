@@ -165,14 +165,14 @@
         },
         "b2cClientId": {
             "type": "string",
-            "defaultValue": "f5e97d3c-aa1e-45a5-b1cf-770b4b43af7d",
+            "defaultValue": "",
             "metadata": {
                 "description": "Describes the client Id of the application registered in B2C Directory"
             }
         },
         "b2cClientSecret": {
             "type": "string",
-            "defaultValue": "7L5k!]Ajv7Z^-23Q",
+            "defaultValue": "",
             "metadata": {
                 "description": "Describes the Client secret of the application registered in B2C Directory"
             }
