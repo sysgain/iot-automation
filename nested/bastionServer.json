@@ -18,7 +18,30 @@
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet1Name)]",
-        "subnet2Ref": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
+        "subnet2Ref": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]",
+        "sshKeyPath": "[concat('/home/',parameters('fortigateFirewallSettings').adminUsername,'/.ssh/authorized_keys')]",
+        "osProfilepassword": {
+            "computerName": "[parameters('fortigateFirewallSettings').FortiGateName]",
+            "adminUsername": "[parameters('fortigateFirewallSettings').adminUsername]",
+            "adminPassword": "[parameters('fortigateFirewallSettings').adminPassword]"
+        },
+        "osProfilesshPublicKey": {
+            "computerName": "[parameters('fortigateFirewallSettings').FortiGateName]",
+            "adminUsername": "[parameters('fortigateFirewallSettings').adminUsername]",
+            "adminPassword": "[parameters('fortigateFirewallSettings').adminPassword]",
+            "linuxConfiguration": {
+                "disablePasswordAuthentication": true,
+                "ssh": {
+                    "publicKeys": [
+                        {
+                            "path": "[variables('sshKeyPath')]",
+                            "keyData": "[parameters('fortigateFirewallSettings').sshKey]"
+                        }
+                    ]
+                }
+            }
+        },
+        "osProfileReference": "[variables(concat('osProfile', parameters('fortigateFirewallSettings').authenticationType))]"
     },
     "resources": [
         {
@@ -368,11 +391,7 @@
                 "availabilitySet": {
                     "id":"[resourceId('Microsoft.Compute/availabilitySets', parameters('fortigateFirewallSettings').fortiAvailName)]"
                 },
-                "osProfile": {
-                    "computerName": "[parameters('fortigateFirewallSettings').FortiGateName]",
-                    "adminUsername": "[parameters('fortigateFirewallSettings').adminUsername]",
-                    "adminPassword": "[parameters('fortigateFirewallSettings').adminPassword]"
-                },
+                "osProfile": "[variables('osProfileReference')]",
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[parameters('fortigateFirewallSettings').publisher]",
@@ -406,6 +425,12 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('fortigateFirewallSettings').fortiNicName2)]"
                         }
                     ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('bastionServerSettings').bastionDiagStgAcnt)).primaryEndpoints['blob']]"
+                    }
                 }
             }
         }

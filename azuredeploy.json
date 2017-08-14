@@ -302,6 +302,7 @@
             "TenantActivationPassword": "[variables('TenantActivationPassword')]"
         },
         "fortigateFirewallSettings": {
+            "authenticationType": "[parameters('authTypeForLinuxServers')]",
             "location": "[variables('location')]",
             "fortiAvailName": "forti-avset",
             "FGPubFacingAddress": "10.0.0.4",
