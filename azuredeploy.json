@@ -337,15 +337,15 @@
             "FGDMZAddress": "10.0.1.7",
             "fortiPublicIPAddressName": "forti-pip",
             "publicIPAddressType": "Dynamic",
-            "FortiGateName":"[parameters('FortiGateName')]",
+            "FortiGateName": "[parameters('FortiGateName')]",
             "fortiNicName1": "forti-nic1",
             "fortiNicName2": "forti-nic2",
             "name": "fortinet_fg-vm",
             "product": "fortinet_fortigate-vm_v5",
             "publisher": "fortinet",
-            "vmSize":"Standard_D1_v2",
-            "adminUsername":"[parameters('adminUsername')]",
-            "adminPassword":"[parameters('adminPassword')]",
+            "vmSize": "Standard_D1_v2",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
             "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet1Name,'-routes')]",
             "routeTable2Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]"
         },
@@ -754,7 +754,7 @@
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
                     },
-                    "fortigateFirewallSettings":{
+                    "fortigateFirewallSettings": {
                         "value": "[variables('fortigateFirewallSettings')]"
                     }
                 }
