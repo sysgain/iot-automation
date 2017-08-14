@@ -10,8 +10,7 @@ param(
 [string] $sqlusername = "$9",
 [string] $sqlpassword = "$10",
 [string] $storageaccountname = "$11",
-[string] $storageaccountkey = "$12",
-[string] $sqlserverdbname = "$13"
+[string] $storageaccountkey = "$12"
 )
 $PIAFservicesUrl = "https://projectiot.blob.core.windows.net/iotp2/PI-AF-Services_2017-SP1a_.exe"
 $PIAFInstallationFile = "https://projectiot.blob.core.windows.net/iotp2/piafinstallation.ps1"

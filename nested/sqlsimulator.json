@@ -10,6 +10,9 @@
         },
         "azureSQL":{
             "type": "object"
+        },
+        "sqlstorafeaccountkey":{
+            "type": "string"
         }
     },
     "variables": {},
@@ -30,7 +33,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('piafsqlSettings').scriptFileName3,' ',parameters('piafsqlSettings').simulatorUrl,' ',parameters('piafsqlSettings').dataserviceUrl,' ',parameters('piafsqlSettings').piWebApiSimulatorUrl,' ',parameters('piafsqlSettings').adminUsername,' ',parameters('piafsqlSettings').adminPassword,' ',parameters('piafsqlSettings').sqlservername,' ',parameters('azureSQL').serverName,' ',parameters('azureSQL').databaseName,' ',parameters('piafsqlSettings').sqlAuthenticationLogin,' ',parameters('piafsqlSettings').sqlAuthenticationPassword,' ',parameters('piafsqlSettings').sqlStorageAccountName,' ',parameters('piafsqlSettings').sqlStorageAccountName)]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('piafsqlSettings').scriptFileName3,' ',parameters('piafsqlSettings').simulatorUrl,' ',parameters('piafsqlSettings').dataserviceUrl,' ',parameters('piafsqlSettings').piWebApiSimulatorUrl,' ',parameters('piafsqlSettings').adminUsername,' ',parameters('piafsqlSettings').adminPassword,' ',parameters('piafsqlSettings').sqlservername,' ',parameters('azureSQL').serverName,' ',parameters('azureSQL').databaseName,' ',parameters('piafsqlSettings').sqlAuthenticationLogin,' ',parameters('piafsqlSettings').sqlAuthenticationPassword,' ',parameters('piafsqlSettings').sqlStorageAccountName,' ',parameters('piafsqlSettings').sqlstorafeaccountkey)]"
                 }
             }
         }
