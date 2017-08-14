@@ -488,7 +488,7 @@
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('networkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/InstallationDSA')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/InstallationDSA1')]"
             ],
             "properties": {
                 "addressSpace": {
