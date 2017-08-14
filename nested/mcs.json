@@ -718,7 +718,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/InstallationDSA')]",
+            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/InstallationDSA1')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('mcsModules').location]",
             "scale": null,
