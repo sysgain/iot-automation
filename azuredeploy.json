@@ -441,7 +441,7 @@
             "offer": "SQL2016SP1-WS2016",
             "sku": "Express",
             "version": "latest",
-            "vmSize": "Standard_D2_v2",
+            "vmSize": "Standard_DS2_v2",
             "sqlConnectivityType": "Private",
             "sqlPrivateIPAddress": "10.0.2.4",
             "sqlStorageDisksCount": "1",
