@@ -460,8 +460,8 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('mcsModules').adVMName,'/InstallationDSA')]",
-            "apiVersion": "2016-04-30-preview",
-            "location": "southcentralus",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('mcsModules').location]",
             "scale": null,
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
@@ -714,6 +714,31 @@
             },
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName)]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/InstallationDSA')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('mcsModules').ManagerAddress]",
+                    "DSMport": "[parameters('mcsModules').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('mcsModules').TenantIdentifier]",
+                    "tenantPassword": "[parameters('mcsModules').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName,'/extensions/automate_setup')]"
             ]
         }
     ]
