@@ -216,6 +216,34 @@
             "metadata": {
                 "description": "Pricing tier for Workspace"
             }
+        },
+        "chefUserFirstName": {
+            "type": "string",
+            "defaultValue": "chef",
+            "metadata": {
+                "description": "Chef user first name"
+            }
+        },
+        "chefUserLastName": {
+            "type": "string",
+            "defaultValue": "user",
+            "metadata": {
+                "description": "Chef user last name"
+            }
+        },
+        "chefUserEmail": {
+            "type": "string",
+            "defaultValue": "orguser@gmail.com",
+            "metadata": {
+                "description": "Chef user email"
+            }
+        },
+        "chefOrgShortName": {
+            "type": "string",
+            "defaultValue": "orguser",
+            "metadata": {
+                "description": "Chef org short name"
+            }
         }
     },
     "variables": {
@@ -284,7 +312,7 @@
             "tenantID": "[parameters('tenantID')]",
             "applicationName": "[parameters('applicationName')]",
             "uniqueString": "[variables('uniqueString')]",
-            "orguser": "orguser",
+            "orguser": "[parameters('chefOrgShortName')]",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
             "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
             "powerBIUrl": "[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
@@ -356,10 +384,10 @@
             "chefImageSKU": "byol",
             "chefImageVersion": "latest",
             "chefAutoVmName": "chefautomate",
-            "firstname": "chefautomate",
-            "lastname": "user",
-            "orguser": "orguser",
-            "mailid": "orguser@gmail.com",
+            "firstname": "[parameters('chefUserFirstName')]",
+            "lastname": "[parameters('chefUserLastName')]",
+            "orguser": "[parameters('chefOrgShortName')]",
+            "mailid": "[parameters('chefUserEmail')]",
             "rubyPath": "/opt/chef-marketplace/embedded/bin/ruby",
             "vmSize": "Standard_DS2_v2",
             "automateLicenseUri": "",
