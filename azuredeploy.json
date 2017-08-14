@@ -171,7 +171,7 @@
             }
         },
         "b2cClientSecret": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "",
             "metadata": {
                 "description": "Describes the Client secret of the application registered in B2C Directory"
