@@ -750,7 +750,7 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('pibaServersettings').pibaVMName,'/extensions/CustomScriptExtension1')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('pibaServersettings').pibaVMName,'/extensions/CustomScriptExtension2')]"
             ]
         }
     ],
