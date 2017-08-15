@@ -759,9 +759,6 @@
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
-                    },
-                    "azureSQL": {
-                        "value": "[variables('azureSQL')]"
                     }
                 }
             }
