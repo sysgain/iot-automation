@@ -344,12 +344,6 @@
                     },
                     "apiVersions": {
                         "value": "[parameters('apiVersions')]"
-                    },
-                    "azureSQL":{
-                        "value": "[parameters('azureSQL')]"
-                    },
-                    "sqlstorafeaccountkey":{
-                        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('piafsqlSettings').sqlStorageAccountName), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
                     }
                 }
             }

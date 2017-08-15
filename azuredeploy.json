@@ -44,32 +44,11 @@
                 "description": "Name for FortiGate virtual appliance."
             }
         },
-        "azureAccountUsername": {
+        "websiteName": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
-                "description": "Username for Azure Account"
-            }
-        },
-        "azureAccountPassword": {
-            "type": "securestring",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Password for Azure Account"
-            }
-        },
-        "tenantID": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "tenantID for Azure Account "
-            }
-        },
-        "applicationName": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "decription": "Application name for Active Directory"
+                "decription": "Website name"
             }
         },
         "sqlAdministratorLogin": {
@@ -307,14 +286,9 @@
             "wsPublicIpName": "ws-publicip",
             "vmSize": "Standard_DS2_v2",
             "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
-            "azureAccountUsername": "[parameters('azureAccountUsername')]",
-            "azureAccountPassword": "[parameters('azureAccountPassword')]",
-            "tenantID": "[parameters('tenantID')]",
-            "applicationName": "[parameters('applicationName')]",
-            "uniqueString": "[variables('uniqueString')]",
             "orguser": "[parameters('chefOrgShortName')]",
             "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
-            "wsClientDns": "[concat('wsclient',substring(variables('prefix') ,0 ,5))]",
+            "wsClientDns": "[concat('wsclient',variables('suffix'))]",
             "powerBIUrl": "[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
             "powerBIScriptUrl": "[concat(variables('baseUrl'),'scripts/powerbidesktop.ps1')]",
             "powerBITemplatesUrl": "https://github.com/sysgain/iot-automation/raw/iotnew/powerBItemplates/PowerBI_Templates.zip",
@@ -372,7 +346,7 @@
             "adExtensionName": "CreateADForest",
             "chefAutoNsg": "chefauto-nsg",
             "chefAutoNic": "chefauto-nic",
-            "chefAutoDns": "[concat('chefauto',substring(variables('prefix') ,0 ,5))]",
+            "chefAutoDns": "[concat('chefauto',variables('suffix'))]",
             "scriptFileName": "psscript.ps1",
             "dnsPrefix": "[concat('adserver',variables('suffix'))]",
             "publisher": "MicrosoftWindowsServer",
@@ -434,7 +408,7 @@
             "publicIpAddressName": "sqlpip",
             "sqlAuthenticationLogin": "[parameters('sqlAdministratorLogin')]",
             "sqlAuthenticationPassword": "[parameters('sqlAdministratorLoginPassword')]",
-            "sqlStorageAccountName": "[concat(uniquestring(resourceGroup().id), 'sqlserver')]",
+            "sqlStorageAccountName": "[concat('sqlserver',variables('suffix'))]",
             "sqlservername": "PIAFSQLServer",
             "storageAccountType": "Premium_LRS",
             "publisher": "MicrosoftSQLServer",
@@ -478,7 +452,7 @@
             "pidaVMName": "PIDAVMServer",
             "pidaNic": "PIDAVMNic",
             "pidaNetworkSecurityGroupName": "PIDANsg",
-            "pidaDiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pidavm')]",
+            "pidaDiagStgAcnt": "[concat('pidavm',variables('suffix'))]",
             "publisher": "MicrosoftWindowsServer",
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
@@ -493,7 +467,7 @@
             "Username": "[parameters('adminUsername')]",
             "Password": "[parameters('adminPassword')]",
             "pidaPublicIpAddressName": "pidapip",
-            "pidaDnsLabelPrefix": "[concat('pidadns',substring(variables('prefix') ,0 ,5))]",
+            "pidaDnsLabelPrefix": "[concat('pidadns',variables('suffix'))]",
             "publicIpAddressType": "Dynamic",
             "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
             "ManagerAddress": "[variables('ManagerAddress')]",
@@ -508,7 +482,7 @@
             "pibaVMName": "PIBAVMServer",
             "pibaNic": "PIBAVMNic",
             "pibaNetworkSecurityGroupName": "PIBANsg",
-            "pibaDiagStgAcnt": "[concat(uniquestring(resourceGroup().id), 'pibavm')]",
+            "pibaDiagStgAcnt": "[concat('pibavm',variables('suffix'))]",
             "publisher": "MicrosoftWindowsServer",
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
@@ -537,7 +511,7 @@
             "edition": "Standard",
             "requestedServiceObjectiveName": "S2",
             "maxSizeBytes": "268435456000",
-            "serverName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
+            "serverName": "[concat('sqlserver',variables('suffix'))]",
             "storageKeyType": "SharedAccessKey",
             "storageKey": "?",
             "storageUri": "https://projectiot.blob.core.windows.net/iotp2/EnergyManagement.bacpac"
@@ -546,17 +520,17 @@
             "location": "South Central US",
             "workspaceName": "workspace",
             "mlSkuName": "[parameters('MLskuName')]",
-            "mlStorageName": "[concat('mlstr', uniqueString(resourceGroup().id))]"
+            "mlStorageName": "[concat('mlstr', variables('suffix'))]"
         },
         "webSiteSettings": {
             "location": "[variables('location')]",
-            "jobCollectionName": "[concat('myjob', uniqueString(resourceGroup().id))]",
-            "webjobStorageName": "[concat('webjobstr', uniqueString(resourceGroup().id))]",
+            "jobCollectionName": "[concat('myjob', variables('suffix'))]",
+            "webjobStorageName": "[concat('webjobstr',variables('suffix'))]",
             "webjobStorageType": "Standard_LRS",
             "hostingPlanName": "[parameters('hostingPlanName')]",
             "skuName": "[parameters('skuName')]",
             "skuCapacity": "[parameters('skuCapacity')]",
-            "webSiteName": "[concat(parameters('applicationName'),variables('uniqueString'))]",
+            "webSiteName": "[parameters('websiteName')]",
             "WebAppPackageURI": "[concat(variables('webAppDeployPackageURI'), variables('sasToken'))]",
             "restServerDeployPackageURI": "[concat(variables('restServerDeployPackageURI'), variables('sasToken'))]",
             "blobconnectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('deployStorageAccountName'),';AccountKey=',variables('deployStorageAccountKey'))]",
@@ -589,20 +563,17 @@
         "TenantIdentifier": "NA",
         "TenantActivationPassword": "NA",
         "location": "[resourceGroup().location]",
-        "uniqueString": "aug",
-        "websiteFullAddress": "[concat('https://',parameters('applicationName'),variables('uniqueString'),'.azurewebsites.net/')]",
+        "websiteFullAddress": "[concat('https://',parameters('websiteName'),'.azurewebsites.net/')]",
         "deployStorageAccountName": "releasemtr",
         "deployStorageAccountKey": "",
         "webAppDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/CSUWebApp.zip",
         "restServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
         "sasToken": "?",
-        "chefPublicIPDomainName": "[concat('publicdnschef',variables('suffix'))]",
         "dnsServerAddress": "10.0.1.4",
         "splunkServerRole": "splunk_server",
         "storageAccountType": "Premium_LRS",
         "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/iotnew/",
         "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/iotnew",
-        "prefix": "[uniqueString(resourceGroup().id)]",
         "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
     },
