@@ -207,20 +207,11 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "powerBITemplatesUrl": {
-                        "value": "[parameters('bastionServerSettings').powerBITemplatesUrl]"
+                    "bastionServerSettings": {
+                        "value": "[parameters('bastionServerSettings')]"
                     },
-                    "powerBIDesktopUrl": {
-                        "value": "[parameters('bastionServerSettings').powerBIDesktopUrl]"
-                    },
-                    "powerBIScriptUrl": {
-                        "value": "[parameters('bastionServerSettings').powerBIScriptUrl]"
-                    },
-                    "bastionVMName": {
-                        "value": "[parameters('bastionServerSettings').bastionVMName]"
-                    },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    "apiVersions": {
+                        "value": "[parameters('apiVersions')]"
                     }
                 }
             }

@@ -2,29 +2,20 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "powerBITemplatesUrl": {
-            "type": "string"
+        "bastionServerSettings": {
+            "type": "object"
         },
-        "powerBIDesktopUrl": {
-            "type": "string"
-        },
-        "powerBIScriptUrl":{
-            "type": "string"
-        },
-        "bastionVMName":{
-            "type": "string"
-        },
-        "computeApiVersion":{
-            "type": "string"
+        "apiVersions": {
+            "type": "object"
         }
     },
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('bastionVMName'),'/CustomScriptExtension')]",
+            "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "[parameters('computeApiVersion')]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -33,11 +24,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('powerBIScriptUrl')]"
+                        "[parameters('bastionServerSettings').powerBIScriptUrl]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File powerbidesktop.ps1',' ',parameters('powerBITemplatesUrl'),' ',parameters('powerBIDesktopUrl'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File powerbidesktop.ps1',' ',parameters('bastionServerSettings').powerBITemplatesUrl,' ',parameters('bastionServerSettings').powerBIDesktopUrl)]"
                 }
             }
         }
