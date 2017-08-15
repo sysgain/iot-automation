@@ -23,16 +23,6 @@ $client.DownloadFile($simulatorUrl,"C:\Deploy\SimulatorSetup.msi")
 Start-Sleep -s 12
 $client.DownloadFile($dataserviceUrl,"C:\Deploy\DataServiceAppSetup.msi")
 C:\Deploy\DataServiceAppSetup.msi /qn
-$dataserviceconfig = "C:\Program Files (x86)\Default Company Name\DataServiceSetup\DataService.exe.config"
-$doc = (Get-Content $dataserviceconfig) -as [Xml]
-$obj = $doc.configuration.appSettings.add | where {$_.Key -eq 'AzureConnectionString'}
-$obj.value = 'Server=tcp:'$azuresqlservername',1433;Initial Catalog='$azuresqlserverdbname';Persist Security Info=False;User ID='$sqlusername';Password='$sqlpassword';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=301'
-$obj = $doc.configuration.appSettings.add | where {$_.Key -eq 'StorageConnectionString'}
-$obj.value = 'DefaultEndpointsProtocol=https;AccountName='$storageaccountname';AccountKey='${storageaccountkey}'update;EndpointSuffix=core.windows.net'
-$obj = $doc.configuration.appSettings.add | where {$_.Key -eq 'PiServerConnectionString'}
-$obj.value = 'data source='$sqlservername';initial catalog=PIFD;persist security info=True;user id='$sqlusername';password=$sqlpassword'
-$doc.Save($dataserviceconfig)
-Start-Service -SERVICENAME DataServiceEM
 Start-Sleep -s 30
 $client.DownloadFile($PIWebApisimulatorUrl,"C:\Deploy\PIWebApiSimulatorSetup.msi")
 C:\Deploy\PIWebApiSimulatorSetup.msi /qn
