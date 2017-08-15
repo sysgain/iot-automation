@@ -884,6 +884,10 @@
         "windowsSQLUsername": {
             "type": "string",
             "value": "[parameters('sqlAdministratorLogin')]"
+        },
+        "webSiteUrl":{
+            "type": "string",
+            "value": "[variables('websiteFullAddress')]"
         }
     }
 }
