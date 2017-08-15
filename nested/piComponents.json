@@ -159,6 +159,19 @@
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*"
                         }
+                    },
+                    {
+                        "name": "winrm",
+                        "properties": {
+                            "priority": 2202,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "*",
+                            "destinationPortRange": "5985",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
                     }
                 ]
             }
