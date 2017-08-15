@@ -234,6 +234,9 @@
             "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/InstallationDSA2')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
+            "dependsOn": [
+                "PowerBIInstall"
+            ],
             "scale": null,
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
@@ -249,10 +252,7 @@
                     "tenantID": "[parameters('bastionServerSettings').TenantIdentifier]",
                     "tenantPassword": "[parameters('bastionServerSettings').TenantActivationPassword]"
                 }
-            },
-            "dependsOn": [
-                "PowerBIInstall"
-            ]
+            }
         },
         {
             "type": "Microsoft.Compute/availabilitySets",
