@@ -2,56 +2,38 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "wsVmName": {
-            "type": "string"
+        "bastionServerSettings": {
+            "type": "object"
         },
-         "location": {
-            "type": "string"
+         "apiVersions": {
+            "type": "object"
         },
-         "adminUsername": {
-            "type": "string"
+         "PIDAServersettings": {
+            "type": "object"
         },
-         "adminPassword": {
-            "type": "string"
+         "MCSModules": {
+            "type": "object"
         },
-         "orguser": {
-            "type": "string"
+        "PIAFSQLSettings":{
+            "type": "object"
         },
-        "computeApiVersion":{
-            "type": "string"
-        },
-        "workstationSetupUrl2": {
-            "type": "string"
-        },
-        "chef-server-fqdn": {
-            "type": "string"
-        },
-        "PIAFSQLIP":{
-            "type": "string"
-        },
-        "PIDAFQDN":{
-            "type": "string"
-        },
-        "PIBAIP":{
-            "type": "string"
-        },
-        "adIP":{
-            "type": "string"
-        },
-        "bastianIP":{
-            "type": "string"
+        "PIBAServersettings":{
+            "type": "object"
         },
         "workstationFQDN":{
             "type": "string"
         }
     },
-    "variables": {},
+    "variables": {  
+        "PIDAFQDN":"[concat(parameters('PIDAServersettings').PIDADnsLabelPrefix,'.',parameters('bastionServerSettings').location,'cloudapp.azure.com')]",
+        "bastianIP": "[concat(parameters('bastionServerSettings').bastionDnsLabelPrefix,'.',parameters('bastionServerSettings').location,'.cloudapp.azure.com')]"
+    },
     "resources": [
         {
-            "name": "[concat(parameters('wsVmName'),'/CustomScriptExtension')]",
+            "name": "[concat(parameters('bastionServerSettings').wsVmName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('location')]",
-            "apiVersion": "[parameters('computeApiVersion')]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "properties": {
                 "publisher": "Microsoft.Compute",
                 "type": "CustomScriptExtension",
@@ -59,11 +41,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[parameters('workstationSetupUrl2')]"
+                        "[parameters('bastionServerSettings').workstationSetupUrl2]"
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', parameters('chef-server-fqdn'), ' ', parameters('orguser'),' ',parameters('PIAFSQLIP'),' ',parameters('PIDAFQDN'),' ',parameters('PIBAIP'),' ',parameters('adIP'),' ',parameters('bastianIP'),' ',parameters('workstationFQDN'))]"
+                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',variables('PIDAFQDN'),' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',parameters('MCSModules').adNicIPAddress,' ',variables('bastianIP'),' ',parameters('workstationFQDN'))]"
                 }
             }
         }

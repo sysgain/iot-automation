@@ -2,35 +2,20 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "VmName": {
-            "type": "string"
+        "bastionServerSettings": {
+            "type": "object"
         },
-        "scriptFileName": {
-            "type": "string"
-        },
-        "domainName": {
-            "type": "string"
-        },
-        "Username": {
-            "type": "string"
-        },
-        "Password": {
-            "type": "string"
-        },
-        "fileUris": {
-            "type": "string"
-        },
-        "computeApiVersion": {
-            "type": "string"
+        "apiVersions": {
+            "type": "object"
         }
     },
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('VmName'),'/CustomScriptExtension')]",
+            "name": "[concat(parameters('bastionServerSettings').wsVmName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[resourceGroup().location]",
-            "apiVersion": "[parameters('computeApiVersion')]",
+            "location": "[parameters('bastionServerSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -39,11 +24,11 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://projectiot.blob.core.windows.net/iotp2/psscript.ps1"
+                        "[parameters('bastionServerSettings').fileUris]"
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('domainName'),' ',parameters('Username'),' ',parameters('Password'))]"
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('bastionServerSettings').domainName,' ',parameters('bastionServerSettings').Username,' ',parameters('bastionServerSettings').Password)]"
                 }
             }
         }

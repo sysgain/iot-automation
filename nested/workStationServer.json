@@ -244,44 +244,23 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "wsVmName": {
-                        "value": "[parameters('bastionServerSettings').wsVmName]"
+                    "bastionServerSettings": {
+                        "value": "[parameters('bastionServerSettings')]"
                     },
-                    "location": {
-                        "value": "[parameters('bastionServerSettings').location]"
+                    "apiVersions": {
+                        "value": "[parameters('apiVersions')]"
                     },
-                    "adminUsername": {
-                        "value": "[parameters('bastionServerSettings').Username]"
+                    "MCSModules": {
+                        "value": "[parameters('MCSModules')]"
                     },
-                    "adminPassword": {
-                        "value": "[parameters('bastionServerSettings').Password]"
+                    "PIAFSQLSettings": {
+                        "value": "[parameters('PIAFSQLSettings')]"
                     },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    "PIDAServersettings": {
+                        "value": "[parameters('PIDAServersettings')]"
                     },
-                    "orguser": {
-                        "value": "[parameters('bastionServerSettings').orguser]"
-                    },
-                    "workstationSetupUrl2": {
-                        "value": "[parameters('bastionServerSettings').workstationSetupUrl2]"
-                    },
-                    "chef-server-fqdn": {
-                        "value": "[parameters('MCSModules').chefAutomateIPAddress]"
-                    },
-                    "PIAFSQLIP": {
-                        "value": "[parameters('PIAFSQLSettings').sqlPrivateIPAddress]"
-                    },
-                    "PIDAFQDN": {
-                        "value": "[concat(parameters('PIDAServersettings').PIDADnsLabelPrefix,'.',parameters('bastionServerSettings').location,'cloudapp.azure.com')]"
-                    },
-                    "PIBAIP": {
-                        "value": "[parameters('PIBAServersettings').PIBAPrivateIPAddress]"
-                    },
-                    "adIP": {
-                        "value": "[parameters('MCSModules').adNicIPAddress]"
-                    },
-                    "bastianIP": {
-                        "value": "[concat(parameters('bastionServerSettings').bastionDnsLabelPrefix,'.',parameters('bastionServerSettings').location,'.cloudapp.azure.com')]"
+                    "PIBAServersettings": {
+                        "value": "[parameters('PIBAServersettings')]"
                     },
                     "workstationFQDN": {
                         "value": "[reference(parameters('bastionServerSettings').wsPublicIpName).dnsSettings.fqdn]"
@@ -303,26 +282,11 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "VmName": {
-                        "value": "[parameters('bastionServerSettings').wsVmName]"
+                    "bastionServerSettings": {
+                        "value": "[parameters('bastionServerSettings')]"
                     },
-                    "scriptFileName": {
-                        "value": "[parameters('bastionServerSettings').scriptFileName]"
-                    },
-                    "domainName": {
-                        "value": "[parameters('bastionServerSettings').domainName]"
-                    },
-                    "Username": {
-                        "value": "[parameters('bastionServerSettings').Username]"
-                    },
-                    "Password": {
-                        "value": "[parameters('bastionServerSettings').Password]"
-                    },
-                    "fileUris": {
-                        "value": "[parameters('bastionServerSettings').fileUris]"
-                    },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
+                    "apiVersions": {
+                        "value": "[parameters('apiVersions')]"
                     }
                 }
             }
