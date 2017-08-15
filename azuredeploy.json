@@ -842,6 +842,10 @@
             "type": "string",
             "value": "[parameters('adminUserName')]"
         },
+        "trendIPAddress":{
+            "type": "string",
+            "value": "[variables('trendNicIPAddress')]"
+        },
         "pidaServerFQDN": {
             "type": "string",
             "value": "[reference('PIComponents').outputs.PIDAFQDN.value]"
