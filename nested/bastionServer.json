@@ -195,54 +195,9 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "ApplicationCreation",
-            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
-            ],
-            "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[parameters('bastionServerSettings').appCreationURL]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "bastionVMName": {
-                        "value": "[parameters('bastionServerSettings').bastionVMName]"
-                    },
-                    "location": {
-                        "value": "[parameters('bastionServerSettings').location]"
-                    },
-                    "computeApiVersion": {
-                        "value": "[parameters('apiVersions').computeApiVersion]"
-                    },
-                    "azureAccountUsername": {
-                        "value": "[parameters('bastionServerSettings').azureAccountUsername]"
-                    },
-                    "azureAccountPassword": {
-                        "value": "[parameters('bastionServerSettings').azureAccountPassword]"
-                    },
-                    "tenantID": {
-                        "value": "[parameters('bastionServerSettings').tenantID]"
-                    },
-                    "applicationName": {
-                        "value": "[parameters('bastionServerSettings').applicationName]"
-                    },
-                    "uniqueString": {
-                        "value": "[parameters('bastionServerSettings').uniqueString]"
-                    },
-                    "appScriptUrl": {
-                        "value": "[parameters('bastionServerSettings').appScriptUrl]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
             "name": "PowerBIInstall",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "ApplicationCreation",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
