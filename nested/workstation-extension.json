@@ -25,7 +25,7 @@
         }
     },
     "variables": {  
-        "PIDAFQDN":"[concat(parameters('PIDAServersettings').PIDADnsLabelPrefix,'.',parameters('bastionServerSettings').location,'cloudapp.azure.com')]",
+        "PIDAFQDN":"[concat(parameters('PIDAServersettings').PIDADnsLabelPrefix,'.',parameters('PIDAServersettings').location,'.cloudapp.azure.com')]",
         "bastianIP": "[concat(parameters('bastionServerSettings').bastionDnsLabelPrefix,'.',parameters('bastionServerSettings').location,'.cloudapp.azure.com')]"
     },
     "resources": [
