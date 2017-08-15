@@ -207,35 +207,12 @@
             }
         },
         {
-            "type": "Microsoft.Resources/deployments",
-            "name": "PowerBIInstall",
-            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
-            ],
-            "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[parameters('bastionServerSettings').powerBIUrl]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "bastionServerSettings": {
-                        "value": "[parameters('bastionServerSettings')]"
-                    },
-                    "apiVersions": {
-                        "value": "[parameters('apiVersions')]"
-                    }
-                }
-            }
-        },
-        {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('bastionServerSettings').bastionVMName,'/InstallationDSA2')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
-                "PowerBIInstall"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/CustomScriptExtension')]"
             ],
             "scale": null,
             "properties": {
@@ -251,6 +228,29 @@
                 "protectedSettings": {
                     "tenantID": "[parameters('bastionServerSettings').TenantIdentifier]",
                     "tenantPassword": "[parameters('bastionServerSettings').TenantActivationPassword]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "PowerBIInstall",
+            "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('bastionServerSettings').bastionVMName,'/extensions/InstallationDSA2')]"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[parameters('bastionServerSettings').powerBIUrl]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "bastionServerSettings": {
+                        "value": "[parameters('bastionServerSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[parameters('apiVersions')]"
+                    }
                 }
             }
         },
