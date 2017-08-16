@@ -320,8 +320,8 @@
             "vmSize": "Standard_D1_v2",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
-            "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet1Name,'-routes')]",
-            "routeTable2Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]"
+            "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]",
+            "routeTable2Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet1Name,'-routes')]"
         },
         "mcsModules": {
             "authenticationType": "[parameters('authTypeForLinuxServers')]",
@@ -570,9 +570,9 @@
             "properties": {
                 "routes": [
                     {
-                        "name": "[concat('to', '-', variables('networkSettings').subnet1Name)]",
+                        "name": "[concat('to', '-', variables('networkSettings').subnet2Name)]",
                         "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
+                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
                             "nextHopType": "VirtualAppliance",
                             "nextHopIpAddress": "[variables('fortigateFirewallSettings').FGPubFacingAddress]"
                         }
@@ -588,9 +588,9 @@
             "properties": {
                 "routes": [
                     {
-                        "name": "[concat('to', '-', variables('networkSettings').subnet2Name)]",
+                        "name": "[concat('to', '-', variables('networkSettings').subnet1Name)]",
                         "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
+                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
                             "nextHopType": "VirtualAppliance",
                             "nextHopIpAddress": "[variables('fortigateFirewallSettings').FGDMZAddress]"
                         }

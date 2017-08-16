@@ -295,7 +295,7 @@
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
-                            " publicIPAddress": {
+                            "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('fortigateFirewallSettings').fortiPublicIPAddressName)]"
                             }
                         }
