@@ -57,14 +57,14 @@
             "type": "string",
             "defaultValue": "sqluser",
             "metadata": {
-                "description": "The admin user of the SQL Server"
+                "description": "The SQL authentication admin user of the SQL Server, remember the Username this will be used further"
             }
         },
         "sqlAdministratorLoginPassword": {
             "type": "securestring",
             "defaultValue": "",
             "metadata": {
-                "description": "The password of the admin user of the SQL Server"
+                "description": "The SQL authentication password of the admin user of the SQL Server, remember the Password this will be used further"
             }
         },
         "skuName": {
