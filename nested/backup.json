@@ -1,0 +1,73 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "backupSettings": {
+            "type": "object"
+        },
+        "apiVersions": {
+            "type": "object"
+        }
+    },
+  "variables": {
+  },
+  "resources": [
+    {
+        "type": "Microsoft.RecoveryServices/vaults",
+        "apiVersion": "[parameters('apiVersions').vaultApiVersion]",
+        "name": "[parameters('backupSettings').existingRecoveryServicesVault]",
+        "location":"[resourceGroup().location]",
+        "sku": {
+            "name": "RS0",
+            "tier": "Standard"
+        },
+        "properties": {}
+    },
+    {
+        "apiVersion": "[parameters('apiVersions').vaultApiVersion]",
+        "name": "[concat(parameters('backupSettings').existingRecoveryServicesVault, '/', parameters('backupSettings').existingBackupPolicy)]",
+        "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+            "[concat('Microsoft.RecoveryServices/vaults/', parameters('backupSettings').existingRecoveryServicesVault)]"
+        ],
+        "properties": {
+            "backupManagementType": "AzureIaasVM",
+            "schedulePolicy": {
+                "scheduleRunFrequency": "Daily",
+                "scheduleRunDays": null,
+                "scheduleRunTimes": "[parameters('backupSettings').scheduleRunTimes]",
+                "schedulePolicyType": "SimpleSchedulePolicy"
+            },
+            "retentionPolicy": {
+                "dailySchedule": {
+                    "retentionTimes": "[parameters('backupSettings').scheduleRunTimes]",
+                    "retentionDuration": {
+                        "count": "[parameters('backupSettings').dailyRetentionDurationCount]",
+                        "durationType": "Days"
+                    }
+                },
+                "retentionPolicyType": "LongTermRetentionPolicy"
+            }
+        }
+    },
+    {
+        "name": "[concat(parameters('backupSettings').existingRecoveryServicesVault, '/', parameters('backupSettings').backupFabric, '/', parameters('backupSettings').v2VmContainer, concat(parameters('backupSettings').existingVirtualMachinesResourceGroup,';',parameters('backupSettings').existingVirtualMachines[copyIndex()]), '/', parameters('backupSettings').v2Vm, concat(parameters('backupSettings').existingVirtualMachinesResourceGroup,';',parameters('backupSettings').existingVirtualMachines[copyIndex()]))]",
+        "apiVersion": "[parameters('apiVersions').vaultApiVersion]",
+        "location": "[resourceGroup().location]",
+        "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
+        "dependsOn": [
+            "[concat('Microsoft.RecoveryServices/vaults/',parameters('backupSettings').existingRecoveryServicesVault,'/backupPolicies/',parameters('backupSettings').existingBackupPolicy)]"
+        ],
+        "copy": {
+            "name": "v2VmsCopy",
+            "count": "[length(parameters('backupSettings').existingVirtualMachines)]"
+        },
+        "properties": {
+            "protectedItemType": "[parameters('backupSettings').v2VmType]",
+            "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies',parameters('backupSettings').existingRecoveryServicesVault,parameters('backupSettings').existingBackupPolicy)]",
+            "sourceResourceId": "[resourceId(subscription().subscriptionId,parameters('backupSettings').existingVirtualMachinesResourceGroup,'Microsoft.Compute/virtualMachines',parameters('backupSettings').existingVirtualMachines[copyIndex()])]"
+        }
+    }
+  ]
+}
