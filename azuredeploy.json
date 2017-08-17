@@ -285,14 +285,14 @@
         },
         "existingVirtualMachinesResourceGroup": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "[resourceGroup().name]",
             "metadata": {
                 "description": "Resource group where the virtual machines are located. This can be different than resource group of the vault. "
             }
         },
         "existingVirtualMachines": {
             "type": "array",
-            "defaultValue": [""],
+            "defaultValue": ["adServer","bastionServer","chefautomate","chefworkstation","fortigate","PIAFSQLServer","PIBAVMServer","PIDAVMServer","trendServer"],
             "metadata": {
                 "description": "Array of Azure virtual machines. e.g. [\"vm1\",\"vm2\",\"vm3\"]"
             }
