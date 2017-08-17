@@ -271,7 +271,9 @@
         },
         "scheduleRunTimes": {
             "type": "array",
-            "defaultValue": ["00:30"],
+            "defaultValue": [
+                "00:30"
+            ],
             "metadata": {
                 "description": "Times in day when backup should be triggered. e.g. 01:00, 13:00. This will be used in LTR too for daily, weekly, monthly and yearly backup."
             }
@@ -292,7 +294,17 @@
         },
         "existingVirtualMachines": {
             "type": "array",
-            "defaultValue": ["adServer","bastionServer","chefautomate","chefworkstation","fortigate","PIAFSQLServer","PIBAVMServer","PIDAVMServer","trendServer"],
+            "defaultValue": [
+                "adServer",
+                "bastionServer",
+                "chefautomate",
+                "chefworkstation",
+                "fortigate",
+                "PIAFSQLServer",
+                "PIBAVMServer",
+                "PIDAVMServer",
+                "trendServer"
+            ],
             "metadata": {
                 "description": "Array of Azure virtual machines. e.g. [\"vm1\",\"vm2\",\"vm3\"]"
             }
@@ -311,7 +323,8 @@
             "webApiVersion": "2016-03-01",
             "webApiVersion1": "2015-08-01",
             "webApiVersion2": "2014-08-01-preview",
-            "routtableApiVersion": "2015-06-15"
+            "routtableApiVersion": "2015-06-15",
+            "vaultApiVersion": "2016-06-01"
         },
         "networkSettings": {
             "location": "[variables('location')]",
@@ -614,17 +627,17 @@
             "restServerPackageURI": "[concat(variables('restServerDeployPackageURI'), variables('sasToken'))]",
             "powerGridEntities": "[concat('metadata=res://*/Entities.PowergridModel.csdl|res://*/Entities.PowergridModel.ssdl|res://*/Entities.PowergridModel.msl;provider=System.Data.SqlClient;provider connection string=\"data source=',variables('azureSQL').serverName,'.database.windows.net;initial catalog=',variables('azureSQL').databaseName,';persist security info=True;user id=',parameters('sqlAdministratorLogin'),';password=',parameters('sqlAdministratorLoginPassword'),';multipleactiveresultsets=True;application name=EntityFramework\"')]"
         },
-        "backupSettings":{
+        "backupSettings": {
             "backupFabric": "Azure",
             "v2VmType": "Microsoft.Compute/virtualMachines",
             "v2VmContainer": "iaasvmcontainer;iaasvmcontainerv2;",
             "v2Vm": "vm;iaasvmcontainerv2;",
-            "existingRecoveryServicesVault":"[concat(parameters('vaultName'),variables('suffix'))]",
-            "existingBackupPolicy":"[parameters('policyName')]",
-            "scheduleRunTimes":"[parameters('scheduleRunTimes')]",
-            "dailyRetentionDurationCount":"[parameters('dailyRetentionDurationCount')]",
-            "existingVirtualMachinesResourceGroup":"[parameters('existingVirtualMachinesResourceGroup')]",
-            "existingVirtualMachines":"[parameters('existingVirtualMachines')]"
+            "existingRecoveryServicesVault": "[concat(parameters('vaultName'),variables('suffix'))]",
+            "existingBackupPolicy": "[parameters('policyName')]",
+            "scheduleRunTimes": "[parameters('scheduleRunTimes')]",
+            "dailyRetentionDurationCount": "[parameters('dailyRetentionDurationCount')]",
+            "existingVirtualMachinesResourceGroup": "[parameters('existingVirtualMachinesResourceGroup')]",
+            "existingVirtualMachines": "[parameters('existingVirtualMachines')]"
         },
         "trendNicIPAddress": "10.0.1.5",
         "heartbeatPort": "4120",
@@ -919,7 +932,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/workStationServer.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/backup.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -962,7 +975,7 @@
             "type": "string",
             "value": "[parameters('adminUserName')]"
         },
-        "trendIPAddress":{
+        "trendIPAddress": {
             "type": "string",
             "value": "[variables('trendNicIPAddress')]"
         },
@@ -990,7 +1003,7 @@
             "type": "string",
             "value": "[parameters('sqlAdministratorLogin')]"
         },
-        "webSiteUrl":{
+        "webSiteUrl": {
             "type": "string",
             "value": "[variables('websiteFullAddress')]"
         }
