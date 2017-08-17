@@ -6,27 +6,30 @@
             "type": "string",
             "defaultValue": "adminuser",
             "metadata": {
-                "description": "Username for all the Virtual Machines."
+                "description": "Username for all the Virtual Machines(for linux and Windows)"
             }
         },
         "adminPassword": {
             "type": "securestring",
             "defaultValue": "",
             "metadata": {
-                "description": "Password for all the Virtual Machines."
+                "description": "Password for Windows Virtual Machines."
             }
         },
         "authTypeForLinuxServers": {
             "type": "string",
             "allowedValues": [
                 "sshPublicKey"
-            ]
+            ],
+            "metadata": {
+                "description":"Authentication type for linux Virtual Machines"
+            }
         },
         "adminSSHKey": {
             "type": "string",
             "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEArC+q1gGbzrUd0jAFScbjEui+OBRdIIq+tF6DDPeO1qP7y4v3u7tdttxOdS7QC8OmXe6X8Y8LTp+SHJeYBl8n3KsE1Iy06+u0S1Cu2CLu90cQmIcpY5I/4BT+4ylPqMtYox3CQPgujzknKlC1vT+j5aoZMKoRvInZKeapLhbOi+lgq51LJNtbM+TPudtOcODdi5DWtTI66vDMAK3V7gQptUC+kbBgjPzUgT3srYsppbDBbzxXnHryGxU/otphKDOOibX2bFCU25Tch7izCJZ2ACa39JoahRoC28Ed0Q0537Su2YVcgPMm8deeA+v2ccF9PT3UsWwfwVkV7FS2RWj8Lw== rsa-key-20170814",
             "metadata": {
-                "description": "admin ssh key for linux servers "
+                "description": "admin ssh key for linux Virtual Machines"
             }
         },
         "domainName": {
