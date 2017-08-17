@@ -908,10 +908,6 @@
             "type": "string",
             "value": "[reference('BastionHost').outputs.bastionFQDN.value]"
         },
-        "workstationFQDN": {
-            "type": "string",
-            "value": "[reference('WorkStation').outputs.workstationFQDN.value]"
-        },
         "adServerIPAddress": {
             "type": "string",
             "value": "[variables('mcsModules').adNicIPAddress]"
