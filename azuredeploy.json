@@ -298,6 +298,7 @@
         "existingVirtualMachines": {
             "type": "array",
             "defaultValue": [
+                "bastionServer",
                 "adServer",
                 "fortigate",
                 "PIAFSQLServer",
@@ -870,53 +871,6 @@
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "WorkStation",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [
-                "Backup",
-                "PIComponents"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/workStationServer.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "bastionServerSettings": {
-                        "value": "[variables('bastionServerSettings')]"
-                    },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
-                    },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
-                    },
-                    "mcsModules": {
-                        "value": "[variables('mcsModules')]"
-                    },
-                    "piafsqlSettings": {
-                        "value": "[variables('piafsqlSettings')]"
-                    },
-                    "pidaServerSettings": {
-                        "value": "[variables('pidaServerSettings')]"
-                    },
-                    "pibaServersettings": {
-                        "value": "[variables('pibaServersettings')]"
-                    },
-                    "sshPrivateKey": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('keyVaultResourceGroup'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
-                            },
-                            "secretName": "[parameters('keyVaultSecret')]"
-                        }
                     }
                 }
             }
