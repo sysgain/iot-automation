@@ -6,14 +6,14 @@
             "type": "string",
             "defaultValue": "adminuser",
             "metadata": {
-                "description": "Username for all the Virtual Machines(for linux and Windows)"
+                "description": "Username for all the Virtual Machines(for linux and Windows), remember the Username this will be used further"
             }
         },
         "adminPassword": {
             "type": "securestring",
             "defaultValue": "",
             "metadata": {
-                "description": "Password for Windows Virtual Machines."
+                "description": "Password for Windows Virtual Machines,remember the Password this will be used further."
             }
         },
         "authTypeForLinuxServers": {
