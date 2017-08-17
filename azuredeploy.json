@@ -214,7 +214,7 @@
         },
         "chefUserEmail": {
             "type": "string",
-            "defaultValue": "orguser@noone.com",
+            "defaultValue": "orguser@gmail.com",
             "metadata": {
                 "description": "Chef user email"
             }

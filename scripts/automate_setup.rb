@@ -54,8 +54,8 @@ configure.run_command
 upgrade = Mixlib::ShellOut.new("chef-marketplace-ctl upgrade -y")
 upgrade.run_command
 
- reconfigure = Mixlib::ShellOut.new("chef-server-ctl reconfigure")
- reconfigure.run_command
+reconfigure = Mixlib::ShellOut.new("chef-server-ctl reconfigure")
+reconfigure.run_command
 
 restartserver = Mixlib::ShellOut.new("chef-server-ctl restart")
 restartserver.run_command
