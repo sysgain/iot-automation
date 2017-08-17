@@ -19,7 +19,6 @@
         "authTypeForLinuxServers": {
             "type": "string",
             "allowedValues": [
-                "password",
                 "sshPublicKey"
             ]
         },
@@ -222,6 +221,38 @@
             "defaultValue": "orguser",
             "metadata": {
                 "description": "Chef org short name"
+            }
+        },
+        "subscriptionId": {
+            "type": "string",
+            "defaultValue": "2927c217-b119-4d3b-8a13-82a1c3a16c8f",
+            "minLength": 1,
+            "metadata": {
+                "description": "Azure Subscription ID"
+            }
+        },
+        "keyVaultResourceGroup": {
+            "type": "string",
+            "defaultValue": "iot-keyvault",
+            "minLength": 1,
+            "metadata": {
+                "description": "Resource Group that contains the Key Vault"
+            }
+        },
+        "keyVaultName": {
+            "type": "string",
+            "defaultValue": "iotkeyvault1",
+            "minLength": 1,
+            "metadata": {
+                "description": "Name of the Key Vault"
+            }
+        },
+        "keyVaultSecret": {
+            "type": "securestring",
+            "defaultValue": "sshprivatekey",
+            "minLength": 1,
+            "metadata": {
+                "description": "Key Vault Secret Name that contains the Private Key"
             }
         }
     },
@@ -556,8 +587,8 @@
         "sasToken": "?",
         "dnsServerAddress": "10.0.1.4",
         "storageAccountType": "Premium_LRS",
-        "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/iotnew/",
-        "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/iotnew",
+        "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/main/",
+        "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/main",
         "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
     },
@@ -653,6 +684,35 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "AppComponents",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/appComponents.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "azureSQL": {
+                        "value": "[variables('azureSQL')]"
+                    },
+                    "mlSettings": {
+                        "value": "[variables('mlSettings')]"
+                    },
+                    "webSiteSettings": {
+                        "value": "[variables('webSiteSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
             }
         },
         {
@@ -781,33 +841,14 @@
                     },
                     "pibaServersettings": {
                         "value": "[variables('pibaServersettings')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "AppComponents",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/appComponents.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "azureSQL": {
-                        "value": "[variables('azureSQL')]"
                     },
-                    "mlSettings": {
-                        "value": "[variables('mlSettings')]"
-                    },
-                    "webSiteSettings": {
-                        "value": "[variables('webSiteSettings')]"
-                    },
-                    "apiVersions": {
-                        "value": "[variables('apiVersions')]"
+                    "sshPrivateKey": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('keyVaultResourceGroup'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+                            },
+                            "secretName": "[parameters('keyVaultSecret')]"
+                        }
                     }
                 }
             }

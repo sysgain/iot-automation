@@ -22,6 +22,9 @@
         },
         "workstationFQDN":{
             "type": "string"
+        },
+        "sshPrivateKey":{
+            "type": "securestring"
         }
     },
     "variables": {  
@@ -45,7 +48,7 @@
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',variables('PIDAFQDN'),' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',parameters('MCSModules').adNicIPAddress,' ',variables('bastianIP'),' ',parameters('workstationFQDN'))]"
+                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',variables('PIDAFQDN'),' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',parameters('MCSModules').adNicIPAddress,' ',variables('bastianIP'),' ',parameters('workstationFQDN'), ' ',parameters('sshPrivateKey'))]"
                 }
             }
         }
