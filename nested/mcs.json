@@ -166,6 +166,19 @@
                             "priority": 1500,
                             "direction": "Inbound"
                         }
+                    },
+                    {
+                        "name": "allow-inbound-dsmwebinstaller",
+                        "properties": {
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1501,
+                            "direction": "Outbound"
+                        }
                     }
                 ]
             }
