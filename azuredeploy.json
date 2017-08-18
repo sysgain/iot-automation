@@ -200,28 +200,28 @@
         },
         "chefUserFirstName": {
             "type": "string",
-            "defaultValue": "chef",
+            "defaultValue": "",
             "metadata": {
                 "description": "Chef user first name"
             }
         },
         "chefUserLastName": {
             "type": "string",
-            "defaultValue": "user",
+            "defaultValue": "",
             "metadata": {
                 "description": "Chef user last name"
             }
         },
         "chefUserEmail": {
             "type": "string",
-            "defaultValue": "orguser@gmail.com",
+            "defaultValue": "",
             "metadata": {
                 "description": "Chef user email"
             }
         },
         "chefOrgShortName": {
             "type": "string",
-            "defaultValue": "orguser",
+            "defaultValue": "",
             "metadata": {
                 "description": "Chef org short name"
             }
