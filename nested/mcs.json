@@ -14,10 +14,10 @@
         "dnsServerAddress": {
             "type": "array"
         },
-        "routeTable1Id":{
+        "routeTable1Id": {
             "type": "string"
         },
-        "routeTable2Id":{
+        "routeTable2Id": {
             "type": "string"
         }
     },
@@ -523,18 +523,18 @@
                         "name": "[parameters('networkSettings').subnet1Name]",
                         "properties": {
                             "addressPrefix": "[parameters('networkSettings').subnet1Prefix]",
-                        "routeTable": {
-                            "id": "[parameters('routeTable1Id')]"
-                          }
+                            "routeTable": {
+                                "id": "[parameters('routeTable1Id')]"
+                            }
                         }
                     },
                     {
                         "name": "[parameters('networkSettings').subnet2Name]",
                         "properties": {
                             "addressPrefix": "[parameters('networkSettings').subnet2Prefix]",
-                        "routeTable": {
-                            "id": "[parameters('routeTable2Id')]"
-                          }
+                            "routeTable": {
+                                "id": "[parameters('routeTable2Id')]"
+                            }
                         }
                     },
                     {

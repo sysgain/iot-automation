@@ -695,18 +695,18 @@
                         "name": "[variables('networkSettings').subnet1Name]",
                         "properties": {
                             "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
-                        "routeTable": {
-                            "id": "[variables('routeTable1Id')]"
-                          }
+                            "routeTable": {
+                                "id": "[variables('routeTable1Id')]"
+                            }
                         }
                     },
                     {
                         "name": "[variables('networkSettings').subnet2Name]",
                         "properties": {
                             "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
-                        "routeTable": {
-                            "id": "[variables('routeTable2Id')]"
-                          }
+                            "routeTable": {
+                                "id": "[variables('routeTable2Id')]"
+                            }
                         }
                     },
                     {
@@ -781,10 +781,10 @@
                             "[variables('dnsServerAddress')]"
                         ]
                     },
-                    "routeTable1Id":{
+                    "routeTable1Id": {
                         "value": "[variables('routeTable1Id')]"
                     },
-                    "routeTable2Id":{
+                    "routeTable2Id": {
                         "value": "[variables('routeTable2Id')]"
                     }
                 }
