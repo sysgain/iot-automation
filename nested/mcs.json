@@ -168,11 +168,11 @@
             "name": "[parameters('mcsModules').trendsqlServerName]",
             "type": "Microsoft.Sql/servers",
             "location": "[parameters('mcsModules').location]",
-            "apiVersion":"[parameters('apiVersions').sqlServerApiVersion]",
+            "apiVersion": "[parameters('apiVersions').sqlServerApiVersion]",
             "properties": {
-              "administratorLogin": "[parameters('mcsModules').dbAdminName]",
-              "administratorLoginPassword": "[parameters('mcsModules').dbAdminPassword]",
-              "version": "12.0"
+                "administratorLogin": "[parameters('mcsModules').dbAdminName]",
+                "administratorLoginPassword": "[parameters('mcsModules').dbAdminPassword]",
+                "version": "12.0"
             },
             "resources": [
                 {
@@ -182,7 +182,7 @@
                     "apiVersion": "[parameters('apiVersions').sqlDBApiVersion]",
                     "dependsOn": [
                         "[concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)]"
-                        ],
+                    ],
                     "properties": {
                         "edition": "Standard",
                         "collation": "SQL_Latin1_General_CP1_CI_AS",
@@ -206,7 +206,7 @@
             ]
         },
         {
-            "apiVersion":  "[parameters('apiVersions').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('mcsModules').trendNic]",
             "location": "[parameters('mcsModules').location]",
@@ -707,6 +707,27 @@
                     }
                 }
             }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/automate_setup')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('mcsModules').chefAutoScriptUrl1]"
+                    ],
+                    "commandToExecute": "[concat(parameters('mcsModules').rubyPath, ' ./automate_setup.rb --fqdn \"', parameters('mcsModules').chefAutomateIPAddress, '\" --license \"',parameters('mcsModules').automateLicenseUri, '\"',' --adminUsername \"',parameters('mcsModules').Username,'\"',' --firstname ','\"',parameters('mcsModules').firstname,'\"',' --lastname ','\"',parameters('mcsModules').lastname,'\"',' --mailid ','\"',parameters('mcsModules').mailid,'\"',' --adminpassword ','\"',parameters('mcsModules').Password,'\"',' --orguser ','\"',parameters('mcsModules').orguser,'\"')]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName)]"
+            ]
         }
     ]
 }
