@@ -22,7 +22,7 @@
                 "sshPublicKey"
             ],
             "metadata": {
-                "description":"Authentication type for linux Virtual Machines"
+                "description": "Authentication type for linux Virtual Machines"
             }
         },
         "adminSSHKey": {
@@ -877,10 +877,57 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "Backup",
+            "name": "WorkStation",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "PIComponents"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/workStationServer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "bastionServerSettings": {
+                        "value": "[variables('bastionServerSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    },
+                    "mcsModules": {
+                        "value": "[variables('mcsModules')]"
+                    },
+                    "piafsqlSettings": {
+                        "value": "[variables('piafsqlSettings')]"
+                    },
+                    "pidaServerSettings": {
+                        "value": "[variables('pidaServerSettings')]"
+                    },
+                    "pibaServersettings": {
+                        "value": "[variables('pibaServersettings')]"
+                    },
+                    "sshPrivateKey": {
+                        "reference": {
+                            "keyVault": {
+                                "id": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('keyVaultResourceGroup'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+                            },
+                            "secretName": "[parameters('keyVaultSecret')]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "Backup",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "PIComponents",
+                "WorkStation"
             ],
             "properties": {
                 "mode": "Incremental",
