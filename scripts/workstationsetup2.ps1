@@ -11,7 +11,7 @@ param(
 )
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
 New-Item C:\Deploy\ -type directory
-echo $PrivateKey > C:\Deploy\sshPrivateKey.ppk
+echo ${PrivateKey} > C:\Deploy\sshPrivateKey.ppk
 $PrivateKeyPath="C:\Deploy\sshPrivateKey.ppk"
 cd C:\opscode\chefdk\bin
 chef generate app c:\Users\chef-repo

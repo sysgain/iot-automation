@@ -300,7 +300,6 @@
             "defaultValue": [
                 "bastionServer",
                 "adServer",
-                "fortigate",
                 "PIAFSQLServer",
                 "PIBAVMServer",
                 "trendServer",
