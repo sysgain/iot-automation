@@ -284,7 +284,6 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIPAddresses/', parameters('fortigateFirewallSettings').fortiPublicIPAddressName)]"
             ],
-            "dependsOn": [],
             "properties": {
                 "ipConfigurations": [
                     {
