@@ -340,9 +340,7 @@
             "subnet3Name": "subnet3",
             "subnet3Prefix": "10.0.2.0/24",
             "subnet4Name": "subnet4",
-            "subnet4Prefix": "10.0.3.0/24",
-            "subnet5Name": "subnet5",
-            "subnet5Prefix": "10.0.4.0/24"
+            "subnet4Prefix": "10.0.3.0/24"
         },
         "bastionServerSettings": {
             "location": "[variables('location')]",
@@ -714,12 +712,6 @@
                         "name": "[variables('networkSettings').subnet4Name]",
                         "properties": {
                             "addressPrefix": "[variables('networkSettings').subnet4Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[variables('networkSettings').subnet5Name]",
-                        "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet5Prefix]"
                         }
                     }
                 ]
