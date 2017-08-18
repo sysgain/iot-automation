@@ -880,7 +880,9 @@
             "name": "WorkStation",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "PIComponents"
+                "BastionHost",
+                "PIComponents",
+                "mcsModules"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -926,7 +928,6 @@
             "name": "Backup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "PIComponents",
                 "WorkStation"
             ],
             "properties": {
