@@ -694,19 +694,13 @@
                     {
                         "name": "[variables('networkSettings').subnet1Name]",
                         "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
-                            "routeTable": {
-                                "id": "[variables('routeTable1Id')]"
-                            }
+                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]"
                         }
                     },
                     {
                         "name": "[variables('networkSettings').subnet2Name]",
                         "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
-                            "routeTable": {
-                                "id": "[variables('routeTable2Id')]"
-                            }
+                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]"
                         }
                     },
                     {
