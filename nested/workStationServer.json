@@ -313,7 +313,8 @@
                 }
             },
             "dependsOn": [
-                "workstation-extension"
+                "workstation-extension",
+                "domainJoin"
             ]
         }
     ],
