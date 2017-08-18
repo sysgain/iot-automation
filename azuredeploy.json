@@ -608,6 +608,8 @@
             "existingVirtualMachinesResourceGroup": "[parameters('existingVirtualMachinesResourceGroup')]",
             "existingVirtualMachines": "[parameters('existingVirtualMachines')]"
         },
+        "routeTable1Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable1Name)]",
+        "routeTable2Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable2Name)]",
         "trendNicIPAddress": "10.0.1.5",
         "heartbeatPort": "4120",
         "ManagerAddress": "[variables('trendNicIPAddress')]",
@@ -693,13 +695,19 @@
                         "name": "[variables('networkSettings').subnet1Name]",
                         "properties": {
                             "addressPrefix": "[variables('networkSettings').subnet1Prefix]"
-                        }
+                        },
+                        "routeTable": {
+                            "id": "[variables('routeTable1Id')]"
+                          }
                     },
                     {
                         "name": "[variables('networkSettings').subnet2Name]",
                         "properties": {
                             "addressPrefix": "[variables('networkSettings').subnet2Prefix]"
-                        }
+                        },
+                        "routeTable": {
+                            "id": "[variables('routeTable2Id')]"
+                          }
                     },
                     {
                         "name": "[variables('networkSettings').subnet3Name]",
@@ -772,6 +780,12 @@
                         "value": [
                             "[variables('dnsServerAddress')]"
                         ]
+                    },
+                    "routeTable1Id":{
+                        "value": "[variables('routeTable1Id')]"
+                    },
+                    "routeTable2Id":{
+                        "value": "[variables('routeTable2Id')]"
                     }
                 }
             }
