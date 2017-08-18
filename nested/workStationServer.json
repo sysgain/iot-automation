@@ -17,9 +17,6 @@
         "PIAFSQLSettings": {
             "type": "object"
         },
-        "PIDAServersettings": {
-            "type": "object"
-        },
         "PIBAServersettings": {
             "type": "object"
         },
@@ -258,9 +255,6 @@
                     },
                     "PIAFSQLSettings": {
                         "value": "[parameters('PIAFSQLSettings')]"
-                    },
-                    "PIDAServersettings": {
-                        "value": "[parameters('PIDAServersettings')]"
                     },
                     "PIBAServersettings": {
                         "value": "[parameters('PIBAServersettings')]"

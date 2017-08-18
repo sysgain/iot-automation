@@ -303,7 +303,6 @@
                 "fortigate",
                 "PIAFSQLServer",
                 "PIBAVMServer",
-                "PIDAVMServer",
                 "trendServer",
                 "chefworkstation",
                 "chefautomate"
@@ -519,36 +518,6 @@
             "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
             "piWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
         },
-        "pidaServerSettings": {
-            "adminUsername": "[parameters('adminUsername')]",
-            "adminPassword": "[parameters('adminPassword')]",
-            "location": "[variables('location')]",
-            "pidaVMName": "PIDAVMServer",
-            "pidaNic": "PIDAVMNic",
-            "pidaNetworkSecurityGroupName": "PIDANsg",
-            "pidaDiagStgAcnt": "[concat('pidavm',variables('suffix'))]",
-            "publisher": "MicrosoftWindowsServer",
-            "offer": "WindowsServer",
-            "sku": "2012-R2-Datacenter",
-            "version": "latest",
-            "pidaIP": "10.0.3.4",
-            "pidaVMSize": "Standard_DS1_v2",
-            "storageAccountType": "[variables('storageAccountType')]",
-            "diagStorageAccountType": "Standard_LRS",
-            "scriptFileName": "psscript.ps1",
-            "domainName": "[parameters('domainName')]",
-            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
-            "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]",
-            "pidaPublicIpAddressName": "pidapip",
-            "pidaDnsLabelPrefix": "[concat('pidadns',variables('suffix'))]",
-            "publicIpAddressType": "Dynamic",
-            "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
-            "ManagerAddress": "[variables('ManagerAddress')]",
-            "ActivationPort": "[variables('ActivationPort')]",
-            "TenantIdentifier": "[variables('TenantIdentifier')]",
-            "TenantActivationPassword": "[variables('TenantActivationPassword')]"
-        },
         "pibaServersettings": {
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
@@ -564,7 +533,7 @@
             "pibaVMSize": "Standard_DS4_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "pibaPrivateIPAddress": "10.0.4.4",
+            "pibaPrivateIPAddress": "10.0.3.4",
             "scriptFileName": "psscript.ps1",
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -862,9 +831,6 @@
                     "piafsqlSettings": {
                         "value": "[variables('piafsqlSettings')]"
                     },
-                    "pidaServerSettings": {
-                        "value": "[variables('pidaServerSettings')]"
-                    },
                     "pibaServersettings": {
                         "value": "[variables('pibaServersettings')]"
                     },
@@ -907,9 +873,6 @@
                     },
                     "piafsqlSettings": {
                         "value": "[variables('piafsqlSettings')]"
-                    },
-                    "pidaServerSettings": {
-                        "value": "[variables('pidaServerSettings')]"
                     },
                     "pibaServersettings": {
                         "value": "[variables('pibaServersettings')]"
@@ -981,10 +944,6 @@
         "trendIPAddress": {
             "type": "string",
             "value": "[variables('trendNicIPAddress')]"
-        },
-        "pidaServerFQDN": {
-            "type": "string",
-            "value": "[reference('PIComponents').outputs.PIDAFQDN.value]"
         },
         "pibaServerIPAddress": {
             "type": "string",

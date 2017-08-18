@@ -5,9 +5,6 @@
         "piafsqlSettings": {
             "type": "object"
         },
-        "pidaServerSettings": {
-            "type": "object"
-        },
         "pibaServersettings": {
             "type": "object"
         },
@@ -21,8 +18,7 @@
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
         "subnetRef3": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet3Name)]",
-        "subnetRef4": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet4Name)]",
-        "subnetRef5": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet5Name)]"
+        "subnetRef4": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet4Name)]"
     },
     "resources": [
         {
@@ -384,193 +380,6 @@
             ]
         },
         {
-            "name": "[parameters('pidaServerSettings').pidaDiagStgAcnt]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('pidaServerSettings').location]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage",
-            "properties": {}
-        },
-        {
-            "name": "[parameters('pidaServerSettings').pidaPublicIpAddressName]",
-            "type": "Microsoft.Network/publicIpAddresses",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('pidaServerSettings').location]",
-            "properties": {
-                "publicIpAllocationMethod": "[parameters('pidaServerSettings').publicIpAddressType]",
-                "dnsSettings": {
-                    "domainNameLabel": "[parameters('pidaServerSettings').pidaDnsLabelPrefix]"
-                }
-            }
-        },
-        {
-            "name": "[parameters('pidaServerSettings').pidaNetworkSecurityGroupName]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('pidaServerSettings').location]",
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "default-allow-rdp",
-                        "properties": {
-                            "priority": 1000,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "TCP",
-                            "destinationPortRange": "3389",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    },
-                    {
-                        "name": "winrm",
-                        "properties": {
-                            "priority": 1001,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "TCP",
-                            "destinationPortRange": "5985",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "[parameters('pidaServerSettings').pidaNic]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('pidaServerSettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('pidaServerSettings').pidaNetworkSecurityGroupName)]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef4')]"
-                            },
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('pidaServerSettings').pidaIP]",
-                            "publicIpAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('pidaServerSettings').pidaPublicIpAddressName)]"
-                            }
-                        }
-                    }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('pidaServerSettings').pidaNetworkSecurityGroupName)]"
-                }
-            }
-        },
-        {
-            "name": "[parameters('pidaServerSettings').pidaVMName]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('pidaServerSettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('pidaServerSettings').pidaNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('pidaServerSettings').pidaDiagStgAcnt)]"
-            ],
-            "properties": {
-                "osProfile": {
-                    "computerName": "[parameters('pidaServerSettings').pidaVMName]",
-                    "adminUsername": "[parameters('pidaServerSettings').adminUsername]",
-                    "adminPassword": "[parameters('pidaServerSettings').adminPassword]",
-                    "windowsConfiguration": {
-                        "provisionVmAgent": "true"
-                    }
-                },
-                "hardwareProfile": {
-                    "vmSize": "[parameters('pidaServerSettings').pidaVMSize]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[parameters('pidaServerSettings').publisher]",
-                        "offer": "[parameters('pidaServerSettings').offer]",
-                        "sku": "[parameters('pidaServerSettings').sku]",
-                        "version": "[parameters('pidaServerSettings').version]"
-                    },
-                    "osDisk": {
-                        "createOption": "fromImage",
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('pidaServerSettings').storageAccountType]"
-                        }
-                    },
-                    "dataDisks": []
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('pidaServerSettings').pidaNic)]"
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('pidaServerSettings').pidaDiagStgAcnt)).primaryEndpoints['blob']]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "[concat(parameters('pidaServerSettings').pidaVMName,'/CustomScriptExtension1')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('pidaServerSettings').location]",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('pidaServerSettings').pidaVMName)]"
-            ],
-            "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.8",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "[parameters('pidaServerSettings').fileUris]"
-                    ]
-                },
-                "protectedSettings": {
-                     "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('pidaServerSettings').scriptFileName,' ',parameters('pidaServerSettings').domainName,' ',parameters('pidaServerSettings').Username,' ',parameters('pidaServerSettings').Password)]"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('pidaServerSettings').pidaVMName,'/InstallationDSA4')]",
-            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
-            "location": "[parameters('pidaServerSettings').location]",
-            "scale": null,
-            "properties": {
-                "publisher": "TrendMicro.DeepSecurity",
-                "type": "TrendMicroDSA",
-                "typeHandlerVersion": "10.0",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "DSMname": "[parameters('pidaServerSettings').ManagerAddress]",
-                    "DSMport": "[parameters('pidaServerSettings').ActivationPort]",
-                    "policyNameorID": ""
-                },
-                "protectedSettings": {
-                    "tenantID": "[parameters('pidaServerSettings').TenantIdentifier]",
-                    "tenantPassword": "[parameters('pidaServerSettings').TenantActivationPassword]"
-                }
-            },
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('pidaServerSettings').pidaVMName,'/extensions/CustomScriptExtension1')]"
-            ]
-        },
-        {
             "name": "[parameters('pibaServersettings').pibaDiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
@@ -631,7 +440,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[variables('subnetRef5')]"
+                                "id": "[variables('subnetRef4')]"
                             },
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('pibaServersettings').pibaPrivateIPAddress]"
@@ -744,9 +553,5 @@
         }
     ],
     "outputs": {
-        "PIDAFQDN": {
-            "type": "string",
-            "value": "[reference(parameters('pidaServerSettings').pidaPublicIpAddressName).dnsSettings.fqdn]"
-        }
     }
 }

@@ -8,9 +8,6 @@
          "apiVersions": {
             "type": "object"
         },
-         "PIDAServersettings": {
-            "type": "object"
-        },
          "MCSModules": {
             "type": "object"
         },
@@ -28,7 +25,6 @@
         }
     },
     "variables": {  
-        "PIDAFQDN":"[concat(parameters('PIDAServersettings').PIDADnsLabelPrefix,'.',parameters('PIDAServersettings').location,'.cloudapp.azure.com')]",
         "bastianIP": "[concat(parameters('bastionServerSettings').bastionDnsLabelPrefix,'.',parameters('bastionServerSettings').location,'.cloudapp.azure.com')]"
     },
     "resources": [
@@ -48,7 +44,7 @@
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',variables('PIDAFQDN'),' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',parameters('MCSModules').adNicIPAddress,' ',variables('bastianIP'),' ',parameters('workstationFQDN'), ' ',parameters('sshPrivateKey'))]"
+                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',variables('bastianIP'),' ',parameters('workstationFQDN'), ' ',parameters('sshPrivateKey'))]"
                 }
             }
         }
