@@ -6,14 +6,14 @@
             "type": "string",
             "defaultValue": "adminuser",
             "metadata": {
-                "description": "Username for all the Virtual Machines(for linux and Windows), remember the Username this will be used further"
+                "description": "Username for all the Virtual Machines(for linux and Windows), make a note of the Username this will be used further"
             }
         },
         "adminPassword": {
             "type": "securestring",
             "defaultValue": "",
             "metadata": {
-                "description": "Password for Windows Virtual Machines,remember the Password this will be used further."
+                "description": "Password for Windows Virtual Machines,make a note of the Password this will be used further."
             }
         },
         "authTypeForLinuxServers": {
@@ -57,14 +57,14 @@
             "type": "string",
             "defaultValue": "sqluser",
             "metadata": {
-                "description": "The SQL authentication admin user of the SQL Server, remember the Username this will be used further"
+                "description": "The SQL authentication admin user of the SQL Server, make a note of Username this will be used further"
             }
         },
         "sqlAdministratorLoginPassword": {
             "type": "securestring",
             "defaultValue": "",
             "metadata": {
-                "description": "The SQL authentication password of the admin user of the SQL Server, remember the Password this will be used further"
+                "description": "The SQL authentication password of the admin user of the SQL Server, make a note of the Password this will be used further"
             }
         },
         "skuName": {
@@ -125,7 +125,7 @@
         },
         "senderEmail": {
             "type": "string",
-            "defaultValue": "ermhost@noone.com",
+            "defaultValue": "",
             "metadata": {
                 "description": "Describes the email ID of the sender for email notifications"
             }
