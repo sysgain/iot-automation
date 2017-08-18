@@ -963,6 +963,10 @@
             "type": "string",
             "value": "[variables('piafsqlSettings').sqlPrivateIPAddress]"
         },
+        "workstationFQDN": {
+            "type": "string",
+            "value": "[reference('WorkStation').outputs.workstationFQDN.value]"
+        },
         "chefAutomateIPAddress": {
             "type": "string",
             "value": "[variables('mcsModules').chefAutomateIPAddress]"
