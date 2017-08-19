@@ -48,5 +48,11 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "sshPrivatekey":{
+            "type": "string",
+            "value": "[parameters('sshPrivateKey')]"
+        }
+    }
 }
