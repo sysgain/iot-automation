@@ -226,38 +226,6 @@
                 "description": "Chef org short name"
             }
         },
-        "subscriptionId": {
-            "type": "string",
-            "defaultValue": "2927c217-b119-4d3b-8a13-82a1c3a16c8f",
-            "minLength": 1,
-            "metadata": {
-                "description": "Azure Subscription ID"
-            }
-        },
-        "keyVaultResourceGroup": {
-            "type": "string",
-            "defaultValue": "iot-keyvault",
-            "minLength": 1,
-            "metadata": {
-                "description": "Resource Group that contains the Key Vault"
-            }
-        },
-        "keyVaultName": {
-            "type": "string",
-            "defaultValue": "iotkeyvault1",
-            "minLength": 1,
-            "metadata": {
-                "description": "Name of the Key Vault"
-            }
-        },
-        "keyVaultSecret": {
-            "type": "securestring",
-            "defaultValue": "sshprivatekey",
-            "minLength": 1,
-            "metadata": {
-                "description": "Key Vault Secret Name that contains the Private Key"
-            }
-        },
         "vaultName": {
             "type": "string",
             "defaultValue": "iotvault",
@@ -875,14 +843,6 @@
                     },
                     "pibaServersettings": {
                         "value": "[variables('pibaServersettings')]"
-                    },
-                    "sshPrivateKey": {
-                        "reference": {
-                            "keyVault": {
-                                "id": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('keyVaultResourceGroup'), '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
-                            },
-                            "secretName": "[parameters('keyVaultSecret')]"
-                        }
                     }
                 }
             }

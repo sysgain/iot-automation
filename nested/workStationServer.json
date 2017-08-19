@@ -19,9 +19,6 @@
         },
         "PIBAServersettings": {
             "type": "object"
-        },
-        "sshPrivateKey":{
-            "type": "securestring"
         }
     },
     "variables": {
@@ -261,9 +258,6 @@
                     },
                     "workstationFQDN": {
                         "value": "[reference(parameters('bastionServerSettings').wsPublicIpName).dnsSettings.fqdn]"
-                    },
-                    "sshPrivateKey":{
-                        "value": "[parameters('sshPrivateKey')]"
                     }
                 }
             }
