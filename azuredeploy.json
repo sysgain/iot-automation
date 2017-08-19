@@ -19,6 +19,7 @@
         "authTypeForLinuxServers": {
             "type": "string",
             "allowedValues": [
+                "Password",
                 "sshPublicKey"
             ],
             "metadata": {
