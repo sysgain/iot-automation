@@ -257,7 +257,11 @@
                 "hardwareProfile": {
                     "vmSize": "[parameters('mcsModules').vmSize]"
                 },
-                "osProfile": "[variables('osProfileReference1')]",
+                "osProfile": {
+                    "computerName": "[parameters('mcsModules').trendVMName]",
+                    "adminUsername": "[parameters('mcsModules').Username]",
+                    "adminPassword": "[parameters('mcsModules').Password]"
+                },
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[parameters('mcsModules').trendPublisher]",
@@ -678,7 +682,11 @@
                 "hardwareProfile": {
                     "vmSize": "[parameters('mcsModules').vmSize]"
                 },
-                "osProfile": "[variables('osProfileReference')]",
+                "osProfile": {
+                    "computerName": "[parameters('mcsModules').chefAutoVmName]",
+                    "adminUsername": "[parameters('mcsModules').Username]",
+                    "adminPassword": "[parameters('mcsModules').Password]"
+                },
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[parameters('mcsModules').chefImagePublisher]",
