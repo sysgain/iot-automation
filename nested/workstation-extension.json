@@ -21,7 +21,7 @@
             "type": "string"
         },
         "sshPrivateKey":{
-            "type": "string"
+            "type": "securestring"
         }
     },
     "variables": {  
@@ -48,11 +48,5 @@
                 }
             }
         }
-    ],
-    "outputs": {
-        "sshPrivatekey":{
-            "type": "string",
-            "value": "[parameters('sshPrivateKey')]"
-        }
-    }
+    ]
 }
