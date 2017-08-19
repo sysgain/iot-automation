@@ -23,52 +23,7 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]",
-        "sshKeyPath": "[concat('/home/',parameters('mcsModules').Username,'/.ssh/authorized_keys')]",
-        "osProfilepassword": {
-            "computerName": "[parameters('mcsModules').chefAutoVmName]",
-            "adminUsername": "[parameters('mcsModules').Username]",
-            "adminPassword": "[parameters('mcsModules').Password]"
-        },
-        "osProfilesshPublicKey": {
-            "computerName": "[parameters('mcsModules').chefAutoVmName]",
-            "adminUsername": "[parameters('mcsModules').Username]",
-            "adminPassword": "[parameters('mcsModules').Password]",
-            "linuxConfiguration": {
-                "disablePasswordAuthentication": true,
-                "ssh": {
-                    "publicKeys": [
-                        {
-                            "path": "[variables('sshKeyPath')]",
-                            "keyData": "[parameters('mcsModules').sshKey]"
-                        }
-                    ]
-                }
-            }
-        },
-        "osProfile1password": {
-            "computerName": "[parameters('mcsModules').trendVMName]",
-            "adminUsername": "[parameters('mcsModules').Username]",
-            "adminPassword": "[parameters('mcsModules').Password]"
-        },
-        "osProfile1sshPublicKey": {
-            "computerName": "[parameters('mcsModules').trendVMName]",
-            "adminUsername": "[parameters('mcsModules').Username]",
-            "adminPassword": "[parameters('mcsModules').Password]",
-            "linuxConfiguration": {
-                "disablePasswordAuthentication": true,
-                "ssh": {
-                    "publicKeys": [
-                        {
-                            "path": "[variables('sshKeyPath')]",
-                            "keyData": "[parameters('mcsModules').sshKey]"
-                        }
-                    ]
-                }
-            }
-        },
-        "osProfileReference": "[variables(concat('osProfile', parameters('mcsModules').authenticationType))]",
-        "osProfileReference1": "[variables(concat('osProfile1', parameters('mcsModules').authenticationType))]"
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]"
     },
     "resources": [
         {
