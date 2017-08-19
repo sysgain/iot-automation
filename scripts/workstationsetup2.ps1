@@ -10,9 +10,6 @@ param(
 [string] $PrivateKey= "$9"
 )
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
-New-Item C:\Deploy\ -type directory
-$PrivateKey | Set-Content 'C:\Deploy\sshPrivateKey.ppk'
-$PrivateKeyPath='C:\Deploy\sshPrivateKey.ppk'
 cd C:\opscode\chefdk\bin
 chef generate app c:\Users\chef-repo
 echo c:\Users\chef-repo\.chef\knife.rb | knife configure --server-url https://$chefServerfqdn/organizations/$organizationName --validation-client-name $organizationName-validator --validation-key c:/Users/chef-repo/.chef/$organizationName-validator.pem --user $adminUsername --repository c:/Users/chef-repo
