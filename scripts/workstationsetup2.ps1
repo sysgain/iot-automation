@@ -12,8 +12,8 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
 cd C:\opscode\chefdk\bin
 chef generate app c:\Users\chef-repo
 echo c:\Users\chef-repo\.chef\knife.rb | knife configure --server-url https://$chefServerfqdn/organizations/$organizationName --validation-client-name $organizationName-validator --validation-key c:/Users/chef-repo/.chef/$organizationName-validator.pem --user $adminUsername --repository c:/Users/chef-repo
-echo n | & "C:\Program Files\PuTTY\pscp.exe"  -scp -pw $adminPassword ${adminUsername}@${chefServerfqdn}:/etc/opscode/$adminUsername".pem" C:\Users\chef-repo\.chef\$adminUsername".pem"
-echo n | & "C:\Program Files\PuTTY\pscp.exe"  -scp -pw $adminPassword ${adminUsername}@${chefServerfqdn}:/etc/opscode/$organizationName-validator.pem C:\Users\chef-repo\.chef\$organizationName-validator.pem
+echo n | & "C:\Program Files\PuTTY\pscp.exe" -scp -pw $adminPassword ${adminUsername}@${chefServerfqdn}:/etc/opscode/$adminUsername".pem" C:\Users\chef-repo\.chef\$adminUsername".pem"
+echo n | & "C:\Program Files\PuTTY\pscp.exe" -scp -pw $adminPassword ${adminUsername}@${chefServerfqdn}:/etc/opscode/$organizationName-validator.pem C:\Users\chef-repo\.chef\$organizationName-validator.pem
 knife ssl  fetch --config c:\Users\chef-repo\.chef\knife.rb  --server-url https://$chefServerfqdn/organizations/$organizationName
 git clone https://github.com/sysgain/IOT-ChefCookbooks.git C:/Users/cookbookstore
 cp -r C:\Users\cookbookstore\* C:\Users\chef-repo\cookbooks
