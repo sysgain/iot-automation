@@ -22,7 +22,7 @@
         }
     },
     "variables": {  
-        "bastianIP": "[concat(parameters('bastionServerSettings').bastionDnsLabelPrefix,'.',parameters('bastionServerSettings').location,'.cloudapp.azure.com')]"
+        "bastionIP": "[concat(parameters('bastionServerSettings').bastionDnsLabelPrefix,'.',parameters('bastionServerSettings').location,'.cloudapp.azure.com')]"
     },
     "resources": [
         {
@@ -41,7 +41,7 @@
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',variables('bastianIP'),' ',parameters('workstationFQDN'))]"
+                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',variables('bastionIP'),' ',parameters('workstationFQDN'))]"
                 }
             }
         }
