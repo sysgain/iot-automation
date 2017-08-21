@@ -969,7 +969,7 @@
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('splunkSettings').vmSize]"
+                    "vmSize": "[parameters('splunkSettings').vmSize1]"
                 },
                 "osProfile": {
                     "computerName": "[parameters('splunkSettings').clientvmName]",
