@@ -945,8 +945,8 @@
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName)]"
             ],
             "properties": {
-                "publisher": "Microsoft.OSTCExtensions",
-                "type": "CustomScriptForLinux",
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
                 "typeHandlerVersion": "[parameters('splunkSettings').typeHandlerVersion]",
                 "settings": {
                     "fileUris": [
