@@ -437,10 +437,23 @@
             "clientnetworkInterfaceName":"client-nic",
             "splunkprivateIP":"10.0.1.8",
             "clientprivateIP":"10.0.1.9",
-
-
-
-        }
+            "vmName": "splunkvmName",
+            "clientvmName": "winvm",
+            "vmSize": "Standard_D2",
+            "imagePublisher": "splunk",
+            "imagePublisher1": "MicrosoftWindowsServer",
+            "imageOffer": "splunk-enterprise-base-image",
+            "imageOffer1": "WindowsServer",
+            "imageSKU": "splunk-on-ubuntu-14-04-lts",
+            "imageSKU1": "2012-R2-Datacenter",
+            "imageVersion": "1.1.1",
+            "imageVersion1": "latest",
+            "vmExtensionName": "splunkExtension",
+            "typeHandlerVersion": "2.0",
+            "typeHandlerVersionwin": "1.8",
+            "ScriptFileName": "Clientsetup.ps1",
+            "storageAccountType":"Premium_LRS"
+        },
         "piafsqlSettings": {
             "location": "[variables('location')]",
             "adminUsername": "[parameters('adminUsername')]",
