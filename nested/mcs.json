@@ -964,7 +964,8 @@
             "name": "[parameters('splunkSettings').clientvmName]",
             "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').clientnetworkInterfaceName)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').clientnetworkInterfaceName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
             ],
             "properties": {
                 "hardwareProfile": {
