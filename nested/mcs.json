@@ -939,8 +939,8 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('splunkSettings').vmName,'/', variables('splunkSettings').vmExtensionName)]",
-            "apiVersion": "[variables('')]",
-            "location": "[variables('').location]",
+            "apiVersion":  "[parameters('apiVersions').computeApiVersion]",
+            "location": "[variables('splunkSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('splunkSettings').vmName)]"
             ],
@@ -950,7 +950,7 @@
                 "typeHandlerVersion": "[variables('splunkSettings').typeHandlerVersion]",
                 "settings": {
                     "fileUris": [
-                        "[variables('')]"
+                        "[variables('splunkSettings').customScriptsUrl]"
                     ]
                 },
                 "protectedSettings": {
