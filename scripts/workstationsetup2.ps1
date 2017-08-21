@@ -43,4 +43,4 @@ knife winrm name:$PIAFSQLIP -a ipaddress -x ${adminUsername}  -P $adminPassword 
 knife winrm name:$PIBAIP -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife winrm name:$bastionFQDN -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife winrm name:$clientIP -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
-knife ssh name:$splunkIP -a ipaddress -x ${adminUsername} -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb sudo chef-client 
+knife ssh name:$splunkIP -a ipaddress -x ${adminUsername} -P $adminPassword sudo chef-client 
