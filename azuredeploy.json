@@ -302,7 +302,7 @@
             "adminPassword": "[parameters('adminPassword')]",
             "bastionNic": "bastion-nic",
             "bastionDiagStgAcnt": "[concat('bastionstrg',variables('suffix'))]",
-            "bastionVMSize": "Standard_DS1_v2",
+            "bastionVMSize": "Standard_DS2_v2",
             "publisher": "MicrosoftWindowsServer",
             "offer": "WindowsServer",
             "sku": "2012-R2-Datacenter",
