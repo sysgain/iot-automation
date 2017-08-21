@@ -19,8 +19,8 @@ Start-Sleep -s 12
 $client.DownloadFile($dataserviceUrl,"C:\Deploy\DataServiceAppSetup.msi")
 C:\Deploy\DataServiceAppSetup.msi /qn
 Start-Sleep -s 30
-$client.DownloadFile($PIWebApisimulatorUrl,"C:\Deploy\PIWebApiSimulatorSetup.msi")
-C:\Deploy\PIWebApiSimulatorSetup.msi /qn
+$client.DownloadFile($PIWebApisimulatorUrl,"C:\Deploy\PiWebAPISimulatorSetup.msi")
+C:\Deploy\PiWebAPISimulatorSetup.msi /qn
 Start-Sleep -s 12 
 $client.DownloadFile($PIAFInstallationFile,"C:\Deploy\piafinstallation.ps1")
 Start-Sleep -s 12
