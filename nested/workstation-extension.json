@@ -19,6 +19,9 @@
         },
         "workstationFQDN":{
             "type": "string"
+        },
+        "splunkSettings":{
+            "type":"object"
         }
     },
     "variables": {  
@@ -41,7 +44,7 @@
                     ]
                 },
                 "protectedSettings": {
-                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',variables('bastionIP'),' ',parameters('workstationFQDN'))]"
+                     "commandToExecute": "[concat('powershell.exe -File workstationsetup2.ps1', ' ', parameters('bastionServerSettings').Username, ' ', parameters('bastionServerSettings').Password, ' ', parameters('MCSModules').chefAutomateIPAddress, ' ', parameters('bastionServerSettings').orguser,' ',parameters('PIAFSQLSettings').sqlPrivateIPAddress,' ',parameters('PIBAServersettings').PIBAPrivateIPAddress,' ',variables('bastionIP'),' ',parameters('workstationFQDN'),' ',parameters('splunkSettings').splunkprivateIP,' ',parameters('splunkSettings').clientprivateIP)]"
                 }
             }
         }
