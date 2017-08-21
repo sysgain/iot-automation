@@ -453,8 +453,8 @@
             "typeHandlerVersionwin": "1.8",
             "ScriptFileName": "Clientsetup.ps1",
             "storageAccountType":"Premium_LRS",
-            "customScriptsUrl":"[concat(variables('baseUrl'),scripts/node-setup.sh)]"
-
+            "customScriptsUrl":"[concat(variables('baseUrl'),'scripts/node-setup.sh')]",
+            "clientScriptURL":"[concat(variables('baseUrl'),'scripts/Clientsetup.ps1')]"
         },
         "piafsqlSettings": {
             "location": "[variables('location')]",

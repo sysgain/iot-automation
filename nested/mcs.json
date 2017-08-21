@@ -27,7 +27,7 @@
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]",
-        "commandToExecute": "[concat('bash node-setup.sh', ' -r ', variables('splunkSettings').splunkServerRole, ' -p ', parameters('splunkSettings').adminPassword)]"
+        "commandToExecute": "[concat('bash node-setup.sh', ' -r ', parameters('splunkSettings').splunkServerRole, ' -p ', parameters('splunkSettings').adminPassword)]"
     },
     "resources": [
         {
@@ -710,7 +710,7 @@
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "destinationPortRange": "22",
-                            "sourceAddressPrefix": "[variables('splunkSettings').sshFrom]",
+                            "sourceAddressPrefix": "[parameters('splunkSettings').sshFrom]",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 100,
@@ -766,7 +766,7 @@
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "destinationPortRange": "9997",
-                            "sourceAddressPrefix": "[variables('splunkSettings').forwardedDatafrom]",
+                            "sourceAddressPrefix": "[parameters('splunkSettings').forwardedDatafrom]",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 140,
@@ -862,7 +862,7 @@
             ],
             "properties": {
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('splunkSettings').clientnsgName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('splunkSettings').clientnsgName)]"
                 },
                 "ipConfigurations": [
                     {
@@ -881,31 +881,31 @@
         {
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('splunkSettings').vmName]",
-            "location": "[variables('splunkSettings').location]",
+            "name": "[parameters('splunkSettings').vmName]",
+            "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', variables('splunkSettings').splunknetworkInterfaceName)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').splunknetworkInterfaceName)]"
             ],
             "plan": {
-                "name": "[variables('splunkSettings').imageSKU]",
-                "product": "[variables('splunkSettings').imageOffer]",
-                "publisher": "[variables('splunkSettings').imagePublisher]"
+                "name": "[parameters('splunkSettings').imageSKU]",
+                "product": "[parameters('splunkSettings').imageOffer]",
+                "publisher": "[parameters('splunkSettings').imagePublisher]"
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[variables('splunkSettings').vmSize]"
+                    "vmSize": "[parameters('splunkSettings').vmSize]"
                 },
                 "osProfile": {
-                    "computername": "[variables('splunkSettings').vmName]",
+                    "computername": "[parameters('splunkSettings').vmName]",
                     "adminUsername": "[parameters('splunkSettings').adminUsername]",
                     "adminPassword": "[parameters('splunkSettings').adminPassword]"
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[variables('splunkSettings').imagePublisher]",
-                        "offer": "[variables('splunkSettings').imageOffer]",
-                        "sku": "[variables('splunkSettings').imageSKU]",
-                        "version": "[variables('splunkSettings').imageVersion]"
+                        "publisher": "[parameters('splunkSettings').imagePublisher]",
+                        "offer": "[parameters('splunkSettings').imageOffer]",
+                        "sku": "[parameters('splunkSettings').imageSKU]",
+                        "version": "[parameters('splunkSettings').imageVersion]"
                     },
                     "osDisk": {
                         "createOption": "FromImage",
@@ -924,7 +924,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('splunkSettings').splunknetworkInterfaceName)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('splunkSettings').splunknetworkInterfaceName)]"
                         }
                     ]
                 },
@@ -938,23 +938,100 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('splunkSettings').vmName,'/', variables('splunkSettings').vmExtensionName)]",
+            "name": "[concat(parameters('splunkSettings').vmName,'/', parameters('splunkSettings').vmExtensionName)]",
             "apiVersion":  "[parameters('apiVersions').computeApiVersion]",
-            "location": "[variables('splunkSettings').location]",
+            "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('splunkSettings').vmName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.OSTCExtensions",
                 "type": "CustomScriptForLinux",
-                "typeHandlerVersion": "[variables('splunkSettings').typeHandlerVersion]",
+                "typeHandlerVersion": "[parameters('splunkSettings').typeHandlerVersion]",
                 "settings": {
                     "fileUris": [
-                        "[variables('splunkSettings').customScriptsUrl]"
+                        "[parameters('splunkSettings').customScriptsUrl]"
                     ]
                 },
                 "protectedSettings": {
                     "commandToExecute": "[variables('commandToExecute')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('splunkSettings').clientvmName]",
+            "location": "[parameters('splunkSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').clientnetworkInterfaceName)]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('splunkSettings').vmSize]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('splunkSettings').clientvmName]",
+                    "adminUsername": "[parameters('splunkSettings').clientadminUsername]",
+                    "adminPassword": "[parameters('splunkSettings').clientadminPassword]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[parameters('splunkSettings').imagePublisher1]",
+                        "offer": "[parameters('splunkSettings').imageOffer1]",
+                        "sku": "[parameters('splunkSettings').imageSKU1]",
+                        "version": "[parameters('splunkSettings').imageVersion1]"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
+                    },
+                    "dataDisks": [
+                        {
+                            "diskSizeGB": "1023",
+                            "lun": 0,
+                            "createOption": "Empty"
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('splunkSettings').clientnetworkInterfaceName)]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('splunkSettings').clientvmName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('splunkSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').clientvmName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName,'/extensions/', parameters('splunkSettings').vmExtensionName)]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "[parameters('splunkSettings').typeHandlerVersionwin]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('splunkSettings').clientScriptURL]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', parameters('splunkSettings').scriptFileName, ' ',parameters('splunkSettings').splunkprivateIP)]"
                 }
             }
         }
