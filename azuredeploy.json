@@ -437,7 +437,7 @@
             "clientnetworkInterfaceName":"client-nic",
             "splunkprivateIP":"10.0.1.8",
             "clientprivateIP":"10.0.1.9",
-            "vmName": "splunkvmName",
+            "vmName": "splunkvm",
             "clientvmName": "winvm",
             "vmSize": "Standard_DS3_v2",
             "vmSize1": "Standard_DS2_v2",
