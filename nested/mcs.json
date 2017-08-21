@@ -691,6 +691,188 @@
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName)]"
             ]
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('splunkSettings').networkSecurityGroupName]",
+            "location": "[parameters('splunkSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "Allow-SSH",
+                        "properties": {
+                            "description": "Allows SSH traffic",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "[variables('splunkSettings').sshFrom]",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-HTTP",
+                        "properties": {
+                            "description": "Allows HTTP traffic on port 8000",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8000",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-HTTPS",
+                        "properties": {
+                            "description": "Allows HTTPS traffic on port 443",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 120,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-HTTP-Event-Collector",
+                        "properties": {
+                            "description": "Allows HTTP(S) Event Collector traffic on port 8088",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8088",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 130,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-Receiver-TCP",
+                        "properties": {
+                            "description": "Allows receiver TCP traffic on port 9997",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "9997",
+                            "sourceAddressPrefix": "[variables('splunkSettings').forwardedDatafrom]",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 140,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "Allow-Mgmt-From-VNET",
+                        "properties": {
+                            "description": "Allows mgmt on port 8089 from VNET only",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "8089",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 150,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[variables('splunkSettings').clientnsgName]",
+            "location": "[variables('splunkSettings').location]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "clientout",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "80",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Outbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('splunkSettings').splunknetworkInterfaceName]",
+            "location": "[parameters('splunkSettings').location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('splunkSettings').networkSecurityGroupName)]"
+            ],
+            "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('splunkSettings').networkSecurityGroupName)]"
+                },
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('splunkSettings').splunkprivateIP]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('splunkSettings').clientnetworkInterfaceName]",
+            "location": "[parameters('splunkSettings').location]",
+            "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('splunkSettings').clientnsgName)]"
+                },
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "tatic",
+                            
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('splunkSettings').clientnsgName)]"
+            ]
         }
     ]
 }

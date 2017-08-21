@@ -423,6 +423,24 @@
             "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]",
             "chefAutoScriptUrl1": "[concat(variables('baseUrl'),'scripts/automate_setup.rb')]"
         },
+        "splunkSettings":{
+            "location": "[variables('location')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "clientadminUsername":"[parameters('adminUsername')]",
+            "clientadminPassword": "[parameters('adminPassword')]",
+            "networkSecurityGroupName": "splunkNsg",
+            "clientnsgName": "cientNsg",
+            "sshFrom": "0.0.0.0/0",
+            "forwardedDataFrom": "0.0.0.0/0",
+            "splunknetworkInterfaceName": "splunk-nic",
+            "clientnetworkInterfaceName":"client-nic",
+            "splunkprivateIP":"10.0.1.8",
+            "clientprivateIP":"10.0.1.9",
+
+
+
+        }
         "piafsqlSettings": {
             "location": "[variables('location')]",
             "adminUsername": "[parameters('adminUsername')]",
