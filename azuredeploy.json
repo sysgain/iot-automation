@@ -251,6 +251,8 @@
             "type": "array",
             "defaultValue": [
                 "bastionServer",
+                "splunkvm",
+                "winvm",
                 "adServer",
                 "PIAFSQLServer",
                 "PIBAVMServer",
