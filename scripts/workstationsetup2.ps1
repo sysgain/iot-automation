@@ -19,6 +19,7 @@ echo n | & "C:\Program Files\PuTTY\pscp.exe" -scp -pw $adminPassword ${adminUser
 knife ssl  fetch --config c:\Users\chef-repo\.chef\knife.rb  --server-url https://$ChefServerFqdn/organizations/$organizationName
 git clone https://github.com/sysgain/IOT-ChefCookbooks.git C:/Users/cookbookstore
 cp -r C:\Users\cookbookstore\* C:\Users\chef-repo\cookbooks
+(Get-Content C:\Users\chef-repo\cookbooks\splunk-uf-install/recipes/default.rb) ` | %{ $_ -replace 'localhost',$splunkIP} ` | Set-Content C:\Users\chef-repo\cookbooks\splunk-uf-install/recipes/default.rb
 knife cookbook upload --config c:\Users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ splunk-uf-install DynatraceOneAgent compat_resource audit ohai windows
 knife cookbook upload --config c:\Users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ yum-epel dmg seven_zip mingw build-essential  git
 knife bootstrap windows winrm localhost --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $workstationFQDN 
