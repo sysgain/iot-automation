@@ -1,0 +1,36 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "splunkSettings": {
+            "type": "object"
+        },
+        "apiVersions": {
+            "type": "object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[concat(parameters('splunkSettings').clientvmName,'/CustomScriptExtension')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('splunkSettings').location]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "dependsOn": [],
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.8",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[parameters('splunkSettings').fileUris]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File psscript.ps1',' ',parameters('splunkSettings').domainName,' ',parameters('splunkSettings').Username,' ',parameters('splunkSettings').Password)]"
+                }
+            }
+        }
+    ]
+}
