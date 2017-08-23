@@ -252,7 +252,6 @@
             "defaultValue": [
                 "bastionServer",
                 "splunkserver",
-                "winserver",
                 "adServer",
                 "PIAFSQLServer",
                 "PIBAVMServer",
