@@ -731,7 +731,6 @@
             "name": "AppComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -760,7 +759,8 @@
             "name": "mcsModules",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]",
+                "fortigateServer"
             ],
             "properties": {
                 "mode": "Incremental",

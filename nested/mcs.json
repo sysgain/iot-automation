@@ -485,13 +485,19 @@
                     {
                         "name": "[parameters('networkSettings').subnet1Name]",
                         "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
+                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]",
+                            "routeTable": {
+                                "id": "[parameters('routeTable1Id')]"
+                              }
                         }
                     },
                     {
                         "name": "[parameters('networkSettings').subnet2Name]",
                         "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
+                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]",
+                            "routeTable": {
+                                "id": "[parameters('routeTable1Id')]"
+                              }
                         }
                     }
                 ]
