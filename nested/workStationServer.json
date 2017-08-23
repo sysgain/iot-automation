@@ -19,9 +19,6 @@
         },
         "PIBAServersettings": {
             "type": "object"
-        },
-        "splunkSettings":{
-            "type": "object"
         }
     },
     "variables": {
@@ -262,9 +259,6 @@
                     },
                     "workstationFQDN": {
                         "value": "[reference(parameters('bastionServerSettings').wsPublicIpName).dnsSettings.fqdn]"
-                    },
-                    "splunkSettings":{
-                        "value": "[parameters('splunkSettings')]"
                     }
                 }
             }

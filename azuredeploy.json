@@ -869,9 +869,6 @@
                     },
                     "pibaServersettings": {
                         "value": "[variables('pibaServersettings')]"
-                    },
-                    "splunkSettings":{
-                        "value":"[variables('splunkSettings')]"
                     }
                 }
             }
