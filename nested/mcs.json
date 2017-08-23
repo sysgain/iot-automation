@@ -26,7 +26,7 @@
     },
     "variables": {
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet2Name)]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet1Name)]",
         "commandToExecute": "[concat('bash node-setup.sh', ' -r ', parameters('splunkSettings').splunkServerRole, ' -p ', parameters('splunkSettings').adminPassword)]"
     },
     "resources": [
@@ -492,18 +492,6 @@
                         "name": "[parameters('networkSettings').subnet2Name]",
                         "properties": {
                             "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('networkSettings').subnet3Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet3Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('networkSettings').subnet4Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet4Prefix]"
                         }
                     }
                 ]

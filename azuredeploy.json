@@ -288,11 +288,7 @@
             "subnet1Name": "subnet1",
             "subnet1Prefix": "10.0.0.0/24",
             "subnet2Name": "subnet2",
-            "subnet2Prefix": "10.0.1.0/24",
-            "subnet3Name": "subnet3",
-            "subnet3Prefix": "10.0.2.0/24",
-            "subnet4Name": "subnet4",
-            "subnet4Prefix": "10.0.3.0/24"
+            "subnet2Prefix": "10.0.1.0/24"
         },
         "bastionServerSettings": {
             "location": "[variables('location')]",
@@ -482,7 +478,7 @@
             "version": "latest",
             "vmSize": "Standard_DS2_v2",
             "sqlConnectivityType": "Private",
-            "sqlPrivateIPAddress": "10.0.2.4",
+            "sqlPrivateIPAddress": "10.0.1.5",
             "sqlStorageDisksCount": "1",
             "sqlStorageWorkloadType": "GENERAL",
             "sqlAutopatchingDayOfWeek": "Sunday",
@@ -521,7 +517,7 @@
             "pibaVMSize": "Standard_DS4_v2",
             "storageAccountType": "[variables('storageAccountType')]",
             "diagStorageAccountType": "Standard_LRS",
-            "pibaPrivateIPAddress": "10.0.3.4",
+            "pibaPrivateIPAddress": "10.0.1.11",
             "scriptFileName": "psscript.ps1",
             "domainName": "[parameters('domainName')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
@@ -601,7 +597,7 @@
         },
         "routeTable1Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable1Name)]",
         "routeTable2Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable2Name)]",
-        "trendNicIPAddress": "10.0.1.5",
+        "trendNicIPAddress": "10.0.1.10",
         "heartbeatPort": "4120",
         "ManagerAddress": "[variables('trendNicIPAddress')]",
         "ActivationPort": "[variables('heartbeatPort')]",
@@ -692,18 +688,6 @@
                         "name": "[variables('networkSettings').subnet2Name]",
                         "properties": {
                             "addressPrefix": "[variables('networkSettings').subnet2Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[variables('networkSettings').subnet3Name]",
-                        "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet3Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[variables('networkSettings').subnet4Name]",
-                        "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet4Prefix]"
                         }
                     }
                 ]
