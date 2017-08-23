@@ -682,13 +682,19 @@
                     {
                         "name": "[variables('networkSettings').subnet1Name]",
                         "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]"
+                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
+                            "routeTable": {
+                                "id": "[variables('routeTable1Id')]"
+                              }
                         }
                     },
                     {
                         "name": "[variables('networkSettings').subnet2Name]",
                         "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]"
+                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
+                            "routeTable": {
+                                "id": "[variables('routeTable2Id')]"
+                              }
                         }
                     }
                 ]
