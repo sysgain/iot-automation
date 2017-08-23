@@ -696,6 +696,32 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
+            "name": "fortigateServer",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/fortigate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "fortigateFirewallSettings": {
+                        "value": "[variables('fortigateFirewallSettings')]"
+                    },
+                    "networkSettings": {
+                        "value": "[variables('networkSettings')]"
+                    },
+                    "apiVersions": {
+                        "value": "[variables('apiVersions')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
             "name": "AppComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
@@ -785,9 +811,6 @@
                     },
                     "apiVersions": {
                         "value": "[variables('apiVersions')]"
-                    },
-                    "fortigateFirewallSettings": {
-                        "value": "[variables('fortigateFirewallSettings')]"
                     }
                 }
             }
