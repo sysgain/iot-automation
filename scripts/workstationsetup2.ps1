@@ -18,12 +18,14 @@ echo n | & "C:\Program Files\PuTTY\pscp.exe" -scp -pw $adminPassword ${adminUser
 knife ssl  fetch --config c:\Users\chef-repo\.chef\knife.rb  --server-url https://$ChefServerFqdn/organizations/$organizationName
 git clone https://github.com/sysgain/IOT-ChefCookbooks.git C:/Users/cookbookstore
 cp -r C:\Users\cookbookstore\* C:\Users\chef-repo\cookbooks
+(Get-Content C:\Users\chef-repo\cookbooks\splunk-uf-install/recipes/default.rb) ` | %{ $_ -replace 'localhost',$splunkIP} ` | Set-Content C:\Users\chef-repo\cookbooks\splunk-uf-install/recipes/default.rb
 knife cookbook upload --config c:\Users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ splunk-uf-install DynatraceOneAgent compat_resource audit ohai windows
 knife cookbook upload --config c:\Users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ yum-epel dmg seven_zip mingw build-essential  git
 knife bootstrap windows winrm localhost --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $workstationFQDN 
 knife bootstrap windows winrm  $PIAFSQLIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $PIAFSQLIP
 knife bootstrap windows winrm  $PIBAIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $PIBAIP
 knife bootstrap windows winrm  $bastionFQDN --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $bastionFQDN
+knife bootstrap $splunkIP --sudo -x $adminUsername -P $adminPassword -N $splunkIP
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $workstationFQDN recipe[audit]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $PIAFSQLIP recipe[git]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $PIAFSQLIP recipe[audit]
@@ -36,4 +38,5 @@ knife node run_list add --server-url https://$ChefServerFqdn/organizations/$orga
 chef-client
 knife winrm name:$PIAFSQLIP -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife winrm name:$PIBAIP -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
-knife winrm name:$bastionFQDN -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client 
+knife winrm name:$bastionFQDN -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
+knife ssh name:$splunkIP -a ipaddress -x ${adminUsername} -P $adminPassword sudo chef-client 
