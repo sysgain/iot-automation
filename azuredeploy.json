@@ -352,6 +352,7 @@
             "product": "fortinet_fortigate-vm_v5",
             "publisher": "fortinet",
             "vmSize": "Standard_D1_v2",
+            "fortiDiagStgAcnt":"[concat('fortigate',variables('suffix'))]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]",
