@@ -115,7 +115,7 @@
             }
         },
         "senderEmailPassword": {
-            "type": "securestring",
+            "type": "string",
             "defaultValue": "",
             "metadata": {
                 "descrition": "Describes the password for sender email ID for email notifications"
@@ -129,14 +129,14 @@
             }
         },
         "b2cClientId": {
-            "type": "securestring",
+            "type": "string",
             "defaultValue": "",
             "metadata": {
                 "description": "Describes the client Id of the application registered in B2C Directory"
             }
         },
         "b2cClientSecret": {
-            "type": "securestring",
+            "type": "string",
             "defaultValue": "",
             "metadata": {
                 "description": "Describes the Client secret of the application registered in B2C Directory"
