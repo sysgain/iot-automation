@@ -166,7 +166,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('fortigateFirewallSettings').bastionDiagStgAcnt)).primaryEndpoints['blob']]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('fortigateFirewallSettings').fortiDiagStgAcnt)).primaryEndpoints['blob']]"
                     }
                 }
             }
