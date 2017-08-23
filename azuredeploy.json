@@ -95,7 +95,7 @@
         },
         "emailHost": {
             "type": "string",
-            "defaultValue": "ermhost",
+            "defaultValue": "",
             "metadata": {
                 "description": "Describes the host name for sending email notifications"
             }
