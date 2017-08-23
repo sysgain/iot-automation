@@ -860,7 +860,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "Backup",
+            "name": "IAASBackup",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
                 "WorkStation"
