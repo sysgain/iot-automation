@@ -877,45 +877,6 @@
                     }
                 }
             }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('networkSettings').virtualNetworkName]",
-            "apiVersion": "[variables('apiVersions').networkApiVersion]",
-            "location": "[variables('networkSettings').location]",
-            "dependsOn": [
-                "WorkStation"
-            ],
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[variables('networkSettings').addressPrefix]"
-                    ]
-                },
-                "dhcpOptions": {
-                    "dnsServers": "[variables('dnsServerAddress')]"
-                },
-                "subnets": [
-                    {
-                        "name": "[variables('networkSettings').subnet1Name]",
-                        "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
-                            "routeTable": {
-                                "id": "[variables('routeTable1Id')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "[variables('networkSettings').subnet2Name]",
-                        "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
-                            "routeTable": {
-                                "id": "[variables('routeTable2Id')]"
-                            }
-                        }
-                    }
-                ]
-            }
         }
     ],
     "outputs": {
@@ -934,6 +895,10 @@
         "piafSQLServerIPAddress": {
             "type": "string",
             "value": "[variables('piafsqlSettings').sqlPrivateIPAddress]"
+        },
+        "pibaServerIPAddress": {
+            "type": "string",
+            "value": "[variables('pibaServersettings').pibaPrivateIPAddress]"
         },
         "workstationFQDN": {
             "type": "string",
@@ -954,10 +919,6 @@
         "splunkIPAddress": {
             "type": "string",
             "value": "[variables('splunkSettings').splunkprivateIP]"
-        },
-        "pibaServerIPAddress": {
-            "type": "string",
-            "value": "[variables('pibaServersettings').pibaPrivateIPAddress]"
         },
         "azureSQLEndpoint": {
             "type": "string",
