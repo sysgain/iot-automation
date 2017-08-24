@@ -51,14 +51,14 @@ hostname.run_command
 configure = Mixlib::ShellOut.new("chef-marketplace-ctl setup --preconfigure")
 configure.run_command
 #chef Upgrade shell Script
-upgrade = Mixlib::ShellOut.new("chef-marketplace-ctl upgrade -y")
-upgrade.run_command
+#upgrade = Mixlib::ShellOut.new("chef-marketplace-ctl upgrade -y")
+#upgrade.run_command
 
-reconfigure = Mixlib::ShellOut.new("chef-server-ctl reconfigure")
-reconfigure.run_command
+#reconfigure = Mixlib::ShellOut.new("chef-server-ctl reconfigure")
+#reconfigure.run_command
 
-restartserver = Mixlib::ShellOut.new("chef-server-ctl restart")
-restartserver.run_command
+#restartserver = Mixlib::ShellOut.new("chef-server-ctl restart")
+#restartserver.run_command
 
 ##Creating user for Chef Web UI
 FileUtils.touch('/var/opt/delivery/.telemetry.disabled')
@@ -73,5 +73,15 @@ usercreate.run_command
  orgcreate.run_command
 
 # system("sed -i ' s/127.0.1.1       10.0.1.6 10/127.0.1.1       10.0.1.6/g' /etc/hosts")
+# system("hostname 10.0.1.6") 
+# system("chef-server-ctl reconfigure")
+upgrade = Mixlib::ShellOut.new("chef-marketplace-ctl upgrade -y")
+upgrade.run_command
+
+reconfigure = Mixlib::ShellOut.new("chef-server-ctl reconfigure")
+reconfigure.run_command
+
+restartserver = Mixlib::ShellOut.new("chef-server-ctl restart")
+restartserver.run_command
 system("hostname 10.0.1.6") 
 system("chef-server-ctl reconfigure")
