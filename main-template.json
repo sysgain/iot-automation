@@ -916,9 +916,17 @@
             "type": "string",
             "value": "[variables('trendNicIPAddress')]"
         },
+        "trendWebUIUsername": {
+            "type": "string",
+            "value": "[parameters('adminUserName')]"
+        },
         "splunkIPAddress": {
             "type": "string",
             "value": "[variables('splunkSettings').splunkprivateIP]"
+        },
+        "splunkWebUIUsername": {
+            "type": "string",
+            "value": "admin"
         },
         "azureSQLEndpoint": {
             "type": "string",
