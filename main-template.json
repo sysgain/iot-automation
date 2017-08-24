@@ -464,7 +464,7 @@
             "ManagerAddress": "[variables('ManagerAddress')]",
             "ActivationPort": "[variables('ActivationPort')]",
             "TenantIdentifier": "[variables('TenantIdentifier')]",
-            "TenantActivationPassword": "[variables('TenantActivationPassword')]",
+            "TenantActivationPassword": "[variables('TenantActivationPassword')]"
         },
         "piafsqlSettings": {
             "location": "[variables('location')]",
