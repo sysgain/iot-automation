@@ -944,6 +944,10 @@
             "type": "string",
             "value": "[parameters('sqlAdministratorLogin')]"
         },
+        "webjobStorageaccntName":{
+            "type": "string",
+            "value": "[variables('webSiteSettings').webjobStorageName]"
+        },
         "webSiteUrl": {
             "type": "string",
             "value": "[variables('websiteFullAddress')]"
