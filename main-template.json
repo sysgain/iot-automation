@@ -333,6 +333,7 @@
             "fortiDiagStgAcnt": "[concat('fortigate',variables('suffix'))]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
+            "fortiDnsLabelPrefix":"[concat('fortigate',variables('suffix'))]",
             "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]",
             "routeTable2Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet1Name,'-routes')]"
         },
@@ -927,6 +928,10 @@
         "splunkWebUIUsername": {
             "type": "string",
             "value": "admin"
+        },
+        "fortigateFQDN":{
+            "type": "string",
+            "value": "[variables('fortigateFirewallSettings').fortiDnsLabelPrefix]"
         },
         "azureSQLEndpoint": {
             "type": "string",

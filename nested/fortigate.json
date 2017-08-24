@@ -48,7 +48,10 @@
             "apiVersion": "[parameters('apiVersions').routtableApiVersion]",
             "location": "[parameters('fortigateFirewallSettings').location]",
             "properties": {
-                " publicIPAllocationMethod": "[parameters('fortigateFirewallSettings').publicIPAddressType]"
+                "publicIPAllocationMethod": "[parameters('fortigateFirewallSettings').publicIPAddressType]",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('fortigateFirewallSettings').fortiDnsLabelPrefix]"
+                }
             }
         },
         {
@@ -174,5 +177,11 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "bastionFQDN": {
+            "type": "string",
+            "value": "[reference(parameters('fortigateFirewallSettings').fortiPublicIPAddressName).dnsSettings.fqdn]"
+        }
+    }
 }
