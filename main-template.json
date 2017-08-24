@@ -672,7 +672,6 @@
             "name": "fortigateServer",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
-                "mcsModules",
                 "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
             ],
             "properties": {
@@ -726,6 +725,7 @@
             "name": "mcsModules",
             "apiVersion": "[variables('deploymentApiVersion')]",
             "dependsOn": [
+                "fortigateServer",
                 "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
             ],
             "properties": {
