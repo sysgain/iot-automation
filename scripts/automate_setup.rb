@@ -51,8 +51,8 @@ hostname.run_command
 configure = Mixlib::ShellOut.new("chef-marketplace-ctl setup --preconfigure")
 configure.run_command
 #chef Upgrade shell Script
-upgrade = Mixlib::ShellOut.new("chef-marketplace-ctl upgrade -y")
-upgrade.run_command
+#upgrade = Mixlib::ShellOut.new("chef-marketplace-ctl upgrade -y")
+#upgrade.run_command
 
 reconfigure = Mixlib::ShellOut.new("chef-server-ctl reconfigure")
 reconfigure.run_command
