@@ -270,8 +270,8 @@
         "bastionServerSettings": {
             "location": "[variables('location')]",
             "bastionVMName": "bastionServer",
-            "bastionPrivateIP":"10.0.0.5",
-            "workstationPrivateIP":"10.0.0.6",
+            "bastionPrivateIP": "10.0.0.5",
+            "workstationPrivateIP": "10.0.0.6",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "bastionNic": "bastion-nic",
@@ -330,7 +330,7 @@
             "publisher": "fortinet",
             "vmSize": "Standard_D1_v2",
             "storageAccountType": "Premium_LRS",
-            "fortiDiagStgAcnt":"[concat('fortigate',variables('suffix'))]",
+            "fortiDiagStgAcnt": "[concat('fortigate',variables('suffix'))]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]",
@@ -399,7 +399,7 @@
             "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]",
             "chefAutoScriptUrl1": "[concat(variables('baseUrl'),'scripts/automate_setup.rb')]"
         },
-        "splunkSettings":{
+        "splunkSettings": {
             "location": "[variables('location')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
@@ -557,7 +557,7 @@
             "scheduleRunTimes": "[parameters('scheduleRunTimes')]",
             "dailyRetentionDurationCount": "[parameters('dailyRetentionDurationCount')]",
             "existingVirtualMachinesResourceGroup": "[resourceGroup().name]",
-            "existingVirtualMachines":[
+            "existingVirtualMachines": [
                 "bastionServer",
                 "splunkserver",
                 "adServer",
@@ -696,8 +696,7 @@
             "type": "Microsoft.Resources/deployments",
             "name": "AppComponents",
             "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -749,8 +748,8 @@
                             "[variables('dnsServerAddress')]"
                         ]
                     },
-                    "splunkSettings":{
-                        "value":"[variables('splunkSettings')]"
+                    "splunkSettings": {
+                        "value": "[variables('splunkSettings')]"
                     },
                     "routeTable1Id": {
                         "value": "[variables('routeTable1Id')]"
@@ -850,8 +849,8 @@
                     "pibaServersettings": {
                         "value": "[variables('pibaServersettings')]"
                     },
-                    "splunkSettings":{
-                        "value":"[variables('splunkSettings')]"
+                    "splunkSettings": {
+                        "value": "[variables('splunkSettings')]"
                     }
                 }
             }
@@ -877,6 +876,45 @@
                         "value": "[variables('apiVersions')]"
                     }
                 }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('networkSettings').virtualNetworkName]",
+            "apiVersion": "[variables('apiVersions').networkApiVersion]",
+            "location": "[variables('networkSettings').location]",
+            "dependsOn": [
+                "WorkStation"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('networkSettings').addressPrefix]"
+                    ]
+                },
+                "dhcpOptions": {
+                    "dnsServers": "[variables('dnsServerAddress')]"
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('networkSettings').subnet1Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
+                            "routeTable": {
+                                "id": "[variables('routeTable1Id')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "[variables('networkSettings').subnet2Name]",
+                        "properties": {
+                            "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
+                            "routeTable": {
+                                "id": "[variables('routeTable2Id')]"
+                            }
+                        }
+                    }
+                ]
             }
         }
     ],
@@ -913,7 +951,7 @@
             "type": "string",
             "value": "[variables('trendNicIPAddress')]"
         },
-        "splunkIPAddress":{
+        "splunkIPAddress": {
             "type": "string",
             "value": "[variables('splunkSettings').splunkprivateIP]"
         },
