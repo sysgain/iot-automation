@@ -7,7 +7,8 @@ param(
 [string] $PIBAIP= "$6",
 [string] $bastionFQDN= "$7",
 [string] $workstationFQDN= "$8",
-[string] $splunkIP= "$9"
+[string] $splunkIP= "$9",
+[string] $adIP= "$10"
 )
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
 cd C:\opscode\chefdk\bin
@@ -25,6 +26,7 @@ knife bootstrap windows winrm localhost --config c:\Users\chef-repo\.chef\knife.
 knife bootstrap windows winrm  $PIAFSQLIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $PIAFSQLIP
 knife bootstrap windows winrm  $PIBAIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $PIBAIP
 knife bootstrap windows winrm  $bastionFQDN --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $bastionFQDN
+knife bootstrap windows winrm  $adIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N $adIP
 knife bootstrap $splunkIP --config c:\Users\chef-repo\.chef\knife.rb --sudo -x $adminUsername -P $adminPassword -N $splunkIP
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $workstationFQDN recipe[audit]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $PIAFSQLIP recipe[git]
@@ -33,10 +35,13 @@ knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url 
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $PIBAIP recipe[audit]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $bastionFQDN recipe[git]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $bastionFQDN recipe[audit]
+knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $adIP recipe[git]
+knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $adIP recipe[audit]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $splunkIP recipe[splunk-uf-install]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ $splunkIP recipe[audit]
 chef-client
 knife winrm name:$PIAFSQLIP -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife winrm name:$PIBAIP -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife winrm name:$bastionFQDN -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
+knife winrm name:$adIP -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife ssh name:$splunkIP -a ipaddress -x ${adminUsername} -P $adminPassword sudo chef-client 
