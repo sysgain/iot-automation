@@ -692,7 +692,7 @@
             "scale": null,
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
-                "type": "TrendMicroDSA",
+                "type": "TrendMicroDSALinux",
                 "typeHandlerVersion": "10.0",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
@@ -918,7 +918,7 @@
             "scale": null,
             "properties": {
                 "publisher": "TrendMicro.DeepSecurity",
-                "type": "TrendMicroDSA",
+                "type": "TrendMicroDSALinux",
                 "typeHandlerVersion": "10.0",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
