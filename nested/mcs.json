@@ -707,7 +707,8 @@
             },
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName,'/extensions/automate_setup')]",
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
             ]
         },
         {
@@ -932,7 +933,8 @@
             },
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName,'/extensions/',parameters('splunkSettings').vmExtensionName)]",
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
             ]
         }
     ]
