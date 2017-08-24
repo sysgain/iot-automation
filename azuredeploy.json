@@ -352,6 +352,7 @@
             "product": "fortinet_fortigate-vm_v5",
             "publisher": "fortinet",
             "vmSize": "Standard_D1_v2",
+            "storageAccountType": "Premium_LRS",
             "fortiDiagStgAcnt":"[concat('fortigate',variables('suffix'))]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
