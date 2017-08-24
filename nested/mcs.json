@@ -931,7 +931,7 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName,'/',parameters('splunkSettings').vmExtensionName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName,'/extensions/',parameters('splunkSettings').vmExtensionName)]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]"
             ]
         }
