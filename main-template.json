@@ -239,29 +239,6 @@
             "metadata": {
                 "description": "Number of days you want to retain the backup"
             }
-        },
-        "existingVirtualMachinesResourceGroup": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().name]",
-            "metadata": {
-                "description": "Resource group where the virtual machines are located. This can be different than resource group of the vault. "
-            }
-        },
-        "existingVirtualMachines": {
-            "type": "array",
-            "defaultValue": [
-                "bastionServer",
-                "splunkserver",
-                "adServer",
-                "PIAFSQLServer",
-                "PIBAVMServer",
-                "trendServer",
-                "chefworkstation",
-                "chefautomate"
-            ],
-            "metadata": {
-                "description": "Array of Azure virtual machines. e.g. [\"vm1\",\"vm2\",\"vm3\"]"
-            }
         }
     },
     "variables": {
@@ -427,22 +404,6 @@
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPassword')]",
             "networkSecurityGroupName": "splunkNsg",
-            "clientadminUsername":"[parameters('adminUsername')]",
-            "clientadminPassword": "[parameters('adminPassword')]",
-            "clientnsgName": "client-nsg",
-            "clientnetworkInterfaceName":"client-nic",
-            "clientprivateIP":"10.0.1.9",
-            "clientvmName": "winserver",
-            "vmSize1": "Standard_DS2_v2",
-            "imagePublisher1": "MicrosoftWindowsServer",
-            "imageOffer1": "WindowsServer",
-            "imageSKU1": "2012-R2-Datacenter",
-            "imageVersion1": "latest",
-            "domainName": "[parameters('domainName')]",
-            "Username": "[parameters('adminUsername')]",
-            "Password": "[parameters('adminPassword')]",
-            "clientDomainJoinUrl":"[concat(variables('baseUrl'),'nested/splunkclientdomainjoin.json')]",
-            "typeHandlerVersionwin": "1.8",
             "sshFrom": "0.0.0.0/0",
             "forwardedDataFrom": "0.0.0.0/0",
             "splunknetworkInterfaceName": "splunk-nic",
@@ -457,9 +418,6 @@
             "typeHandlerVersion": "2.0",
             "splunkServerRole": "splunk_server",
             "storageAccountType": "Premium_LRS",
-            "scriptFileName":"Cleintsetup.ps1",
-            "clientScriptURL":"[concat(variables('baseUrl'),'scripts/Clientsetup.ps1')]",
-            "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
             "customScriptsUrl": "[concat(variables('baseUrl'),'scripts/node-setup.sh')]",
             "ManagerAddress": "[variables('ManagerAddress')]",
             "ActivationPort": "[variables('ActivationPort')]",
@@ -598,8 +556,17 @@
             "existingBackupPolicy": "[parameters('policyName')]",
             "scheduleRunTimes": "[parameters('scheduleRunTimes')]",
             "dailyRetentionDurationCount": "[parameters('dailyRetentionDurationCount')]",
-            "existingVirtualMachinesResourceGroup": "[parameters('existingVirtualMachinesResourceGroup')]",
-            "existingVirtualMachines": "[parameters('existingVirtualMachines')]"
+            "existingVirtualMachinesResourceGroup": "[resourceGroup().name]",
+            "existingVirtualMachines":[
+                "bastionServer",
+                "splunkserver",
+                "adServer",
+                "PIAFSQLServer",
+                "PIBAVMServer",
+                "trendServer",
+                "chefworkstation",
+                "chefautomate"
+            ]
         },
         "routeTable1Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable1Name)]",
         "routeTable2Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable2Name)]",
@@ -945,6 +912,10 @@
         "trendIPAddress": {
             "type": "string",
             "value": "[variables('trendNicIPAddress')]"
+        },
+        "splunkIPAddress":{
+            "type": "string",
+            "value": "[variables('splunkSettings').splunkprivateIP]"
         },
         "pibaServerIPAddress": {
             "type": "string",
