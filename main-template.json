@@ -582,7 +582,7 @@
         "deployStorageAccountName": "releasemtr",
         "deployStorageAccountKey": "",
         "webAppDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/CSUWebApp.zip",
-        "restServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
+        "restServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/Release.zip",
         "sasToken": "?",
         "dnsServerAddress": "10.0.1.4",
         "storageAccountType": "Premium_LRS",
