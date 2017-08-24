@@ -685,6 +685,32 @@
             ]
         },
         {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('mcsModules').chefAutoVmName,'/InstallationDSA7')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('mcsModules').ManagerAddress]",
+                    "DSMport": "[parameters('mcsModules').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('mcsModules').TenantIdentifier]",
+                    "tenantPassword": "[parameters('mcsModules').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').chefAutoVmName,'/extensions/automate_setup')]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]"
+            ]
+        },
+        {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('splunkSettings').networkSecurityGroupName]",
@@ -883,6 +909,31 @@
                     "commandToExecute": "[variables('commandToExecute')]"
                 }
             }
+        },{
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('splunkSettings').vmName,'/InstallationDSA8')]",
+            "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+            "location": "[parameters('splunkSettings').location]",
+            "scale": null,
+            "properties": {
+                "publisher": "TrendMicro.DeepSecurity",
+                "type": "TrendMicroDSA",
+                "typeHandlerVersion": "10.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "DSMname": "[parameters('splunkSettings').ManagerAddress]",
+                    "DSMport": "[parameters('splunkSettings').ActivationPort]",
+                    "policyNameorID": ""
+                },
+                "protectedSettings": {
+                    "tenantID": "[parameters('splunkSettings').TenantIdentifier]",
+                    "tenantPassword": "[parameters('splunkSettings').TenantActivationPassword]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName,'/',parameters('splunkSettings').vmExtensionName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]"
+            ]
         }
     ]
 }

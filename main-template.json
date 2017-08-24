@@ -460,7 +460,11 @@
             "scriptFileName":"Cleintsetup.ps1",
             "clientScriptURL":"[concat(variables('baseUrl'),'scripts/Clientsetup.ps1')]",
             "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
-            "customScriptsUrl": "[concat(variables('baseUrl'),'scripts/node-setup.sh')]"
+            "customScriptsUrl": "[concat(variables('baseUrl'),'scripts/node-setup.sh')]",
+            "ManagerAddress": "[variables('ManagerAddress')]",
+            "ActivationPort": "[variables('ActivationPort')]",
+            "TenantIdentifier": "[variables('TenantIdentifier')]",
+            "TenantActivationPassword": "[variables('TenantActivationPassword')]",
         },
         "piafsqlSettings": {
             "location": "[variables('location')]",
