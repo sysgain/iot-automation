@@ -26,7 +26,7 @@ knife bootstrap windows winrm localhost --config c:\Users\chef-repo\.chef\knife.
 knife bootstrap windows winrm  $PIAFSQLIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N piafdasqlserver
 knife bootstrap windows winrm  $PIBAIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N pibaserver
 knife bootstrap windows winrm  $bastionFQDN --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N bastionserver
-knife bootstrap windows winrm  ${adIP} --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N adserver
+knife bootstrap windows winrm  $adIP --config c:\Users\chef-repo\.chef\knife.rb -x $adminUsername  -P $adminPassword -N adserver
 knife bootstrap $splunkIP --config c:\Users\chef-repo\.chef\knife.rb --sudo -x $adminUsername -P $adminPassword -N splunkserver
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ workstation recipe[audit]
 knife node run_list add --config c:\users\chef-repo\.chef\knife.rb --server-url https://$ChefServerFqdn/organizations/$organizationName/ piafdasqlserver recipe[git]
