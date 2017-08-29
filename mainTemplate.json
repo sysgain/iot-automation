@@ -23,18 +23,11 @@
         "description": "The FQDN of the Active Directory Domain to be created on VM"
       }
     },
-    "FortiGateName": {
-      "type": "string",
-      "defaultValue": "fortigate",
-      "metadata": {
-        "description": "Name for FortiGate virtual appliance."
-      }
-    },
     "websiteName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "decription": "Website name"
+        "decription": "Describes webSite name which should be unique"
       }
     },
     "sqlAdministratorLogin": {
@@ -77,13 +70,6 @@
       "minValue": 1,
       "metadata": {
         "description": "Describes plan's instance count"
-      }
-    },
-    "hostingPlanName": {
-      "type": "string",
-      "defaultValue": "AppServPlan",
-      "metadata": {
-        "description": "Describes Hosting plan's name"
       }
     },
     "apiServerName": {
@@ -322,7 +308,7 @@
       "FGDMZAddress": "10.0.1.7",
       "fortiPublicIPAddressName": "forti-pip",
       "publicIPAddressType": "Dynamic",
-      "FortiGateName": "[parameters('FortiGateName')]",
+      "FortiGateName": "fortigate",
       "fortiNicName1": "forti-nic1",
       "fortiNicName2": "forti-nic2",
       "name": "fortinet_fg-vm",
@@ -334,8 +320,8 @@
       "adminUsername": "[parameters('adminUsername')]",
       "adminPassword": "[parameters('adminPassword')]",
       "fortiDnsLabelPrefix": "[concat('fortigate',variables('suffix'))]",
-      "routeTable1Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet2Name,'-routes')]",
-      "routeTable2Name": "[concat(parameters('FortiGateName'), '-', variables('networkSettings').subnet1Name,'-routes')]"
+      "routeTable1Name": "[concat('fortigate', '-', variables('networkSettings').subnet2Name,'-routes')]",
+      "routeTable2Name": "[concat('fortigate', '-', variables('networkSettings').subnet1Name,'-routes')]"
     },
     "mcsModules": {
       "location": "[variables('location')]",
@@ -519,7 +505,7 @@
       "jobCollectionName": "[concat('myjob', variables('suffix'))]",
       "webjobStorageName": "[concat('webjobstr',variables('suffix'))]",
       "webjobStorageType": "Standard_LRS",
-      "hostingPlanName": "[parameters('hostingPlanName')]",
+      "hostingPlanName": "AppServPlan",
       "skuName": "[parameters('skuName')]",
       "skuCapacity": "[parameters('skuCapacity')]",
       "webSiteName": "[parameters('websiteName')]",
