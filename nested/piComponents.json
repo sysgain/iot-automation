@@ -32,7 +32,7 @@
             "properties": {}
         },
         {
-            "name": "[parameters('piafsqlSettings').networkSecurityGroupName]",
+            "name": "[parameters('piafsqlSettings').piAFDASQLNsg]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('piafsqlSettings').location]",
@@ -172,12 +172,12 @@
             }
         },
         {
-            "name": "[parameters('piafsqlSettings').networkInterfaceName]",
+            "name": "[parameters('piafsqlSettings').piAFDASQLNic]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('piafsqlSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('piafsqlSettings').networkSecurityGroupName)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('piafsqlSettings').piAFDASQLNsg)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -193,22 +193,22 @@
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('piafsqlSettings').networkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('piafsqlSettings').piAFDASQLNsg)]"
                 }
             }
         },
         {
-            "name": "[parameters('piafsqlSettings').sqlservername]",
+            "name": "[parameters('piafsqlSettings').piAFDASQLVmName]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('piafsqlSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('piafsqlSettings').networkInterfaceName)]",
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('piafsqlSettings').piAFDASQLNic)]",
                 "[concat('Microsoft.Storage/storageAccounts/', parameters('piafsqlSettings').sqlStorageAccountName)]"
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "[parameters('piafsqlSettings').sqlservername]",
+                    "computerName": "[parameters('piafsqlSettings').piAFDASQLVmName]",
                     "adminUsername": "[parameters('piafsqlSettings').adminUsername]",
                     "adminPassword": "[parameters('piafsqlSettings').adminPassword]",
                     "windowsConfiguration": {
@@ -242,7 +242,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('piafsqlSettings').networkInterfaceName)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('piafsqlSettings').piAFDASQLNic)]"
                         }
                     ]
                 },
@@ -257,10 +257,10 @@
         {
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('piafsqlSettings').sqlservername, '/SqlIaasExtension')]",
+            "name": "[concat(parameters('piafsqlSettings').piAFDASQLVmName, '/SqlIaasExtension')]",
             "location": "[parameters('piafsqlSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('piafsqlSettings').sqlservername)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('piafsqlSettings').piAFDASQLVmName)]"
             ],
             "properties": {
                 "type": "SqlIaaSAgent",
@@ -308,12 +308,12 @@
             }
         },
         {
-            "name": "[concat(parameters('piafsqlSettings').sqlservername,'/CustomScriptExtension')]",
+            "name": "[concat(parameters('piafsqlSettings').piAFDASQLVmName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[parameters('piafsqlSettings').location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('piafsqlSettings').sqlservername,'/extensions/SqlIaasExtension')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('piafsqlSettings').piAFDASQLVmName,'/extensions/SqlIaasExtension')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -335,7 +335,7 @@
             "name": "sqlSimulatorSetup",
             "apiVersion": "[parameters('apiVersions').deploymentApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('piafsqlSettings').sqlservername,'/extensions/CustomScriptExtension')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('piafsqlSettings').piAFDASQLVmName,'/extensions/CustomScriptExtension')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -355,7 +355,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('piafsqlSettings').sqlservername,'/InstallationDSA3')]",
+            "name": "[concat(parameters('piafsqlSettings').piAFDASQLVmName,'/InstallationDSA3')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('piafsqlSettings').location]",
             "scale": null,
@@ -379,7 +379,7 @@
             ]
         },
         {
-            "name": "[parameters('pibaServersettings').pibaDiagStgAcnt]",
+            "name": "[parameters('pibaServersettings').piBADiagStgAcnt]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('pibaServersettings').location]",
@@ -390,7 +390,7 @@
             "properties": {}
         },
         {
-            "name": "[parameters('pibaServersettings').pibaNetworkSecurityGroupName]",
+            "name": "[parameters('pibaServersettings').piBANsg]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('pibaServersettings').location]",
@@ -426,12 +426,12 @@
             }
         },
         {
-            "name": "[parameters('pibaServersettings').pibaNic]",
+            "name": "[parameters('pibaServersettings').piBANic]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('pibaServersettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('pibaServersettings').pibaNetworkSecurityGroupName)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('pibaServersettings').piBANsg)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -442,27 +442,27 @@
                                 "id": "[variables('subnetRef')]"
                             },
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('pibaServersettings').pibaPrivateIPAddress]"
+                            "privateIPAddress": "[parameters('pibaServersettings').piBAPrivateIPAddress]"
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('pibaServersettings').PIBANetworkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('pibaServersettings').piBANsg)]"
                 }
             }
         },
         {
-            "name": "[parameters('pibaServersettings').pibaVMName]",
+            "name": "[parameters('pibaServersettings').piBAVMName]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('pibaServersettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('pibaServersettings').pibaNic)]",
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('pibaServersettings').pibaDiagStgAcnt)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('pibaServersettings').piBANic)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('pibaServersettings').piBADiagStgAcnt)]"
             ],
             "properties": {
                 "osProfile": {
-                    "computerName": "[parameters('pibaServersettings').pibaVMName]",
+                    "computerName": "[parameters('pibaServersettings').piBAVMName]",
                     "adminUsername": "[parameters('pibaServersettings').adminUsername]",
                     "adminPassword": "[parameters('pibaServersettings').adminPassword]",
                     "windowsConfiguration": {
@@ -490,25 +490,25 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('pibaServersettings').pibaNic)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('pibaServersettings').piBANic)]"
                         }
                     ]
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": true,
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('pibaServersettings').pibaDiagStgAcnt)).primaryEndpoints['blob']]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('pibaServersettings').piBADiagStgAcnt)).primaryEndpoints['blob']]"
                     }
                 }
             }
         },
         {
-            "name": "[concat(parameters('pibaServersettings').pibaVMName,'/CustomScriptExtension2')]",
+            "name": "[concat(parameters('pibaServersettings').piBAVMName,'/CustomScriptExtension2')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[parameters('pibaServersettings').location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('pibaServersettings').pibaVMName)]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('pibaServersettings').piBAVMName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -527,7 +527,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('pibaServersettings').pibaVMName,'/InstallationDSA5')]",
+            "name": "[concat(parameters('pibaServersettings').piBAVMName,'/InstallationDSA5')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('pibaServersettings').location]",
             "scale": null,
@@ -547,7 +547,7 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/',parameters('pibaServersettings').pibaVMName,'/extensions/CustomScriptExtension2')]"
+                "[concat('Microsoft.Compute/virtualMachines/',parameters('pibaServersettings').piBAVMName,'/extensions/CustomScriptExtension2')]"
             ]
         }
     ],

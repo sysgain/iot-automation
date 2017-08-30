@@ -288,7 +288,7 @@
             }
         },
         {
-            "name": "[parameters('mcsModules').adNetworkSecurityGroupName]",
+            "name": "[parameters('mcsModules').adNsg]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('mcsModules').location]",
@@ -328,11 +328,11 @@
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('mcsModules').adNicName]",
+            "name": "[parameters('mcsModules').adNic]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('mcsModules').location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('mcsModules').adNetworkSecurityGroupName)]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('mcsModules').adNsg)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -348,7 +348,7 @@
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('mcsModules').adNetworkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('mcsModules').adNsg)]"
                 }
             }
         },
@@ -358,7 +358,7 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('mcsModules').location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNic)]",
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('mcsModules').adstorageAccountName)]"
             ],
             "properties": {
@@ -394,7 +394,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNicName)]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('mcsModules').adNic)]"
                         }
                     ]
                 },
@@ -714,7 +714,7 @@
         {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('splunkSettings').networkSecurityGroupName]",
+            "name": "[parameters('splunkSettings').splunkNsg]",
             "location": "[parameters('splunkSettings').location]",
             "properties": {
                 "securityRules": [
@@ -811,11 +811,11 @@
             "name": "[parameters('splunkSettings').splunknetworkInterfaceName]",
             "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('splunkSettings').networkSecurityGroupName)]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('splunkSettings').splunkNsg)]"
             ],
             "properties": {
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('splunkSettings').networkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('splunkSettings').splunkNsg)]"
                 },
                 "ipConfigurations": [
                     {
@@ -834,7 +834,7 @@
         {
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('splunkSettings').vmName]",
+            "name": "[parameters('splunkSettings').splunkVmName]",
             "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').splunknetworkInterfaceName)]"
@@ -849,7 +849,7 @@
                     "vmSize": "[parameters('splunkSettings').splunkVMSize]"
                 },
                 "osProfile": {
-                    "computername": "[parameters('splunkSettings').vmName]",
+                    "computername": "[parameters('splunkSettings').splunkVmName]",
                     "adminUsername": "[parameters('splunkSettings').adminUsername]",
                     "adminPassword": "[parameters('splunkSettings').adminPassword]"
                 },
@@ -891,11 +891,11 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('splunkSettings').vmName,'/', parameters('splunkSettings').vmExtensionName)]",
+            "name": "[concat(parameters('splunkSettings').splunkVmName,'/', parameters('splunkSettings').vmExtensionName)]",
             "apiVersion":  "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName)]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').splunkVmName)]"
             ],
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
@@ -912,7 +912,7 @@
             }
         },{
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('splunkSettings').vmName,'/InstallationDSA8')]",
+            "name": "[concat(parameters('splunkSettings').splunkVmName,'/InstallationDSA8')]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('splunkSettings').location]",
             "scale": null,
@@ -932,7 +932,7 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName,'/extensions/',parameters('splunkSettings').vmExtensionName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').splunkVmName,'/extensions/',parameters('splunkSettings').vmExtensionName)]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
             ]
