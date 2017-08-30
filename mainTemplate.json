@@ -25,6 +25,7 @@
     },
     "bastionVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS1",
         "Standard_DS2",
@@ -47,6 +48,7 @@
     },
     "chefWorkstationVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS1",
         "Standard_DS2",
@@ -69,6 +71,7 @@
     },
     "fortigateVMSize":{
       "type": "string",
+      "defaultValue": "Standard_D1_v2",
       "allowedValues": [
         "Standard_D1_v2",
         "Standard_D2_v2",
@@ -81,6 +84,7 @@
     },
     "adServerVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS1",
         "Standard_DS2",
@@ -103,6 +107,7 @@
     },
     "trendVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS2",
         "Standard_DS3",
@@ -124,12 +129,14 @@
     },
     "splunkVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS3",
         "Standard_DS4",
         "Standard_DS12",
         "Standard_DS13",
         "Standard_DS14",
+        "Standard_DS2_v2",
         "Standard_DS3_v2",
         "Standard_DS4_v2",
         "Standard_DS5_v2",
@@ -141,6 +148,7 @@
     },
     "chefAutomateVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS1",
         "Standard_DS2",
@@ -163,6 +171,7 @@
     },
     "PIAFDASQLServerVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
         "Standard_DS1",
         "Standard_DS2",
@@ -185,6 +194,7 @@
     },
     "PIBAServerVMSize":{
       "type": "string",
+      "defaultValue": "Standard_DS4_v2",
       "allowedValues": [
         "Standard_DS4",
         "Standard_DS11",
