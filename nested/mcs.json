@@ -32,7 +32,7 @@
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('mcsModules').adstorageAccountName]",
+            "name": "[parameters('mcsModules').trendDiagStorageAccountName]",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
             "location": "[parameters('mcsModules').location]",
             "sku": {
@@ -203,7 +203,7 @@
             "name": "[parameters('mcsModules').trendVMName]",
             "location": "[parameters('mcsModules').location]",
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('mcsModules').trendDiagStorageAccountName)]",
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('mcsModules').trendNic)]",
                 "[concat('Microsoft.Sql/servers/', parameters('mcsModules').trendsqlServerName)]"
             ],
@@ -245,7 +245,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').trendDiagStorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             }
@@ -286,6 +286,17 @@
                     "securityGroupName": "parameters('mcsModules').trendNSG]"
                 }
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('mcsModules').adstorageAccountName]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
         },
         {
             "name": "[parameters('mcsModules').adNsg]",
@@ -498,6 +509,17 @@
             }
         },
         {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('mcsModules').chefAutoDiagStorageAccountName]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
+        {
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[parameters('mcsModules').chefAutoNsg]",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -618,6 +640,7 @@
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",
             "location": "[parameters('mcsModules').location]",
             "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('mcsModules').chefAutoDiagStorageAccountName)]",
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('mcsModules').chefAutoNic)]"
             ],
             "plan": {
@@ -658,7 +681,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').chefAutoDiagStorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             }
@@ -710,6 +733,17 @@
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
             ]
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('mcsModules').splunkDiagStorageAccountName]",
+            "apiVersion": "[parameters('apiVersions').storageApiVersion]",
+            "location": "[parameters('mcsModules').location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
         },
         {
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
@@ -837,7 +871,8 @@
             "name": "[parameters('splunkSettings').splunkVmName]",
             "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').splunknetworkInterfaceName)]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').splunknetworkInterfaceName)]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('mcsModules').splunkDiagStorageAccountName)]"
             ],
             "plan": {
                 "name": "[parameters('splunkSettings').imageSKU]",
@@ -884,7 +919,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').adstorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').splunkDiagStorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             }
@@ -932,7 +967,7 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').splunkVmName,'/extensions/',parameters('splunkSettings').vmExtensionName)]",
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('splunkSettings').vmName,'/extensions/',parameters('splunkSettings').vmExtensionName)]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').trendVMName,'/extensions/installDSM')]",
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CreateADForest')]"
             ]
