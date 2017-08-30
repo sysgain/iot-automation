@@ -1033,7 +1033,7 @@
     },
     "pibaServerIPAddress": {
       "type": "string",
-      "value": "[variables('pibaServersettings').pibaPrivateIPAddress]"
+      "value": "[variables('pibaServersettings').piBAPrivateIPAddress]"
     },
     "workstationFQDN": {
       "type": "string",
