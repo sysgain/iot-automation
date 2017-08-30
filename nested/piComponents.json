@@ -216,7 +216,7 @@
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('piafsqlSettings').vmSize]"
+                    "vmSize": "[parameters('piafsqlSettings').piAFDASQLVMSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -470,7 +470,7 @@
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('pibaServersettings').pibaVMSize]"
+                    "vmSize": "[parameters('pibaServersettings').piBAVMSize]"
                 },
                 "storageProfile": {
                     "imageReference": {

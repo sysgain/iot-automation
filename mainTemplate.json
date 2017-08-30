@@ -23,6 +23,182 @@
         "description": "The FQDN of the Active Directory Domain to be created on VM"
       }
     },
+    "bastionVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS1",
+        "Standard_DS2",
+        "Standard_DS3",
+        "Standard_DS4",
+        "Standard_DS11",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS11_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2"
+      ]
+    },
+    "chefWorkstationVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS1",
+        "Standard_DS2",
+        "Standard_DS3",
+        "Standard_DS4",
+        "Standard_DS11",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS11_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2"
+      ]
+    },
+    "fortigateVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_D1_v2",
+        "Standard_D2_v2",
+        "Standard_D3_v2",
+        "Standard_D4_v2",
+        "Standard_D2",
+        "Standard_D3",
+        "Standard_D4"
+      ]
+    },
+    "adServerVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS1",
+        "Standard_DS2",
+        "Standard_DS3",
+        "Standard_DS4",
+        "Standard_DS11",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS11_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2"
+      ]
+    },
+    "trendVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS2",
+        "Standard_DS3",
+        "Standard_DS4",
+        "Standard_DS11",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS11_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2"
+      ]
+    },
+    "splunkVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS3",
+        "Standard_DS4",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2",
+        "Standard_DS15_v2"
+      ]
+    },
+    "chefAutomateVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS1",
+        "Standard_DS2",
+        "Standard_DS3",
+        "Standard_DS4",
+        "Standard_DS11",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS11_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2"
+      ]
+    },
+    "PIAFDASQLServerVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS1",
+        "Standard_DS2",
+        "Standard_DS3",
+        "Standard_DS4",
+        "Standard_DS11",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS11_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2"
+      ]
+    },
+    "PIBAServerVMSize":{
+      "type": "string",
+      "allowedValues": [
+        "Standard_DS4",
+        "Standard_DS11",
+        "Standard_DS12",
+        "Standard_DS13",
+        "Standard_DS14",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_DS11_v2",
+        "Standard_DS12_v2",
+        "Standard_DS13_v2",
+        "Standard_DS14_v2"
+      ]
+    },
     "websiteName": {
       "type": "string",
       "defaultValue": "",
@@ -195,36 +371,6 @@
       "metadata": {
         "description": "Chef org short name"
       }
-    },
-    "vaultName": {
-      "type": "string",
-      "defaultValue": "iotvault",
-      "metadata": {
-        "description": "Name of the Recovery Services Vault"
-      }
-    },
-    "policyName": {
-      "type": "string",
-      "defaultValue": "iotpolicy",
-      "metadata": {
-        "description": "Name of the Backup Policy"
-      }
-    },
-    "scheduleRunTimes": {
-      "type": "array",
-      "defaultValue": [
-        "00:30"
-      ],
-      "metadata": {
-        "description": "Times in day when backup should be triggered. e.g. 01:00, 13:00. This will be used in LTR too for daily, weekly, monthly and yearly backup."
-      }
-    },
-    "dailyRetentionDurationCount": {
-      "type": "int",
-      "defaultValue": 30,
-      "metadata": {
-        "description": "Number of days you want to retain the backup"
-      }
     }
   },
   "variables": {
@@ -257,12 +403,14 @@
       "location": "[variables('location')]",
       "bastionVMName": "bastionServer",
       "bastionPrivateIP": "10.0.0.5",
-      "workstationPrivateIP": "10.0.0.6",
       "adminUsername": "[parameters('adminUsername')]",
       "adminPassword": "[parameters('adminPassword')]",
       "bastionNic": "bastion-nic",
+      "bastionNSG": "bastion-nsg",
+      "bastionPublicIpName": "bastion-pip",
       "bastionDiagStgAcnt": "[concat('bastionstrg',variables('suffix'))]",
-      "bastionVMSize": "Standard_DS2_v2",
+      "bastionVMSize": "[parameters('bastionVMSize')]",
+      "bastionDnsLabelPrefix": "[concat('bastionserver',variables('suffix'))]",
       "publisher": "MicrosoftWindowsServer",
       "offer": "WindowsServer",
       "sku": "2012-R2-Datacenter",
@@ -270,10 +418,7 @@
       "storageAccountType": "[variables('storageAccountType')]",
       "diagStorageAccountType": "Standard_LRS",
       "wsDiagStgAcnt": "[concat('wsstrg',variables('suffix'))]",
-      "publicIpAddressName": "bastion-pip",
-      "networkSecurityGroupName": "bastion-nsg",
       "publicIpAddressType": "Dynamic",
-      "bastionDnsLabelPrefix": "[concat('bastionserver',variables('suffix'))]",
       "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
       "scriptFileName": "psscript.ps1",
       "domainName": "[parameters('domainName')]",
@@ -283,19 +428,20 @@
       "wsNsg": "ws-client-nsg",
       "wsNic": "ws-client-nic",
       "wsPublicIpName": "ws-publicip",
-      "vmSize": "Standard_DS2_v2",
-      "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
+      "workstationPrivateIP": "10.0.0.6",
+      "chefWSVMSize": "[parameters('chefWorkstationVMSize')]",
       "orguser": "[parameters('chefOrgShortName')]",
-      "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
       "wsClientDns": "[concat('wsclient',variables('suffix'))]",
-      "powerBIUrl": "[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
-      "powerBIScriptUrl": "[concat(variables('baseUrl'),'scripts/powerbidesktop.ps1')]",
-      "powerBITemplatesUrl": "[concat(variables('dscScriptUrl'),'/powerBItemplates/PowerBI_Templates.zip')]",
-      "powerBIDesktopUrl": "https://projectiot.blob.core.windows.net/iotp2/PBIDesktop_x64.msi",
       "workstationSetup": "[concat(variables('baseUrl'),'scripts/workstationsetup1.ps1')]",
       "workstationextensionurl": "[concat(variables('baseUrl'),'nested/workstation-extension.json')]",
       "workstationSetupUrl2": "[concat(variables('baseUrl'),'scripts/workstationsetup2.ps1')]",
       "domainJoinUrl": "[concat(variables('baseUrl'),'nested/domainjoin.json')]",
+      "powerBIUrl": "[concat(variables('baseUrl'),'nested/powerbiinstall.json')]",
+      "appScriptUrl": "[concat(variables('baseUrl'),'scripts/powerBIApp.ps1')]",
+      "powerBIScriptUrl": "[concat(variables('baseUrl'),'scripts/powerbidesktop.ps1')]",
+      "powerBITemplatesUrl": "[concat(variables('dscScriptUrl'),'/powerBItemplates/PowerBI_Templates.zip')]",
+      "powerBIDesktopUrl": "https://projectiot.blob.core.windows.net/iotp2/PBIDesktop_x64.msi",
+      "appCreationURL": "[concat(variables('baseUrl'),'nested/appCreation.json')]",
       "ManagerAddress": "[variables('ManagerAddress')]",
       "ActivationPort": "[variables('ActivationPort')]",
       "TenantIdentifier": "[variables('TenantIdentifier')]",
@@ -311,10 +457,10 @@
       "FortiGateName": "fortigate",
       "fortiNicName1": "forti-nic1",
       "fortiNicName2": "forti-nic2",
-      "name": "fortinet_fg-vm",
+      "sku": "fortinet_fg-vm",
       "product": "fortinet_fortigate-vm_v5",
       "publisher": "fortinet",
-      "vmSize": "Standard_D1_v2",
+      "fortigateVMSize":"[parameters('fortigateVMSize')]",
       "storageAccountType": "Standard_LRS",
       "fortiDiagStgAcnt": "[concat('fortigate',variables('suffix'))]",
       "adminUsername": "[parameters('adminUsername')]",
@@ -352,7 +498,9 @@
       "orguser": "[parameters('chefOrgShortName')]",
       "mailid": "[parameters('chefUserEmail')]",
       "rubyPath": "/opt/chef-marketplace/embedded/bin/ruby",
-      "vmSize": "Standard_DS2_v2",
+      "adVMSize": "[parameters('adServerVMSize')]",
+      "trendVMSize": "[parameters('trendVMSize')]",
+      "chefVMSize": "[parameters('chefAutomateVMSize')]",
       "automateLicenseUri": "",
       "storageAccountType": "Premium_LRS",
       "adNetworkSecurityGroupName": "adnsg",
@@ -396,7 +544,7 @@
       "splunknetworkInterfaceName": "splunk-nic",
       "splunkprivateIP": "10.0.1.8",
       "vmName": "splunkserver",
-      "vmSize": "Standard_DS3_v2",
+      "splunkVMSize": "[parameters('splunkVMSize')]",
       "imagePublisher": "splunk",
       "imageOffer": "splunk-enterprise-base-image",
       "imageSKU": "splunk-on-ubuntu-14-04-lts",
@@ -427,7 +575,7 @@
       "offer": "SQL2016SP1-WS2016",
       "sku": "Express",
       "version": "latest",
-      "vmSize": "Standard_DS2_v2",
+      "piAFDASQLVMSize": "[parameters('PIAFDASQLServerVMSize')]",
       "sqlConnectivityType": "Private",
       "sqlPrivateIPAddress": "10.0.1.5",
       "sqlStorageDisksCount": "1",
@@ -465,7 +613,7 @@
       "offer": "WindowsServer",
       "sku": "2012-R2-Datacenter",
       "version": "latest",
-      "pibaVMSize": "Standard_DS4_v2",
+      "piBAVMSize": "[parameters('PIBAServerVMSize')]",
       "storageAccountType": "[variables('storageAccountType')]",
       "diagStorageAccountType": "Standard_LRS",
       "pibaPrivateIPAddress": "10.0.1.11",
@@ -538,10 +686,10 @@
       "v2VmType": "Microsoft.Compute/virtualMachines",
       "v2VmContainer": "iaasvmcontainer;iaasvmcontainerv2;",
       "v2Vm": "vm;iaasvmcontainerv2;",
-      "existingRecoveryServicesVault": "[concat(parameters('vaultName'),variables('suffix'))]",
-      "existingBackupPolicy": "[parameters('policyName')]",
-      "scheduleRunTimes": "[parameters('scheduleRunTimes')]",
-      "dailyRetentionDurationCount": "[parameters('dailyRetentionDurationCount')]",
+      "existingRecoveryServicesVault": "[concat('iotvault',variables('suffix'))]",
+      "existingBackupPolicy": "iotpolicy",
+      "scheduleRunTimes": ["03:00"],
+      "dailyRetentionDurationCount": 30,
       "existingVirtualMachinesResourceGroup": "[resourceGroup().name]",
       "existingVirtualMachines": [
         "bastionServer",

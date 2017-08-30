@@ -214,7 +214,7 @@
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('mcsModules').vmSize]"
+                    "vmSize": "[parameters('mcsModules').trendVMSize]"
                 },
                 "osProfile": {
                     "computerName": "[parameters('mcsModules').trendVMName]",
@@ -281,7 +281,7 @@
                     "heartbeatPort": "[parameters('mcsModules').heartbeatPort]",
                     "vmFQDN": "[parameters('mcsModules').trendNicIPAddress]",
                     "databaseOption": "[parameters('mcsModules').databaseOption]",
-                    "vmSize": "[parameters('mcsModules').vmSize]",
+                    "vmSize": "[parameters('mcsModules').trendVMSize]",
                     "resourceGroup": "[parameters('mcsModules').location]",
                     "securityGroupName": "parameters('mcsModules').trendNSG]"
                 }
@@ -363,7 +363,7 @@
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('mcsModules').vmSize]"
+                    "vmSize": "[parameters('mcsModules').adVMSize]"
                 },
                 "osProfile": {
                     "computerName": "[parameters('mcsModules').adVMName]",
@@ -627,7 +627,7 @@
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('mcsModules').vmSize]"
+                    "vmSize": "[parameters('mcsModules').chefVMSize]"
                 },
                 "osProfile": {
                     "computerName": "[parameters('mcsModules').chefAutoVmName]",
@@ -846,7 +846,7 @@
             },
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('splunkSettings').vmSize]"
+                    "vmSize": "[parameters('splunkSettings').splunkVMSize]"
                 },
                 "osProfile": {
                     "computername": "[parameters('splunkSettings').vmName]",
