@@ -44,7 +44,10 @@
         "Standard_DS12_v2",
         "Standard_DS13_v2",
         "Standard_DS14_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "Bastion Virtual Machine size"
+      }
     },
     "chefWorkstationVMSize":{
       "type": "string",
@@ -67,7 +70,10 @@
         "Standard_DS12_v2",
         "Standard_DS13_v2",
         "Standard_DS14_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "chef workstation Virtual Machine size"
+      }
     },
     "fortigateVMSize":{
       "type": "string",
@@ -80,7 +86,10 @@
         "Standard_D2",
         "Standard_D3",
         "Standard_D4"
-      ]
+      ],
+      "metadata": {
+        "description": "fortigate Virtual Machine size"
+      }
     },
     "adServerVMSize":{
       "type": "string",
@@ -103,7 +112,10 @@
         "Standard_DS12_v2",
         "Standard_DS13_v2",
         "Standard_DS14_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "Active directory Virtual Machine size"
+      }
     },
     "trendVMSize":{
       "type": "string",
@@ -125,7 +137,10 @@
         "Standard_DS12_v2",
         "Standard_DS13_v2",
         "Standard_DS14_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "trend Virtual Machine size"
+      }
     },
     "splunkVMSize":{
       "type": "string",
@@ -144,7 +159,10 @@
         "Standard_DS13_v2",
         "Standard_DS14_v2",
         "Standard_DS15_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "splunk Virtual Machine size"
+      }
     },
     "chefAutomateVMSize":{
       "type": "string",
@@ -167,7 +185,10 @@
         "Standard_DS12_v2",
         "Standard_DS13_v2",
         "Standard_DS14_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "chef Automate Virtual Machine size"
+      }
     },
     "PIAFDASQLServerVMSize":{
       "type": "string",
@@ -190,7 +211,10 @@
         "Standard_DS12_v2",
         "Standard_DS13_v2",
         "Standard_DS14_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "PIAFDASQL Virtual Machine size"
+      }
     },
     "PIBAServerVMSize":{
       "type": "string",
@@ -207,7 +231,10 @@
         "Standard_DS12_v2",
         "Standard_DS13_v2",
         "Standard_DS14_v2"
-      ]
+      ],
+      "metadata": {
+        "description": "PIBA Virtual Machine size"
+      }
     },
     "websiteName": {
       "type": "string",
