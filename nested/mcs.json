@@ -736,9 +736,9 @@
         },
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('mcsModules').splunkDiagStorageAccountName]",
+            "name": "[parameters('splunkSettings').splunkDiagStorageAccountName]",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
-            "location": "[parameters('mcsModules').location]",
+            "location": "[parameters('splunkSettings').location]",
             "sku": {
                 "name": "Standard_LRS"
             },
@@ -872,7 +872,7 @@
             "location": "[parameters('splunkSettings').location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('splunkSettings').splunknetworkInterfaceName)]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('mcsModules').splunkDiagStorageAccountName)]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('splunkSettings').splunkDiagStorageAccountName)]"
             ],
             "plan": {
                 "name": "[parameters('splunkSettings').imageSKU]",
@@ -919,7 +919,7 @@
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
-                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('mcsModules').splunkDiagStorageAccountName)).primaryEndpoints.blob]"
+                        "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts/', parameters('splunkSettings').splunkDiagStorageAccountName)).primaryEndpoints.blob]"
                     }
                 }
             }
