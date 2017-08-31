@@ -59,5 +59,5 @@ knife winrm name:piafdasqlserver -a ipaddress -x ${adminUsername}  -P $adminPass
 knife winrm name:pibaserver -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife winrm name:bastionserver -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
 knife winrm name:adserver -a ipaddress -x ${adminUsername}  -P $adminPassword --config c:\users\chef-repo\.chef\knife.rb chef-client
-knife ssh name:trendserver -a ipaddress sudo chef-client -x ${adminUsername} -P $adminPassword
+knife ssh name:trendserver -a ipaddress --config c:\users\chef-repo\.chef\knife.rb sudo chef-client -x ${adminUsername} -P $adminPassword
 #knife ssh name:splunkserver -a ipaddress -x ${adminUsername} -P $adminPassword sudo chef-client 
