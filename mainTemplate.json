@@ -240,7 +240,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "decription": "Describes webSite name which should be unique"
+        "description": "Describes webSite name which should be unique"
       }
     },
     "sqlAdministratorLogin": {
