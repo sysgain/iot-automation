@@ -16,12 +16,6 @@
         },
         "splunkSettings":{
             "type":"object"
-        },
-        "routeTable1Id": {
-            "type": "string"
-        },
-        "routeTable2Id": {
-            "type": "string"
         }
     },
     "variables": {
