@@ -464,7 +464,7 @@
     "mcsModules": {
       "location": "[variables('location')]",
       "adNic": "adNic",
-      "adNicIPAddress": "10.0.1.4",
+      "adNicIPAddress": "10.0.1.9",
       "adVMName": "adServer",
       "adNsg": "adnsg",
       "adVMSize": "[parameters('adServerVMSize')]",
@@ -708,7 +708,7 @@
     "webAppDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/CSUWebApp.zip",
     "restServerDeployPackageURI": "https://projectiot.blob.core.windows.net/iotp2/RestService.zip",
     "sasToken": "?",
-    "dnsServerAddress": "10.0.1.4",
+    "dnsServerAddress": "10.0.1.9",
     "storageAccountType": "Premium_LRS",
     "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/fortigate/",
     "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/fortigate",
