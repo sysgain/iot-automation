@@ -592,7 +592,7 @@
       "TenantActivationPassword": "[variables('TenantActivationPassword')]",
       "simulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/SimulatorSetup.msi",
       "dataserviceUrl": "https://projectiot.blob.core.windows.net/iotp2/DataServiceSetup.msi",
-      "piWebApiSimulatorUrl": "https://emdeployment.blob.core.windows.net/releasemtr/PiWebAPISimulatorSetup.msi"
+      "piWebApiSimulatorUrl": "https://projectiot.blob.core.windows.net/iotp2/PiWebAPISimulatorSetup.msi"
     },
     "pibaServersettings": {
       "adminUsername": "[parameters('adminUsername')]",
