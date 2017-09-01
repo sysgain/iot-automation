@@ -470,39 +470,6 @@
             ]
         },
         {
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('networkSettings').virtualNetworkName]",
-            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
-            "location": "[parameters('networkSettings').location]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/InstallationDSA1')]"
-            ],
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[parameters('networkSettings').addressPrefix]"
-                    ]
-                },
-                "dhcpOptions": {
-                    "dnsServers": "[parameters('dnsServerAddress')]"
-                },
-                "subnets": [
-                    {
-                        "name": "[parameters('networkSettings').subnet1Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('networkSettings').subnet2Name]",
-                        "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[parameters('mcsModules').chefAutoDiagStorageAccountName]",
             "apiVersion": "[parameters('apiVersions').storageApiVersion]",
