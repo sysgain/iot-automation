@@ -75,22 +75,6 @@
         "description": "chef workstation Virtual Machine size"
       }
     },
-    "fortigateVMSize":{
-      "type": "string",
-      "defaultValue": "Standard_D1_v2",
-      "allowedValues": [
-        "Standard_D1_v2",
-        "Standard_D2_v2",
-        "Standard_D3_v2",
-        "Standard_D4_v2",
-        "Standard_D2",
-        "Standard_D3",
-        "Standard_D4"
-      ],
-      "metadata": {
-        "description": "fortigate Virtual Machine size"
-      }
-    },
     "adServerVMSize":{
       "type": "string",
       "defaultValue": "Standard_DS2_v2",
@@ -477,28 +461,6 @@
       "TenantIdentifier": "[variables('TenantIdentifier')]",
       "TenantActivationPassword": "[variables('TenantActivationPassword')]"
     },
-    "fortigateFirewallSettings": {
-      "location": "[variables('location')]",
-      "fortiAvailName": "forti-avset",
-      "FGPubFacingAddress": "10.0.0.4",
-      "FGDMZAddress": "10.0.1.7",
-      "fortiPublicIPAddressName": "forti-pip",
-      "publicIPAddressType": "Dynamic",
-      "FortiGateName": "fortigate",
-      "fortiNicName1": "forti-nic1",
-      "fortiNicName2": "forti-nic2",
-      "sku": "fortinet_fg-vm",
-      "product": "fortinet_fortigate-vm_v5",
-      "publisher": "fortinet",
-      "fortigateVMSize":"[parameters('fortigateVMSize')]",
-      "storageAccountType": "Standard_LRS",
-      "fortiDiagStgAcnt": "[concat('fortigate',variables('suffix'))]",
-      "adminUsername": "[parameters('adminUsername')]",
-      "adminPassword": "[parameters('adminPassword')]",
-      "fortiDnsLabelPrefix": "[concat('fortigate',variables('suffix'))]",
-      "routeTable1Name": "[concat('fortigate', '-', variables('networkSettings').subnet2Name,'-routes')]",
-      "routeTable2Name": "[concat('fortigate', '-', variables('networkSettings').subnet1Name,'-routes')]"
-    },
     "mcsModules": {
       "location": "[variables('location')]",
       "adNic": "adNic",
@@ -733,8 +695,6 @@
         "chefautomate"
       ]
     },
-    "routeTable1Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable1Name)]",
-    "routeTable2Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable2Name)]",
     "trendNicIPAddress": "10.0.1.10",
     "heartbeatPort": "4120",
     "ManagerAddress": "[variables('trendNicIPAddress')]",
@@ -983,10 +943,6 @@
     "splunkWebUIUsername": {
       "type": "string",
       "value": "admin"
-    },
-    "fortigateFQDN": {
-      "type": "string",
-      "value": "[variables('fortigateFirewallSettings').fortiDnsLabelPrefix]"
     },
     "azureSQLEndpoint": {
       "type": "string",
