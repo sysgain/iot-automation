@@ -408,9 +408,9 @@
       "networkApiVersion": "2016-03-30",
       "virtualNetworkName": "MyVNET",
       "addressPrefix": "10.0.0.0/16",
-      "subnet1Name": "subnet1",
+      "subnet1Name": "PublicFacingSubnet",
       "subnet1Prefix": "10.0.0.0/24",
-      "subnet2Name": "subnet2",
+      "subnet2Name": "FortigateInternalSubnet",
       "subnet2Prefix": "10.0.1.0/24"
     },
     "bastionServerSettings": {
