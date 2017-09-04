@@ -699,6 +699,8 @@
         "chefautomate"
       ]
     },
+    "routeTable1Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable1Name)]",
+    "routeTable2Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable2Name)]",
     "trendNicIPAddress": "10.0.1.10",
     "heartbeatPort": "4120",
     "ManagerAddress": "[variables('trendNicIPAddress')]",
