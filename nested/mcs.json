@@ -418,6 +418,29 @@
             },
             "resources": [
                 {
+                    "name": "[concat(parameters('mcsModules').adVMName,'/CustomScriptExtension')]",
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "location": "[parameters('mcsModules').location]",
+                    "apiVersion": "[parameters('apiVersions').computeApiVersion]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('mcsModules').adVMName)]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.8",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                               "[parameters('mcsModules').firewalloffscriptUrl]"
+                            ]
+                        },
+                        "protectedSettings": {
+                           "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('mcsModules').firewalloffscriptName)]"
+                        }
+                    }
+                },
+                {
                     "type": "extensions",
                     "name": "CreateADForest",
                     "apiVersion": "[parameters('apiVersions').computeApiVersion]",

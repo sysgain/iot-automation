@@ -562,6 +562,8 @@
       "TenantActivationPassword": "[variables('TenantActivationPassword')]",
       "azureSQLUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
       "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
+      "firewalloffscriptName":"firewalloff.ps1",
+      "firewalloffscriptUrl":"[concat(variables('baseUrl'),'scripts/firewalloff.ps1')]",
       "dscScriptUrl": "[variables('dscScriptUrl')]",
       "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]"
     },
