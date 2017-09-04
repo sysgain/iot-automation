@@ -778,6 +778,12 @@
           },
           "splunkSettings": {
             "value": "[variables('splunkSettings')]"
+          },
+          "routeTable1Id": {
+            "value": "[variables('routeTable1Id')]"
+          },
+          "routeTable2Id": {
+            "value": "[variables('routeTable2Id')]"
           }
         }
       }
