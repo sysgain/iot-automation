@@ -531,7 +531,7 @@
       "dscScriptUrl": "[variables('dscScriptUrl')]",
       "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]",
       "firewalloffscriptName":"firewalloff.ps1",
-      "firewalloffscriptUrl":"[concat(variables('baseUrl'),'scripts/firewalloff.ps1')]",
+      "firewalloffscriptUrl":"[concat(variables('baseUrl'),'scripts/firewalloff.ps1')]"
     },
     "splunkSettings": {
       "location": "[variables('location')]",
