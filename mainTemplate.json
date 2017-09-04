@@ -280,14 +280,14 @@
       "type": "string",
       "defaultValue": "25",
       "metadata": {
-        "description": "Describes the email ID of the sender for email notifications (e.g.: iot@onmicrosoft.com)"
+        "description": "Describes the email ID of the sender for email notifications "
       }
     },
     "senderEmail": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Describes the email ID of the sender for email notifications"
+        "description": "Describes the email ID of the sender for email notifications (e.g.: iot@onmicrosoft.com)"
       }
     },
     "senderEmailPassword": {
