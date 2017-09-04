@@ -1,0 +1,175 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "adminUsername": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "description": "Username for fortigate Virtual Machine, make a note of the Username this will be used further"
+        }
+      },
+      "adminPassword": {
+        "type": "securestring",
+        "defaultValue": "",
+        "metadata": {
+          "description": "Password for fortigate Virtual Machine,make a note of the Password this will be used further."
+        }
+      },
+      "fortigateVMSize":{
+        "type": "string",
+        "defaultValue": "Standard_D2_v2",
+        "metadata": {
+          "description": "fortigate Virtual Machine size"
+        }
+      }
+    },
+    "variables": {
+      "apiVersions": {
+        "deploymentApiVersion": "2016-02-01",
+        "computeApiVersion": "2016-04-30-preview",
+        "networkApiVersion": "2016-09-01",
+        "storageApiVersion": "2016-01-01",
+        "routtableApiVersion": "2015-06-15"
+      },
+      "networkSettings": {
+        "location": "[variables('location')]",
+        "networkApiVersion": "2016-03-30",
+        "virtualNetworkName": "MyVNET",
+        "addressPrefix": "10.0.0.0/16",
+        "subnet1Name": "PublicFacingSubnet",
+        "subnet1Prefix": "10.0.0.0/24",
+        "subnet2Name": "FortigateInternalSubnet",
+        "subnet2Prefix": "10.0.1.0/24"
+      },
+      "fortigateFirewallSettings": {
+        "location": "[variables('location')]",
+        "fortiAvailName": "forti-avset",
+        "FGPubFacingAddress": "10.0.0.4",
+        "FGDMZAddress": "10.0.1.4",
+        "fortiPublicIPAddressName": "forti-pip",
+        "publicIPAddressType": "Dynamic",
+        "FortiGateName": "fortigate",
+        "fortiNicName1": "forti-nic1",
+        "fortiNicName2": "forti-nic2",
+        "sku": "fortinet_fg-vm",
+        "product": "fortinet_fortigate-vm_v5",
+        "publisher": "fortinet",
+        "fortigateVMSize":"[parameters('fortigateVMSize')]",
+        "storageAccountType": "Standard_LRS",
+        "fortiDiagStgAcnt": "[concat('fortigate',variables('suffix'))]",
+        "adminUsername": "[parameters('adminUsername')]",
+        "adminPassword": "[parameters('adminPassword')]",
+        "fortiDnsLabelPrefix": "[concat('fortigate',variables('suffix'))]",
+        "routeTable1Name": "[concat('fortigate', '-', variables('networkSettings').subnet2Name,'-routes')]",
+        "routeTable2Name": "[concat('fortigate', '-', variables('networkSettings').subnet1Name,'-routes')]"
+      },
+      "location": "[resourceGroup().location]",
+      "deploymentApiVersion": "2016-02-01",
+      "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
+      "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/sysgainiot/"
+    },
+    "resources": [
+        {
+        "type": "Microsoft.Network/routeTables",
+        "name": "[variables('fortigateFirewallSettings').routeTable1Name]",
+        "apiVersion": "[variables('apiVersions').routtableApiVersion]",
+        "location": "[variables('fortigateFirewallSettings').location]",
+        "properties": {
+          "routes": [
+            {
+              "name": "[concat('to', '-', variables('networkSettings').subnet2Name)]",
+              "properties": {
+                "addressPrefix": "[variables('networkSettings').subnet2Prefix]",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "[variables('fortigateFirewallSettings').FGPubFacingAddress]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Network/routeTables",
+        "name": "[variables('fortigateFirewallSettings').routeTable2Name]",
+        "apiVersion": "[variables('apiVersions').routtableApiVersion]",
+        "location": "[variables('fortigateFirewallSettings').location]",
+        "properties": {
+          "routes": [
+            {
+              "name": "[concat('to', '-', variables('networkSettings').subnet1Name)]",
+              "properties": {
+                "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIpAddress": "[variables('fortigateFirewallSettings').FGDMZAddress]"
+              }
+            },
+            {
+              "name": "to-Internet",
+              "properties": {
+                "AddressPrefix": "0.0.0.0/0",
+                "nextHopType": "VirtualAppliance",
+                "nextHopIPAddress": "[variables('fortigateFirewallSettings').FGDMZAddress]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('networkSettings').virtualNetworkName]",
+        "apiVersion": "[variables('apiVersions').networkApiVersion]",
+        "location": "[variables('networkSettings').location]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/routeTables/', variables('fortigateFirewallSettings').routeTable1Name)]",
+          "[concat('Microsoft.Network/routeTables/', variables('fortigateFirewallSettings').routeTable2Name)]"
+        ],
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[variables('networkSettings').addressPrefix]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('networkSettings').subnet1Name]",
+              "properties": {
+                "addressPrefix": "[variables('networkSettings').subnet1Prefix]"
+              }
+            },
+            {
+              "name": "[variables('networkSettings').subnet2Name]",
+              "properties": {
+                "addressPrefix": "[variables('networkSettings').subnet2Prefix]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "Microsoft.Resources/deployments",
+        "name": "fortigateServer",
+        "apiVersion": "[variables('deploymentApiVersion')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
+        ],
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(variables('baseUrl'), 'nested/fortigate.json')]",
+            "contentVersion": "1.0.0.0"
+          },
+          "parameters": {
+            "fortigateFirewallSettings": {
+              "value": "[variables('fortigateFirewallSettings')]"
+            },
+            "networkSettings": {
+              "value": "[variables('networkSettings')]"
+            },
+            "apiVersions": {
+              "value": "[variables('apiVersions')]"
+            }
+          }
+        }
+      }  
+    ]
+}
