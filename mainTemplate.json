@@ -224,7 +224,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Describes webSite name which should be unique"
+        "description": "Give the websitename used in the reditect URL during the webapplication creation(E.g : give 'iotwebsite' from https://iotwebsite.azurewebsites.net/redirect.html)"
       }
     },
     "sqlAdministratorLogin": {
