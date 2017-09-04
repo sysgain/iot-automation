@@ -446,8 +446,7 @@
                     "apiVersion": "[parameters('apiVersions').computeApiVersion]",
                     "location": "[parameters('mcsModules').location]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('mcsModules').adVMName)]",
-                        "[concat('Microsoft.Compute/virtualMachines/', parameters('mcsModules').adVMName,'/extensions/CustomScriptExtension')]"
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('mcsModules').adVMName)]"
                     ],
                     "properties": {
                         "publisher": "Microsoft.Powershell",
