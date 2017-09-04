@@ -413,10 +413,6 @@
       "subnet2Name": "FortigateInternalSubnet",
       "subnet2Prefix": "10.0.1.0/24"
     },
-    "fortigateFirewallSettings": {
-      "routeTable1Name": "[concat('fortigate', '-', variables('networkSettings').subnet2Name,'-routes')]",
-      "routeTable2Name": "[concat('fortigate', '-', variables('networkSettings').subnet1Name,'-routes')]"
-    },
     "bastionServerSettings": {
       "location": "[variables('location')]",
       "bastionVMName": "bastionServer",
@@ -701,8 +697,6 @@
         "chefautomate"
       ]
     },
-    "routeTable1Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable1Name)]",
-    "routeTable2Id": "[resourceId('Microsoft.Network/routeTables',variables('fortigateFirewallSettings').routeTable2Name)]",
     "trendNicIPAddress": "10.0.1.10",
     "heartbeatPort": "4120",
     "ManagerAddress": "[variables('trendNicIPAddress')]",
@@ -718,8 +712,8 @@
     "sasToken": "?",
     "dnsServerAddress": "10.0.1.9",
     "storageAccountType": "Premium_LRS",
-    "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/fortigate/",
-    "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/fortigate",
+    "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/sysgainiot/",
+    "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/sysgainiot",
     "deploymentApiVersion": "2016-02-01",
     "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
   },
@@ -780,12 +774,6 @@
           },
           "splunkSettings": {
             "value": "[variables('splunkSettings')]"
-          },
-          "routeTable1Id": {
-            "value": "[variables('routeTable1Id')]"
-          },
-          "routeTable2Id": {
-            "value": "[variables('routeTable2Id')]"
           }
         }
       }

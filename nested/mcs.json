@@ -16,12 +16,6 @@
         },
         "splunkSettings":{
             "type":"object"
-        },
-        "routeTable1Id": {
-            "type": "string"
-        },
-        "routeTable2Id": {
-            "type": "string"
         }
     },
     "variables": {
@@ -519,19 +513,13 @@
                     {
                         "name": "[parameters('networkSettings').subnet1Name]",
                         "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]",
-                            "routeTable": {
-                                "id": "[parameters('routeTable1Id')]"
-                              }
+                            "addressPrefix": "[parameters('networkSettings').subnet1Prefix]"
                         }
                     },
                     {
                         "name": "[parameters('networkSettings').subnet2Name]",
                         "properties": {
-                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]",
-                            "routeTable": {
-                                "id": "[parameters('routeTable2Id')]"
-                              }
+                            "addressPrefix": "[parameters('networkSettings').subnet2Prefix]"
                         }
                     }
                 ]
