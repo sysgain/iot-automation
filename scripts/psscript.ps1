@@ -6,9 +6,9 @@ param
 
 [string] $password = "$3"
 )
-$PIIntegratorBAUrl = "https://projectiot.blob.core.windows.net/iotp2/OSIsoft.PIIntegratorBA_DW_5000_1.2.0.104_.exe"
+$PIIntegratorBAUrl = "https://projectiot.blob.core.windows.net/iotp2/OSIsoft.PIIntegratorBA"
 $client = new-object System.Net.WebClient
-$client.DownloadFile($PIIntegratorBAUrl,"C:\OSIsoft.PIIntegratorBA_DW_5000_1.2.0.104_.exe")
+$client.DownloadFile($PIIntegratorBAUrl,"C:\OSIsoft.PIIntegratorBA")
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 $usernamenNew = $domainName+"\"+${username}
 Set-DnsClient `
