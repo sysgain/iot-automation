@@ -20,7 +20,7 @@
       "type": "string",
       "defaultValue": "sysgainiot.com",
       "metadata": {
-        "description": "The FQDN of the Active Directory Domain to be created on VM (E.g:msfiot.com "
+        "description": "The FQDN of the Active Directory Domain to be created (E.g: msfiot.com) "
       }
     },
     "bastionVMSize":{
