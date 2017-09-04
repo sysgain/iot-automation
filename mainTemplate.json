@@ -280,7 +280,7 @@
       "type": "string",
       "defaultValue": "25",
       "metadata": {
-        "description": "Describes the port number for email host"
+        "description": "Describes the email ID of the sender for email notifications (e.g.: iot@onmicrosoft.com)"
       }
     },
     "senderEmail": {
