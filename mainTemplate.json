@@ -4,7 +4,7 @@
   "parameters": {
     "adminUsername": {
       "type": "string",
-      "defaultValue": "adminuser",
+      "defaultValue": "",
       "metadata": {
         "description": "Username for all the Virtual Machines(for linux and Windows), make a note of the Username this will be used further"
       }
@@ -18,7 +18,7 @@
     },
     "domainName": {
       "type": "string",
-      "defaultValue": "sysgainiot.com",
+      "defaultValue": "",
       "metadata": {
         "description": "The FQDN of the Active Directory Domain to be created (E.g: msfiot.com) "
       }
@@ -245,7 +245,7 @@
     },
     "sqlAdministratorLogin": {
       "type": "string",
-      "defaultValue": "sqluser",
+      "defaultValue": "",
       "metadata": {
         "description": "The SQL authentication admin user of the SQL Server, make a note of Username this will be used further"
       }
