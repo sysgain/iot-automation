@@ -529,7 +529,9 @@
       "azureSQLUrl": "[concat(variables('baseUrl'),'/nested/database-new.json')]",
       "fileUris": "[concat(variables('baseUrl'),'scripts/psscript.ps1')]",
       "dscScriptUrl": "[variables('dscScriptUrl')]",
-      "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]"
+      "updateVnetDnsUrl": "[concat(variables('baseUrl'), 'nested/vnetdns.json')]",
+      "firewalloffscriptName":"firewalloff.ps1",
+      "firewalloffscriptUrl":"[concat(variables('baseUrl'),'scripts/firewalloff.ps1')]",
     },
     "splunkSettings": {
       "location": "[variables('location')]",
