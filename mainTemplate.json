@@ -240,7 +240,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Give websitename used in the reditect URL during the webapplication creation(E.g : https://iotwebsite..azurewebsites.net/redirect.html"
+        "description": "Give the websitename used in the reditect URL during the webapplication creation(E.g : https://iotwebsite.azurewebsites.net/redirect.html"
       }
     },
     "sqlAdministratorLogin": {
