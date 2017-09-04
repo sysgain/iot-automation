@@ -406,7 +406,7 @@
     "networkSettings": {
       "location": "[variables('location')]",
       "networkApiVersion": "2016-03-30",
-      "virtualNetworkName": "MyVNET",
+      "virtualNetworkName": "FortigateProtectedVNet1",
       "addressPrefix": "10.0.0.0/16",
       "subnet1Name": "PublicFacingSubnet",
       "subnet1Prefix": "10.0.0.0/24",
