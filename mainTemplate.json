@@ -413,6 +413,10 @@
       "subnet2Name": "FortigateInternalSubnet",
       "subnet2Prefix": "10.0.1.0/24"
     },
+    "fortigateFirewallSettings": {
+      "routeTable1Name": "[concat('fortigate', '-', variables('networkSettings').subnet2Name,'-routes')]",
+      "routeTable2Name": "[concat('fortigate', '-', variables('networkSettings').subnet1Name,'-routes')]"
+    },
     "bastionServerSettings": {
       "location": "[variables('location')]",
       "bastionVMName": "bastionServer",
