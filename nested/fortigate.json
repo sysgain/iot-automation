@@ -179,7 +179,7 @@
         }
     ],
     "outputs": {
-        "bastionFQDN": {
+        "fortigateFQDN": {
             "type": "string",
             "value": "[reference(parameters('fortigateFirewallSettings').fortiPublicIPAddressName).dnsSettings.fqdn]"
         }
