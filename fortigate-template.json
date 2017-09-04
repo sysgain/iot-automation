@@ -184,6 +184,14 @@
         "fortigateFQDN":{
             "type": "string",
             "value": "[reference('fortigateServer').outputs.fortigateFQDN.value]"
+        },
+        "vmAdminUsername":{
+            "type": "string",
+            "value": "[parameters('adminUsername')]"
+        },
+        "webUIAdminUsername":{
+            "type": "string",
+            "value": "[parameters('adminUsername')]"
         }
     }
 }
