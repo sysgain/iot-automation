@@ -187,7 +187,7 @@
         "Standard_DS14_v2"
       ],
       "metadata": {
-        "description": "chef Automate Virtual Machine size"
+        "description": "ChefAutomate Virtual Machine size"
       }
     },
     "PIAFDASQLServerVMSize":{
