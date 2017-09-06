@@ -294,49 +294,49 @@
       "type": "string",
       "defaultValue": "testiot22.onmicrosoft.com",
       "metadata": {
-        "description": "Describes B2C Tenant Name Directory"
+        "description": "Describes B2C Tenant Name Directory,refer the prereq section of deployment document for more info"
       }
     },
     "b2cClientId": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Describes the client Id of the application registered in B2C Directory"
+        "description": "Describes the client Id of the application registered in B2C Directory,refer the prereq section of deployment document for more info"
       }
     },
     "b2cClientSecret": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Describes the Client secret of the application registered in B2C Directory"
+        "description": "Describes the Client secret of the application registered in B2C Directory,refer the prereq section of deployment document for more info"
       }
     },
     "b2cSignUpPolicyId": {
       "type": "string",
       "defaultValue": "B2C_1_suppolicy2",
       "metadata": {
-        "description": "Describes the B2C Sign Up policy"
+        "description": "Describes the B2C Sign Up policy,refer the prereq section of deployment document for more info"
       }
     },
     "b2cSignInPolicyId": {
       "type": "string",
       "defaultValue": "B2C_1_sinpolicy2",
       "metadata": {
-        "description": "Describes the B2C Sign in policy"
+        "description": "Describes the B2C Sign in policy,refer the prereq section of deployment document for more info"
       }
     },
     "b2cEditProfilePolicyId": {
       "type": "string",
       "defaultValue": "B2C_1_peditpolicy2",
       "metadata": {
-        "description": "Describes the B2C Profile Editing policy"
+        "description": "Describes the B2C Profile Editing policy,refer the prereq section of deployment document for more info"
       }
     },
     "b2cChangePasswordPolicy": {
       "type": "string",
       "defaultValue": "B2C_1_cpasspolicy",
       "metadata": {
-        "description": "Describes the B2C Change Password policy"
+        "description": "Describes the B2C Change Password policy,refer the prereq section of deployment document for more info"
       }
     },
     "MLskuName": {
