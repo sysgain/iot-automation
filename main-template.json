@@ -276,13 +276,6 @@
         "description": "Describes the host name for sending email notifications"
       }
     },
-    "emailHostPort": {
-      "type": "string",
-      "defaultValue": "25",
-      "metadata": {
-        "description": "Describes the email ID of the sender for email notifications "
-      }
-    },
     "senderEmail": {
       "type": "string",
       "defaultValue": "",
@@ -663,7 +656,7 @@
       "b2cClientSecret": "[parameters('b2cClientSecret')]",
       "b2cChangePasswordPolicy": "[parameters('b2cChangePasswordPolicy')]",
       "emailHost": "[parameters('emailHost')]",
-      "emailHostPort": "[parameters('emailHostPort')]",
+      "emailHostPort": 25,
       "senderEmail": "[parameters('senderEmail')]",
       "senderEmailPassword": "[parameters('senderEmailPassword')]",
       "websiteFullAddress": "[variables('websiteFullAddress')]",
