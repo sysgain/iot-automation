@@ -705,8 +705,8 @@
     "sasToken": "?",
     "dnsServerAddress": "10.0.1.9",
     "storageAccountType": "Premium_LRS",
-    "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/sysgainiot/",
-    "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/sysgainiot",
+    "baseUrl": "https://raw.githubusercontent.com/sysgain/iot-automation/iot-automation/",
+    "dscScriptUrl": "https://github.com/sysgain/iot-automation/raw/iot-automation",
     "deploymentApiVersion": "2016-02-01",
     "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
   },
