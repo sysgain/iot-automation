@@ -772,6 +772,7 @@
       "name": "mcsModules",
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
       ],
       "properties": {
         "mode": "Incremental",
