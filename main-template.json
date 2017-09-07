@@ -712,6 +712,35 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('networkSettings').virtualNetworkName]",
+      "apiVersion": "[variables('apiVersions').networkApiVersion]",
+      "location": "[variables('networkSettings').location]",
+      "dependsOn": [
+      ],
+      "properties": {
+          "addressSpace": {
+              "addressPrefixes": [
+                  "[variables('networkSettings').addressPrefix]"
+              ]
+          },
+          "subnets": [
+              {
+                  "name": "[variables('networkSettings').subnet1Name]",
+                  "properties": {
+                      "addressPrefix": "[variables('networkSettings').subnet1Prefix]"
+                  }
+              },
+              {
+                  "name": "[variables('networkSettings').subnet2Name]",
+                  "properties": {
+                      "addressPrefix": "[variables('networkSettings').subnet2Prefix]"
+                  }
+              }
+          ]
+      }
+  },
+    {
       "type": "Microsoft.Resources/deployments",
       "name": "AppComponents",
       "apiVersion": "[variables('deploymentApiVersion')]",
