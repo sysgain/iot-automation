@@ -48,7 +48,7 @@
             "addressPrefix": "10.0.0.0/16",
             "subnet1Name": "PublicFacingSubnet",
             "subnet1Prefix": "10.0.0.0/24",
-            "subnet2Name": "FortigateInternalSubnet",
+            "subnet2Name": "InternalSubnet",
             "subnet2Prefix": "10.0.1.0/24"
         },
         "fortigateFirewallSettings": {
