@@ -8,6 +8,7 @@ $PIAFInstallationFile = "https://projectiot.blob.core.windows.net/iotp2/piafinst
 $PIdataArchiveUrl = "https://projectiot.blob.core.windows.net/iotp2/PI-Data-Archive_2017-SP1_.exe"
 $PIlicenseUrl = "https://projectiot.blob.core.windows.net/iotp2/pilicense.dat"
 $PITemplates = "https://projectiot.blob.core.windows.net/iotp2/PITemplates.zip"
+$UFLConnector = "https://projectiot.blob.core.windows.net/iotp2/UFL%20Connector.zip"
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
 $client = new-object System.Net.WebClient
 New-Item C:\Deploy -type directory
@@ -15,6 +16,7 @@ $client.DownloadFile($PIAFservicesUrl,"C:\Deploy\PI-AF-Services_2017-SP1a_.exe")
 $client.DownloadFile($PIdataArchiveUrl,"C:\Deploy\PI-Data-Archive_2017-SP1_.exe")
 $client.DownloadFile($PIlicenseUrl,"C:\Deploy\pilicense.dat")
 $client.DownloadFile($simulatorUrl,"C:\Deploy\SimulatorSetup.msi")
+$client.DownloadFile($UFLConnector,"C:\Deploy\UFL%20Connector.zip")
 Start-Sleep -s 12
 $client.DownloadFile($dataserviceUrl,"C:\Deploy\DataServiceAppSetup.msi")
 C:\Deploy\DataServiceAppSetup.msi /qn
