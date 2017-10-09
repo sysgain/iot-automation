@@ -472,7 +472,7 @@
       "sku": "2016-Datacenter",
       "version": "latest",
       "chefImagePublisher": "chef-software",
-      "chefImageOffer": "chef-automate",
+      "chefImageOffer": "chef-automate-vm-image",
       "chefImageSKU": "byol",
       "chefImageVersion": "latest",
       "chefAutoVmName": "chefautomate",
