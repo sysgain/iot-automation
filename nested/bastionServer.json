@@ -34,8 +34,8 @@
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('bastionServerSettings').publicIpAddressName)]",
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('bastionServerSettings').networkSecurityGroupName)]"
+                "[concat('Microsoft.Network/publicIpAddresses/', parameters('bastionServerSettings').bastionPublicIpName)]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('bastionServerSettings').bastionNSG)]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -48,18 +48,18 @@
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('bastionServerSettings').bastionPrivateIP]",
                             "publicIpAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('bastionServerSettings').publicIpAddressName)]"
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', parameters('bastionServerSettings').bastionPublicIpName)]"
                             }
                         }
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionServerSettings').networkSecurityGroupName)]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionServerSettings').bastionNSG)]"
                 }
             }
         },
         {
-            "name": "[parameters('bastionServerSettings').publicIpAddressName]",
+            "name": "[parameters('bastionServerSettings').bastionPublicIpName]",
             "type": "Microsoft.Network/publicIpAddresses",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
@@ -71,7 +71,7 @@
             }
         },
         {
-            "name": "[parameters('bastionServerSettings').networkSecurityGroupName]",
+            "name": "[parameters('bastionServerSettings').bastionNSG]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('bastionServerSettings').location]",
@@ -232,7 +232,7 @@
     "outputs": {
         "bastionFQDN": {
             "type": "string",
-            "value": "[reference(parameters('bastionServerSettings').publicIpAddressName).dnsSettings.fqdn]"
+            "value": "[reference(parameters('bastionServerSettings').bastionPublicIpName).dnsSettings.fqdn]"
         }
     }
 }

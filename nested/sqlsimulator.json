@@ -12,7 +12,7 @@
     "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('piafsqlSettings').sqlservername,'/CustomScriptExtension')]",
+            "name": "[concat(parameters('piafsqlSettings').piAFDASQLVmName,'/CustomScriptExtension')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "location": "[parameters('piafsqlSettings').location]",
             "apiVersion": "[parameters('apiVersions').computeApiVersion]",

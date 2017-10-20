@@ -176,7 +176,7 @@
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "[parameters('bastionServerSettings').vmSize]"
+                    "vmSize": "[parameters('bastionServerSettings').chefWSVMSize]"
                 },
                 "storageProfile": {
                     "imageReference": {
